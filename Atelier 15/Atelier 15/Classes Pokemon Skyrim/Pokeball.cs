@@ -14,7 +14,6 @@ namespace AtelierXNA
 {
     public class Pokeball : SphèreTexturée
     {
-        
 
         public Pokeball(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float rayon, Vector2 charpente, string nomTexture, float intervalleMAJ)
             : base(jeu, échelleInitiale, rotationInitiale, positionInitiale, rayon, charpente, nomTexture, intervalleMAJ)
@@ -22,15 +21,7 @@ namespace AtelierXNA
 
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
-        protected override void LoadContent()
-        {
-            base.LoadContent();
 
-        }
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here

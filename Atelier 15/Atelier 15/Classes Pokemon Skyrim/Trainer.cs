@@ -85,9 +85,9 @@ namespace AtelierXNA
 
         private void LancerPokeball()
         {
-            InitialiserPokeball(this.Position);
+            Game.Components.Add(new Pokeball(Game, 1, Position, Vector3.Zero, 1, new Vector2(10, 10), "Pokeball", Atelier.INTERVALLE_MAJ_STANDARD));
 
-            
+
         }
 
         private void InitialiserPokeball(object position)

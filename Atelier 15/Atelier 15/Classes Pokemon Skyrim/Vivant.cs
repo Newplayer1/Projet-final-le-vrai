@@ -12,13 +12,26 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public abstract class Vivant : Microsoft.Xna.Framework.DrawableGameComponent
+    public abstract class Vivant : PrimitiveDeBaseAnimée, ICollisionable
     {
-        protected string Nom { get; private set; }
-        public Vivant(Game game, string nom)
-            : base(game)
+        
+        string NomTexture { get; set; }
+        Texture2D Texture { get; set; }
+        public BoundingSphere SphèreDeCollision { get; protected set; }
+
+        public bool EstEnCollision(object autreObjet)
         {
-            Nom = nom;
+            if (!(autreObjet is ICollisionable))
+            {
+                return false;
+            }
+            return SphèreDeCollision.Intersects(((ICollisionable)autreObjet).SphèreDeCollision);
+        }
+
+        public Vivant(Game game, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, string nomTexture, Vector3 dimension, float intervalleMAJ)
+            : base(game, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
+        {
+            NomTexture = nomTexture;
         }
         public abstract bool EstEnVie();
         

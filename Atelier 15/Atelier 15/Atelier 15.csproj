@@ -60,9 +60,6 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Caméra">
-      <HintPath>.\Caméra.dll</HintPath>
-    </Reference>
     <Reference Include="ComposantsDeBase">
       <HintPath>.\ComposantsDeBase.dll</HintPath>
     </Reference>
@@ -129,8 +126,6 @@
     <Compile Include="Composantes de base AS3D_XNA\ICollisionable.cs" />
     <Compile Include="Composantes de base AS3D_XNA\IDestructible.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Piste.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\PrimitiveDeBase.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\PrimitiveDeBaseAnimée.cs" />
     <Compile Include="Composantes de base AS3D_XNA\RessourceDeBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturée.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />

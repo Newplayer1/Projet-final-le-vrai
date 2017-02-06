@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AtelierXNA
 {
-    class SphèreTexturée : PrimitiveDeBaseAnimée, ICollisionable
+    public class SphèreTexturée : PrimitiveDeBaseAnimée, ICollisionable
     {
         const float NB_DEG_CERCLE = 360f;
         const int NB_TRIANGLES = 2;

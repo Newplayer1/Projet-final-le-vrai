@@ -119,7 +119,6 @@
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />
     <Compile Include="Classes Pokemon Skyrim\Vivant.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\Afficheur3D.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Caméra.cs" />
     <Compile Include="Composantes de base AS3D_XNA\CaméraFixe.cs" />
     <Compile Include="Composantes de base AS3D_XNA\CaméraSubjective.cs" />

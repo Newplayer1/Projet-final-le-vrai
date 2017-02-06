@@ -32,6 +32,7 @@ namespace AtelierXNA
         string nomSprite;
 
 
+        bool EstSauvage { get; set; }
 
         public string Type1 { get; private set; }
         public string Type2 { get; private set; }

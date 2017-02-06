@@ -12,9 +12,13 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public abstract class Vivant : PrimitiveDeBaseAnimée, ICollisionable
+    public abstract class Vivant : ObjetDeBase, ICollisionable
     {
-        
+
+        //Pour la position, dans ObjetDeBase et dans les PrimitiveDeBase-Animée, la position n'est jamais updatée... Alors comment fait-on pour avoir la position après déplacement? 
+        //     - Solution possible: ----> Dans le Update, on ajoute le vecteur de déplacement à Position? Ce qui simulerait le déplacement et garderait en mémoire la position... 
+        //                               (ATTENTION: Si on ajoutait 20 à la composante X mais que le terrain limite le déplacement (bordures/arbre/maison), faut pas ajouter 20 dans la position, sinon on cause un décalage et on ajouterait un déplacement inexistant à la Position.)
+
         string NomTexture { get; set; }
         Texture2D Texture { get; set; }
         public BoundingSphere SphèreDeCollision { get; protected set; }
@@ -28,10 +32,9 @@ namespace AtelierXNA
             return SphèreDeCollision.Intersects(((ICollisionable)autreObjet).SphèreDeCollision);
         }
 
-        public Vivant(Game game, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, string nomTexture, Vector3 dimension, float intervalleMAJ)
-            : base(game, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
+        public Vivant(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+            : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
-            NomTexture = nomTexture;
         }
         public abstract bool EstEnVie();
         

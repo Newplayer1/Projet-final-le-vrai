@@ -130,6 +130,7 @@
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TerrainAvecBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TexteCentré.cs" />
+    <Compile Include="ObjetDeBase.cs" />
     <Compile Include="PrimitiveDeBase.cs" />
     <Compile Include="PrimitiveDeBaseAnimée.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,7 +14,7 @@ namespace AtelierXNA
 {
     public class Pokemon : Vivant
     {
-        /*  
+        /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau
  *  - bool pokémon appartient au user ou non

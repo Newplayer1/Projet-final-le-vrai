@@ -12,36 +12,36 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
+
     public class Combat : Microsoft.Xna.Framework.GameComponent
     {
-        public Combat(Game game)
+        Trainer User { get; set; }
+        Trainer Opponent { get; set; }
+
+        public bool EnCombat { get; set; }
+        public bool Est
+
+        public Combat(Game game, Trainer user, Trainer opponent)
             : base(game)
         {
-            
-        }
+            User = user;
+            Opponent = opponent;
+        }//Faire second constructeur pour WILD BATTLE et bool est wild à true si constructeur wild
 
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
-        public override void Initialize()
+
+        public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Main menu"
         {
-            // TODO: Add your initialization code here
+            EnCombat = true; //GameState = Battle
+
+            User.Throw(PokemonsSurLui{0});
 
             base.Initialize();
         }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
+            
             base.Update(gameTime);
         }
     }

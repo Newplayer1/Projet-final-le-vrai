@@ -14,7 +14,7 @@ namespace AtelierXNA
 {
     public class Trainer : Vivant
     {
-        
+        //codifier une fonction qui lance un pokémon sur la carte, genre Throw pour que dans combat: User.Throw(PokemonsSurLui{0})
         bool valeurVie = true;
         public List<Pokemon> PokemonsSurLui { get; private set; }
         int age;

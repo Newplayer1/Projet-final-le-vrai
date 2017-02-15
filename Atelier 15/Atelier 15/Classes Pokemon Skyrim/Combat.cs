@@ -15,7 +15,7 @@ namespace AtelierXNA
 
     public class Combat : Microsoft.Xna.Framework.GameComponent
     {
-        Trainer User { get; set; }
+        Trainer UserTrainer { get; set; }
         Trainer OpponentTrainer { get; set; }
 
         Pokemon UserPokemon { get; set; }
@@ -29,14 +29,14 @@ namespace AtelierXNA
         public Combat(Game game, Trainer user, Trainer opponentTrainer)
             : base(game)
         {
-            User = user;
+            UserTrainer = user;
             OpponentTrainer = opponentTrainer;
             EstOpponentSauvage = false;
         }
         public Combat(Game game, Trainer user, Pokemon wildPokemon)
             : base(game)
         {
-            User = user;
+            UserTrainer = user;
             OpponentTrainer = null;
             OpponentPokemon = wildPokemon;
             EstOpponentSauvage = true;
@@ -51,7 +51,7 @@ namespace AtelierXNA
                 OpponentPokemon = OpponentTrainer.PokemonsSurLui[0];//On se bat toujours contre un pokémon. 
                 LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
             }
-            LancerPokémon(0, User);//envoie le premier pokémon de l'inventaire. On devrait y dire de choisir l'index du premier pokémon vivant dans la liste.
+            LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
 
             base.Initialize();
         }
@@ -66,9 +66,33 @@ namespace AtelierXNA
         }
 
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie(both trainer et son pokémon
         {
-            
+            //Ouvrir menu principal d'un combat
+            while (UserTrainer.EstEnVie() && OpponentTrainer.EstEnVie())
+            {
+                while (UserPokemon.EstEnVie() && OpponentPokemon.EstEnVie())
+                {
+                    //Système de tours ici
+                }
+                if (!OpponentPokemon.EstEnVie())
+                {
+                    //Message/animation/whatever has been defeated!
+                    CalculExpPourUser();
+
+                    LancerPokémon(0, OpponentTrainer); //Throw next pokemon
+                }
+                else
+                {
+                    //trainer pokemon fainted! Tu dois choisir un autre pokémon dans ton inventaire
+                    //Ouvrir inventaire, sélectionner un index
+                    int prochainPokemon = SélectionnerUnPokémonEnInventaire();
+
+                    LancerPokémon(prochainPokemon, UserTrainer);
+                }
+            }
+        
+            AfficherMenuPrincipal();
             base.Update(gameTime);
         }
     }

@@ -16,7 +16,7 @@ namespace AtelierXNA
     {
         /*    
  *  doit storer:
- *  - stats d'un pokemon en fct du niveau
+ *  - stats d'un pokemon en fct du niveau (recalculé si level up)
  *  - bool pokémon appartient au user ou non
  *  - copie des stats (que combat va overwrite pour modifier les stats d'un pkmn)
  *  - list pour storer les 4 attaques
@@ -27,7 +27,8 @@ namespace AtelierXNA
  *  - fonction attaquer ((seulement si pokemon du user, donc pas wild ou opponent)qui permet de prendre une des quatres attaques, retourne l'attaque choisie, fonction appelée par combat.cs sour la forme "User.Attack")
  *  - fonction défense (qui recoit les dommages calculés par combat.cs selon le type et attaques)
  *  - fonction riposter ((seulement si adverse) choisi une attaque aléatoire dans la liste d'attaques, appelé par combat "Opponent.Riposte" )
- *  
+ *  - fonction évoluer (séquentiel)
+ *  - fonction level up si exp atteint level complet: check if evolution, recalcul les stats, check if new move is learned
  *    */
 
 

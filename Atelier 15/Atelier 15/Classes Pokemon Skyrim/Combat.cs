@@ -16,26 +16,53 @@ namespace AtelierXNA
     public class Combat : Microsoft.Xna.Framework.GameComponent
     {
         Trainer User { get; set; }
-        Trainer Opponent { get; set; }
+        Trainer OpponentTrainer { get; set; }
+
+        Pokemon UserPokemon { get; set; }
+        Pokemon OpponentPokemon { get; set; }
+        
 
         public bool EnCombat { get; set; }
-        public bool Est
+        public bool EstOpponentSauvage { get; set; }
 
-        public Combat(Game game, Trainer user, Trainer opponent)
+
+        public Combat(Game game, Trainer user, Trainer opponentTrainer)
             : base(game)
         {
             User = user;
-            Opponent = opponent;
-        }//Faire second constructeur pour WILD BATTLE et bool est wild à true si constructeur wild
-
+            OpponentTrainer = opponentTrainer;
+            EstOpponentSauvage = false;
+        }
+        public Combat(Game game, Trainer user, Pokemon wildPokemon)
+            : base(game)
+        {
+            User = user;
+            OpponentTrainer = null;
+            OpponentPokemon = wildPokemon;
+            EstOpponentSauvage = true;
+        }
 
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Main menu"
         {
             EnCombat = true; //GameState = Battle
 
-            User.Throw(PokemonsSurLui{0});
+            if (!EstOpponentSauvage)
+            {
+                OpponentPokemon = OpponentTrainer.PokemonsSurLui[0];//On se bat toujours contre un pokémon. 
+                LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
+            }
+            LancerPokémon(0, User);//envoie le premier pokémon de l'inventaire. On devrait y dire de choisir l'index du premier pokémon vivant dans la liste.
 
             base.Initialize();
+        }
+
+        void LancerPokémon(int index, Trainer trainer)
+        {
+            while (!trainer.PokemonsSurLui[index].EstEnVie())
+            {
+                index++;
+            }
+            trainer.Throw(index);
         }
 
 

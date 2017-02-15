@@ -14,7 +14,21 @@ namespace AtelierXNA
 {
     public class Pokemon : Vivant
     {
-
+        /*  
+ *  doit storer:
+ *  - stats d'un pokemon en fct du niveau
+ *  - bool pokémon appartient au user ou non
+ *  - copie des stats (que combat va overwrite pour modifier les stats d'un pkmn)
+ *  - list pour storer les 4 attaques
+ *  - type (vector2 qu'on va caster en int)
+ *  - pts de vie (modifiable si pkmn center)
+ *  - pts exp (modifiable par combat.cs)
+ *  - status (brn, frz, slp, psn, par)
+ *  - fonction attaquer ((seulement si pokemon du user, donc pas wild ou opponent)qui permet de prendre une des quatres attaques, retourne l'attaque choisie, fonction appelée par combat.cs sour la forme "User.Attack")
+ *  - fonction défense (qui recoit les dommages calculés par combat.cs selon le type et attaques)
+ *  - fonction riposter ((seulement si adverse) choisi une attaque aléatoire dans la liste d'attaques, appelé par combat "Opponent.Riposte" )
+ *  
+ *    */
 
 
         bool valeurVie = true;

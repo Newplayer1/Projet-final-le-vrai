@@ -48,21 +48,22 @@ namespace AtelierXNA
 
             if (!EstOpponentSauvage)
             {
-                OpponentPokemon = OpponentTrainer.PokemonsSurLui[0];//On se bat toujours contre un pokémon. 
-                LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
+                OpponentPokemon = LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
             }
-            LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
+            UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
 
             base.Initialize();
         }
 
-        void LancerPokémon(int index, Trainer trainer)
+        Pokemon LancerPokémon(int index, Trainer trainer)
         {
             while (!trainer.PokemonsSurLui[index].EstEnVie())
             {
                 index++;
             }
             trainer.Throw(index);
+
+            return trainer.PokemonsSurLui[index];
         }
 
 
@@ -77,10 +78,10 @@ namespace AtelierXNA
                 }
                 if (!OpponentPokemon.EstEnVie())
                 {
-                    //Message/animation/whatever has been defeated!
+                    //Message/animation/whatever, opponent has been defeated!
                     CalculExpPourUser();
 
-                    LancerPokémon(0, OpponentTrainer); //Throw next pokemon
+                    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //Throw next pokemon
                 }
                 else
                 {
@@ -88,11 +89,9 @@ namespace AtelierXNA
                     //Ouvrir inventaire, sélectionner un index
                     int prochainPokemon = SélectionnerUnPokémonEnInventaire();
 
-                    LancerPokémon(prochainPokemon, UserTrainer);
+                    UserPokemon = LancerPokémon(prochainPokemon, UserTrainer);
                 }
             }
-        
-            AfficherMenuPrincipal();
             base.Update(gameTime);
         }
     }

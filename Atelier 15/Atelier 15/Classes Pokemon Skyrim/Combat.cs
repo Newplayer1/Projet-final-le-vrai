@@ -75,6 +75,13 @@ namespace AtelierXNA
                 while (UserPokemon.EstEnVie() && OpponentPokemon.EstEnVie())
                 {
                     //Système de tours ici
+                    AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
+                    if (UserPokemon.Speed < OpponentPokemon.Speed)
+                    {//Opponent attaquerait en premier
+                    }//la fonction attaquer devra prendre en intrant l'index de l'attaque sélectionnée et le target.
+                    else
+                    {//User attaquerait en premier
+                    }
                 }
                 if (!OpponentPokemon.EstEnVie())
                 {

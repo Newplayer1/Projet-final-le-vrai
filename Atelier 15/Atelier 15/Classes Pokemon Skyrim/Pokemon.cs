@@ -42,12 +42,23 @@ namespace AtelierXNA
         const int MIN_NIVEAU = 0;
 
         int pokedexNumber;
-        int ptsVie;
-        int niveau;
+        
+        
         float poids;
         string type1;
         string type2;
         string nomSprite;
+        int Level { get; set; }
+
+        public int HP => Stats[0];
+        public int Attack => Stats[1];
+        public int Defense => Stats[2];
+        public int SpecialAttack => Stats[3];
+        public int SpecialDefense => Stats[4];
+        public int Speed => Stats[5];
+
+        List<int> Stats { get; set; }
+        List<int> StatsTemporaires { get; set; }
 
 
         bool EstSauvage { get; set; }
@@ -88,11 +99,11 @@ namespace AtelierXNA
 
         protected int Niveau
         {
-            get { return niveau; }
+            get { return Level; }
             set
             {
                 if(!(value > MAX_NIVEAU || value >= MIN_NIVEAU))
-                niveau = value;
+                Level = value;
                 else
                 {
                     throw new Exception();
@@ -105,11 +116,11 @@ namespace AtelierXNA
         }
         protected int PtsVie
         {
-            get { return ptsVie; }
+            get { return HP; }
             set
             {
                 int valeur = ConditionVie(value);
-                    ptsVie = valeur;
+                    HP = valeur;
             }
         }
         private int ConditionVie(int vie)

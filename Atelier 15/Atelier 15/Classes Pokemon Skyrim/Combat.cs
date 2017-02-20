@@ -52,6 +52,7 @@ namespace AtelierXNA
             }
             UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
 
+
             base.Initialize();
         }
 
@@ -76,17 +77,25 @@ namespace AtelierXNA
                 {
                     //Système de tours ici
                     AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
-                    if (UserPokemon.Speed < OpponentPokemon.Speed)
-                    {//Opponent attaquerait en premier
-                    }//la fonction attaquer devra prendre en intrant l'index de l'attaque sélectionnée et le target.
+                    if (UserPokemon.Speed > OpponentPokemon.Speed)
+                    {
+                        OpponentPokemon.Défendre(UserPokemon.Attaquer());// c'est le tour du pokémon User
+
+                        UserPokemon.ChangerSpeed(0);
+                        OpponentPokemon.ChangerSpeed(1);
+                    }
                     else
-                    {//User attaquerait en premier
+                    {
+                        UserPokemon.Défendre(OpponentPokemon.AttaqueAléatoire()); // c'est le tour du pokémon adverse
+
+                        UserPokemon.ChangerSpeed(1);
+                        OpponentPokemon.ChangerSpeed(0);
                     }
                 }
-                if (!OpponentPokemon.EstEnVie())
+                if (!OpponentPokemon.EstEnVie())//sorti de la boucle de combat: l'un des deux est mort
                 {
                     //Message/animation/whatever, opponent has been defeated!
-                    CalculExpPourUser();
+                    UserPokemon.GainExp(OpponentPokemon.Level * 10);
 
                     OpponentPokemon = LancerPokémon(0, OpponentTrainer); //Throw next pokemon
                 }
@@ -98,7 +107,23 @@ namespace AtelierXNA
 
                     UserPokemon = LancerPokémon(prochainPokemon, UserTrainer);
                 }
+
             }
+
+            //Trainer has been defeated! ou Opponent has been defeated!
+            if (UserTrainer.EstEnVie())
+            {//le User a gagné
+                //Changement de la toune?
+                //Gagne du cash, ptit message genre "wow le ptit con m'a battu holyshit man"
+            }
+            else
+            {//Le User a perdu
+                //Donne du cash, ptit message genre "wow t'es ben faible ptit con"
+                //User wrap au pokémon center (une méthode de téléportation dans le trainer pour le déplacer perhaps?)
+            }
+
+            //Le combat est fini
+            EnCombat = false;
             base.Update(gameTime);
         }
     }

@@ -48,7 +48,8 @@ namespace AtelierXNA
         string type1;
         string type2;
         string nomSprite;
-        int Level { get; set; }
+        public int Level { get; private set; }
+        int Exp { get; set; }
 
         public int HP => Stats[0];
         public int Attack => Stats[1];
@@ -58,7 +59,7 @@ namespace AtelierXNA
         public int Speed => Stats[5];
 
         List<int> Stats { get; set; }
-        List<int> StatsTemporaires { get; set; }
+        List<int> StatsFixes { get; set; }
 
 
         bool EstSauvage { get; set; }
@@ -120,7 +121,7 @@ namespace AtelierXNA
             set
             {
                 int valeur = ConditionVie(value);
-                    HP = valeur;
+                Stats[0] = valeur;
             }
         }
         private int ConditionVie(int vie)
@@ -195,6 +196,29 @@ namespace AtelierXNA
                     propriété = types;
             }
         }
+        public int Attaquer()
+        {
+            return Attack;
+        }
+        public void Défendre(int pointsDeDamage)
+        {
+            PtsVie = PtsVie - pointsDeDamage;
+        }
+        public int AttaqueAléatoire()
+        {
+            return Attack;
+        }
+
+        public void ChangerSpeed(int valeur)
+        {
+            Stats[5] = valeur;
+        }
+
+        public void GainExp(int valeur)
+        {
+            Exp = Exp + valeur;
+        }
+
         public override void Initialize()
         {
             base.Initialize();

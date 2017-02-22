@@ -8,11 +8,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Data.OleDb;
 
 namespace AtelierXNA
 {
    public class Atelier : Microsoft.Xna.Framework.Game
    {
+        
       const float INTERVALLE_CALCUL_FPS = 1f;
       public const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
       GraphicsDeviceManager PériphériqueGraphique { get; set; }

@@ -8,12 +8,14 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
+using System.Data.OleDb;
 
 namespace AtelierXNA
 {
     public class Pokemon : Vivant
     {
+       
+        
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
@@ -153,6 +155,11 @@ namespace AtelierXNA
             Poids = poids;
             Types = types;
             NomSprite = nomSprite;
+            OleDbConnection connection = new OleDbConnection();
+            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\201554646\Desktop\Base-de-données-Pokemon.accdb;
+Persist Security Info=False;";
+            connection.Open();
+
         }
         // peut etre dans comnbat pis ici onn va utiliser des vectors
         private  void Checker1ou2type(string types)

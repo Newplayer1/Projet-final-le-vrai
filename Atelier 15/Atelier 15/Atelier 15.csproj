@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="Afficheur3D.cs" />
     <Compile Include="Atelier.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Class1.cs" />
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />

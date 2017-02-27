@@ -7,7 +7,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
-    class Class1
+    class AccessBaseDeDonnée
     {
         private OleDbConnection connection { get; set; }
         private OleDbCommand commande { get; set; }
@@ -20,15 +20,21 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         List<int> SpecialDefense { get; set; }
         List<int> SpecialAttack { get; set; }
         List<int> speed { get; set; }
-        List<string> Type { get; set; }
-        List<string> Type2 { get; set; }
+        List<string> PokemonType { get; set; }
+        List<string> PokemonType2 { get; set; }
         List<int> Number { get; set; }
         List<string> Renvoit { get; set; }
-        public Class1()
+        List<int> TypeNumber { get; set; }
+        int[,] ArrayWeakness { get; set; }
+        int [,] TypeLevelAttack { get; set; }
+
+        public AccessBaseDeDonnée()
         {
             InitialiserListes();
             InitialiserConnection();
-            LireBaseDonnées();
+            LireTablePokemons();
+            LireTableWeaknessStrengh();
+            LireTableTypeLevelAttack();
             RemplirListUltime();
         }
         private void InitialiserListes()
@@ -42,10 +48,13 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             Defense = new List<int>();
             Hp = new List<int>();
             Catch = new List<int>();
-            Type = new List<string>();
-            Type2 = new List<string>();
+            PokemonType = new List<string>();
+            PokemonType2 = new List<string>();
             Renvoit = new List<string>();
             Pokemons = new List<List<string>>();
+            TypeNumber = new List<int>();
+            ArrayWeakness = new int[17,17];
+            TypeLevelAttack =  new int [,]; 
         }
         private void InitialiserConnection()
         {
@@ -55,10 +64,10 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             connection.Open();
             commande = new OleDbCommand();
             commande.Connection = connection;
-            commande.CommandText = "SELECT * FROM [pokemon]";
         }
-        private void LireBaseDonnées()
+        private void LireTablePokemons()
         {
+            commande.CommandText = "SELECT * FROM [pokemon]";
             OleDbDataReader reader = commande.ExecuteReader();
             while (reader.Read())
             {
@@ -70,16 +79,43 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 SpecialAttack.Add(reader.GetInt16(5));
                 SpecialDefense.Add(reader.GetInt16(6));
                 speed.Add(reader.GetInt16(7));
-                Type.Add(reader.GetString(8));
-                Type2.Add(reader.GetString(9));
+                PokemonType.Add(reader.GetString(8));
+                PokemonType2.Add(reader.GetString(9));
                 Catch.Add(reader.GetInt32(10));
             }
             reader.Close();
         }
-        private void RemplirListUltime()
+        private void LireTableWeaknessStrengh()
         {
-           
-            for(int i = 0; i< Catch.Count; i++)
+            commande.CommandText = "SELECT * FROM [Array Weakness and strengh]";
+            OleDbDataReader reader = commande.ExecuteReader();
+            int row = 0;
+            while (reader.Read())
+            {
+                ArrayWeakness[row, 0] = reader.GetInt32(2);
+                ArrayWeakness[row, 1] = reader.GetInt32(3);
+                ArrayWeakness[row, 2] = reader.GetInt32(4);
+                ArrayWeakness[row, 3] = reader.GetInt32(5);
+                ArrayWeakness[row, 4] = reader.GetInt32(6);
+                ArrayWeakness[row, 5] = reader.GetInt32(7);
+                ArrayWeakness[row, 6] = reader.GetInt32(8);
+                ArrayWeakness[row, 7] = reader.GetInt32(9);
+                ArrayWeakness[row, 8] = reader.GetInt32(10);
+                ArrayWeakness[row, 9] = reader.GetInt32(11);
+                ArrayWeakness[row, 10] = reader.GetInt32(12);
+                ArrayWeakness[row, 11] = reader.GetInt32(13);
+                ArrayWeakness[row, 12] = reader.GetInt32(14);
+                ArrayWeakness[row, 13] = reader.GetInt32(16);
+                ArrayWeakness[row, 14] = reader.GetInt32(17);
+                ArrayWeakness[row, 15] = reader.GetInt32(18);
+                ArrayWeakness[row, 16] = reader.GetInt32(19);
+                ArrayWeakness[row, 17] = reader.GetInt32(20);
+                row++;
+            }
+            reader.Close();
+        }
+        private void RemplirListUltime()
+        {            for(int i = 0; i< Catch.Count; i++)
             {
                 List<string> Tempo = new List<string>();
                 Tempo.Add(Number[i].ToString());
@@ -89,47 +125,20 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 Tempo.Add(SpecialAttack[i].ToString());
                 Tempo.Add(SpecialDefense[i].ToString());
                 Tempo.Add(speed[i].ToString());
-                Tempo.Add(Type[i]);
-                Tempo.Add(Type2[i]);
+                Tempo.Add(PokemonType[i]);
+                Tempo.Add(PokemonType2[i]);
                 Tempo.Add(Catch[i].ToString());
 
                 Pokemons.Add(Tempo);
             }
         }
-        public List<string> AccessDonnéesPokemonStatsComplet(int PokedexNumber)
+        public int AccessDonnéesArrayWeaknessStrengh(int row,  int col)
+        {
+            return ArrayWeakness[row,col];
+        }
+        public List<string> AccessDonnéesPokemonStats(int PokedexNumber)
         {
             return Pokemons[PokedexNumber - 1];
         }
-        //public int AccessDonnéesPokemonStatsInt(int PokedexNumber, int col)
-        //{
-        //    CheckerIntÉgalAQuoiInt(col);
-        //    return 
-        //}
-        //public string AccessDonnéesPokemonStatsString(int PokedexNumber, int col)
-        //{
-        //    CheckerIntÉgalAQuoiString(col);
-        //    return 
-        //}
-        // private List<int> CheckerIntÉgalAQuoiInt(int col)
-        //{
-
-        //}
-        //private List<string> CheckerIntÉgalAQuoiString(int col)
-        //{
-        //    List<string> retour = new List<string>();
-        //    if(col  == 8)
-        //    {
-        //        retour = Type;
-        //    }
-        //    if (col == 1)
-        //    {
-        //        retour = Name;
-        //    }
-        //    else // 9
-        //    {
-        //        retour = Type2;
-        //    }
-        //    return retour;
-        //}
     }
 }

@@ -125,16 +125,16 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             {
                 List<string> Tempo = new List<string>();
 
-                Tempo.Add(reader.GetInt32(0).ToString());
+                Tempo.Add(reader.GetString(0));
                 Tempo.Add(reader.GetString(1));
-                Tempo.Add(reader.GetInt32(2).ToString());
-                Tempo.Add(reader.GetInt32(3).ToString());
+                Tempo.Add(reader.GetString(2));
+                Tempo.Add(reader.GetString(3));
                 Tempo.Add(reader.GetString(4));
                 Tempo.Add(reader.GetString(5));
 
-                Tempo.Add(reader.GetInt32(6).ToString());
-                Tempo.Add(reader.GetString(7).ToString());
-                Tempo.Add(reader.GetInt32(8).ToString());
+                Tempo.Add(reader.GetString(6));
+                Tempo.Add(reader.GetString(7));
+                Tempo.Add(reader.GetString(8));
                 Tempo.Add(reader.GetString(9));
                 Tempo.Add(reader.GetString(10));
 

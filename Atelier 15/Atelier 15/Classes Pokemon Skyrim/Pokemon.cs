@@ -14,8 +14,11 @@ namespace AtelierXNA
 {
     public class Pokemon : Vivant
     {
-       
-        
+        const int MAX_POKEDEX_NUMBER = 151;
+        const int MIN_POKEDEX_NUMBER = 0;
+        const int MAX_NIVEAU = 100;
+        const int MIN_NIVEAU = 0;
+
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
@@ -38,27 +41,26 @@ namespace AtelierXNA
         List<string> TypesRecu;
         List<string> TypesOriginals;
 
-        const int MAX_POKEDEX_NUMBER = 151;
-        const int MIN_POKEDEX_NUMBER = 0;
-        const int MAX_NIVEAU = 100;
-        const int MIN_NIVEAU = 0;
 
-        int pokedexNumber;
-        
+
+        int PokedexNumber { get; set; }
         
         float poids;
         string type1;
         string type2;
         string nomSprite;
+
         public int Level { get; private set; }
         int Exp { get; set; }
 
-        public int HP => Stats[0];
-        public int Attack => Stats[1];
-        public int Defense => Stats[2];
-        public int SpecialAttack => Stats[3];
-        public int SpecialDefense => Stats[4];
-        public int Speed => Stats[5];
+        public int HP { get; set; }
+        int MaxHp { get; set; }
+
+        public int Attack => Stats[0];
+        public int Defense => Stats[1];
+        public int SpecialAttack => Stats[2];
+        public int SpecialDefense => Stats[3];
+        public int Speed => Stats[4];
 
         List<int> Stats { get; set; }
         List<int> StatsFixes { get; set; }
@@ -88,17 +90,7 @@ namespace AtelierXNA
                 }
             }
         }
-        protected string NomSprite
-        {
-            get { return nomSprite; }
-            set
-            {
-                if (!(string.IsNullOrEmpty(value)))
-                {
-                    nomSprite = value;
-                }
-            }
-        }
+
 
         protected int Niveau
         {
@@ -136,82 +128,26 @@ namespace AtelierXNA
             return vie;
         }
 
-        protected int PokedexNumber
+
+        public Pokemon(Game game, int pokedexNumber, int level)
+            : base(game)
         {
-            get { return pokedexNumber; }
-            set
-            {
-                if (value <= 151 && value > 0)
-                {
-                    pokedexNumber = value;
-                }
-            }
-        }
-        public Pokemon(Game game, string nom, float poids,string types, string nomSprite)
-            : base(game, nom)
-        {
-            TypesRecu = new List<string>();
-            TypesOriginals = new List<string>();
-            Poids = poids;
-            Types = types;
-            NomSprite = nomSprite;
-            OleDbConnection connection = new OleDbConnection();
-            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\201554646\Desktop\Base-de-données-Pokemon.accdb;
-Persist Security Info=False;";
-            connection.Open();
+            PokedexNumber = pokedexNumber;
+            Level = level;
+            //AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
 
         }
-        // peut etre dans comnbat pis ici onn va utiliser des vectors
-        private  void Checker1ou2type(string types)
-        {
-            TypesOriginals.Add("FLYING");
-            TypesOriginals.Add("FIRE");
-            TypesOriginals.Add("WATER");
-            TypesOriginals.Add("FIGHTING");
-            TypesOriginals.Add("NORMAL");
-            TypesOriginals.Add("POISON");
-            TypesOriginals.Add("GRASS");
-            TypesOriginals.Add("ELETRIC");
-            TypesOriginals.Add("PSYCHIC");
-            TypesOriginals.Add("GROUND");
-            TypesOriginals.Add("ICE");
-            TypesOriginals.Add("ROCK");
-            TypesOriginals.Add("BUG");
-            TypesOriginals.Add("DRAGON");
-            TypesOriginals.Add("GHOST");
-            TypesOriginals.Add("DARK");
-            TypesOriginals.Add("STEEL");
 
-            TypesRecu = types.Split(',').ToList();
-            if (TypesRecu.Count == 1)
-            {
-                AssocierLesTypes(TypesRecu[0], Type1);
-            }
-            else
-                if (TypesRecu.Count == 2)
-            {
-                AssocierLesTypes(TypesRecu[0],Type1);
-                AssocierLesTypes(TypesRecu[1], Type2);
-            }
-            else throw new Exception();
-        }
-        private void AssocierLesTypes(string types, string propriété)
-        {
-            foreach (string t in TypesOriginals)
-            {
-                if (t == types.Trim().ToUpper())
-                    propriété = types;
-            }
-        }
-        public int Attaquer()
+
+        public int Attaquer()//Temp
         {
             return Attack;
         }
-        public void Défendre(int pointsDeDamage)
+        public void Défendre(int pointsDeDamage)//Temp
         {
             PtsVie = PtsVie - pointsDeDamage;
         }
-        public int AttaqueAléatoire()
+        public int AttaqueAléatoire()//Temp
         {
             return Attack;
         }

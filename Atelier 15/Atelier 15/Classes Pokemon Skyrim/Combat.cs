@@ -42,7 +42,7 @@ namespace AtelierXNA
             EstOpponentSauvage = true;
         }
 
-        public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Main menu"
+        public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
             EnCombat = true; //GameState = Battle
 
@@ -70,27 +70,38 @@ namespace AtelierXNA
 
         public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie(both trainer et son pokémon
         {
-            //Ouvrir menu principal d'un combat
+            bool UserPkmPrioritaire;
+            
+
             while (UserTrainer.EstEnVie() && OpponentTrainer.EstEnVie())
             {
+                //UserPkmPrioritaire = true;
                 while (UserPokemon.EstEnVie() && OpponentPokemon.EstEnVie())
                 {
-                    //Système de tours ici
+                    //Système de tours entre pkmns ici
                     AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
-                    if (UserPokemon.Speed > OpponentPokemon.Speed)
-                    {
-                        OpponentPokemon.Défendre(UserPokemon.Attaquer());// c'est le tour du pokémon User
 
-                        UserPokemon.ChangerSpeed(0);
-                        OpponentPokemon.ChangerSpeed(1);
-                    }
+                    if (UserPokemon.Speed < OpponentPokemon.Speed)//le tour du joueur sauf si prouvé du contraire
+                        UserPkmPrioritaire = false;
                     else
+                        UserPkmPrioritaire = true;
+                    //Important de garder dans la boucle, si la vitesse est changée par une attaque effect, et que l'adversaire ou le user devient plus rapide, il a droit de frapper deux fois
+
+
+
+                    if (UserPkmPrioritaire)  //Si le pokémon User est plus rapide
+                    {
+                        OpponentPokemon.Défendre(UserPokemon.Attaquer());//fonctions temporaires, à modifier pour calculer les points de dommages avec la formule
+                        UserPokemon.Défendre(OpponentPokemon.AttaqueAléatoire());
+                        UserPkmPrioritaire = false;//fin de son tour
+                    }
+                    else   //Si le pokémon adverse est le plus rapide
                     {
                         UserPokemon.Défendre(OpponentPokemon.AttaqueAléatoire()); // c'est le tour du pokémon adverse
-
-                        UserPokemon.ChangerSpeed(1);
-                        OpponentPokemon.ChangerSpeed(0);
+                        OpponentPokemon.Défendre(UserPokemon.Attaquer());
+                        UserPkmPrioritaire = true;
                     }
+
                 }
                 if (!OpponentPokemon.EstEnVie())//sorti de la boucle de combat: l'un des deux est mort
                 {
@@ -123,8 +134,8 @@ namespace AtelierXNA
             }
 
             //Le combat est fini
-            EnCombat = false;
-            base.Update(gameTime);
+            EnCombat = false;//Ou on pourrait changer le gamestate?
+            base.Update(gameTime);//Utile?
         }
     }
 }

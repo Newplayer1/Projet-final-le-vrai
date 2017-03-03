@@ -36,8 +36,7 @@ namespace AtelierXNA
  *  - fonction level up si exp atteint level complet: check if evolution, recalcul les stats, check if new move is learned
  *    */
 
-
-        bool valeurVie = true;
+            
         List<string> TypesRecu;
         List<string> TypesOriginals;
 
@@ -65,7 +64,7 @@ namespace AtelierXNA
         List<int> Stats { get; set; }
         List<int> StatsFixes { get; set; }
 
-
+        List<int> AttaquesList { get; set; }//Liste de 4 int référant à un numéro d'attaque
         bool EstSauvage { get; set; }
 
         public string Type1 { get; private set; }
@@ -79,17 +78,7 @@ namespace AtelierXNA
             }
         }
 
-        protected float Poids
-        {
-            get { return poids; }
-            set
-            {
-                if (value > 0)
-                {
-                    poids = value;
-                }
-            }
-        }
+
 
 
         protected int Niveau
@@ -105,28 +94,9 @@ namespace AtelierXNA
                 }
             }
         }
-        public override bool EstEnVie()
-        {
-            return valeurVie;
-        }
-        protected int PtsVie
-        {
-            get { return HP; }
-            set
-            {
-                int valeur = ConditionVie(value);
-                Stats[0] = valeur;
-            }
-        }
-        private int ConditionVie(int vie)
-        {
-            if (vie <= 0)
-            {
-                vie = 0;
-                valeurVie = false;
-            }
-            return vie;
-        }
+ 
+
+
 
 
         public Pokemon(Game game, int pokedexNumber, int level)
@@ -134,10 +104,33 @@ namespace AtelierXNA
         {
             PokedexNumber = pokedexNumber;
             Level = level;
-            //AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
 
+            AttaquesList = new List<int>();
+            AttaquesList.Add(0);
+            AttaquesList.Add(-1);//Négatif siginife aucune attaque
+            AttaquesList.Add(-1);
+            AttaquesList.Add(-1);
+
+            //au lieu de juste mettre l'attaque 0, on pourrait mettre aléatoirement parmi les attaques disponibles du pokémon au niveau mentionné 
+
+            CalculerStatsEtHP(PokedexNumber, Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
+        }
+        public Pokemon(Game game, int pokedexNumber, int level, List<int> attaques)
+            : base(game)
+        {
+            PokedexNumber = pokedexNumber;
+            Level = level;
+            AttaquesList = new List<int>(attaques);
+
+            CalculerStatsEtHP(PokedexNumber, Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
 
+        void CalculerStatsEtHP(int pokedexNumber, int level)//inclu HP
+        {
+            //AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
+            //Utiliser la formule de calcul des stats et HP en fonction du base stat et du niveau
+            //Remplir la liste Stats, mais surtout StatsFixes
+        }
 
         public int Attaquer()//Temp
         {
@@ -146,15 +139,22 @@ namespace AtelierXNA
         public void Défendre(int pointsDeDamage)//Temp
         {
             PtsVie = PtsVie - pointsDeDamage;
+            //si la vie est à zéro, mettre EstEnVie à zéro
+            if (HP <= 0)
+            {
+                EstEnVie = false; //Hérité de Vivant, mis protected dans vivant
+                HP = 0;
+            }
         }
         public int AttaqueAléatoire()//Temp
         {
             return Attack;
         }
 
-        public void ChangerSpeed(int valeur)
+
+        public void RétablirStats()//Après chaque combat TRÈS IMPORTANT
         {
-            Stats[5] = valeur;
+            Stats = StatsFixes;
         }
 
         public void GainExp(int valeur)

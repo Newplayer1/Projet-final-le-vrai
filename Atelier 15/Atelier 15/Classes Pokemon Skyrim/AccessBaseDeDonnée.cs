@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.OleDb;
+using System.Data.Sql;
 
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
@@ -35,11 +36,34 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         private void InitialiserConnection()
         {
             connection = new OleDbConnection();
-            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Antoine\Dropbox\Session 4\Prog\Base-de-données-Pokemon.accdb;
+            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\201554646\Desktop\Base-de-données-Pokemon.accdb;
                                             Persist Security Info=False;";
             connection.Open();
             commande = new OleDbCommand();
             commande.Connection = connection;
+        }
+
+        public void Sauvegarder(List<string> ÉlémentsASauvegarder)
+        {
+            //foreach(string e in  ÉlémentsASauvegarder)
+            //{
+
+            //}
+            commande.CommandText = "insert into Sauvegarde(Test,Test2)Values('" + ÉlémentsASauvegarder[0] + "','" + ÉlémentsASauvegarder[1] + "')";
+            commande.ExecuteNonQuery();
+        }
+        public List<string> LoadSauvegarde()
+        {
+            commande.CommandText = "SELECT * FROM [Sauvegarde]";
+            OleDbDataReader reader = commande.ExecuteReader();
+            List<string> Tempo = new List<string>();
+            while (reader.Read())
+            {
+
+                Tempo.Add(reader.GetString(0));
+            }
+            reader.Close();
+            return Tempo;
         }
         private void LireTablePokemons()
         {

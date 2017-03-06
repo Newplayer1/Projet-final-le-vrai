@@ -69,14 +69,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         public string Type1 { get; private set; }
         public string Type2 { get; private set; }
-        public string Types
-        {
-            get { return type1; }
-            set
-            {
-                Checker1ou2type(value);
-            }
-        }
+
 
 
 

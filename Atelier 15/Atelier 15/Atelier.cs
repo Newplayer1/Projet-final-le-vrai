@@ -38,7 +38,9 @@ namespace AtelierXNA
         {
             Vector3 positionCaméra = new Vector3(0, 100, 250);
             Vector3 cibleCaméra = new Vector3(0, 0, -10);
+
             DatabaseAccess = new AccessBaseDeDonnée();
+
             GestionInput = new InputManager(this);
             Components.Add(GestionInput);
             CaméraJeu = new CaméraSubjective(this, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ_STANDARD);

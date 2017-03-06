@@ -140,10 +140,13 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)
         {
-            int damage;
+            float damage;
+            //devra changer selon le type de l'attaque et les deux types de l'opponent
+            Attaque Atk = new Attaque(attaqueChoisie);
+            float multiplicateurType = Atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
 
-            Database.AccessDonnéesAttaqueStats(attaqueChoisie)[2];
-            damage = ((2 * attaquant.Level / 5 + 2) * PowerDeLAttaque * (attaquant.Attack / opposant.Defense)) / 50 + 2) * type;
+            damage = ((2 * attaquant.Level / 5 + 2) * Atk.Power * (attaquant.Attack / opposant.Defense) / 50 + 2) * multiplicateurType;
+            return (int)damage;
         }
 
         /*

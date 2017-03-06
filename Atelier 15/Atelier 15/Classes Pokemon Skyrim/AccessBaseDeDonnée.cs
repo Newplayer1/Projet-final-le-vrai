@@ -171,9 +171,9 @@ namespace AtelierXNA
         {
             return TypeLevelAttaque[numéroDuType - 1][level - 1].ToString();
         }
-        public int AccessDonnéesArrayWeaknessStrengh(int row, int col)
+        public List<string> AccessDonnéesArrayWeaknessStrengh(int row)
         {
-            return Weakness[row - 1][col - 1];
+            return Weakness[row - 1];
         }
         public List<string> AccessDonnéesPokemonStats(int pokedexNumber)
         {
@@ -186,9 +186,9 @@ namespace AtelierXNA
 
 
         //Fonction access direct
-        public int AttaquesStatsPower(int attaqueNumber)
+        public int AccessDonnéesArrayWeaknessStrenghIndice(int row, int col)
         {
-            return int.Parse(AccessDonnéesAttaqueStats(attaqueNumber)[2]);
+            return Weakness[row - 1][col - 1];
         }
     }
 }

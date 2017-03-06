@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Data.OleDb;
 
-namespace AtelierXNA
+namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
     public class Pokemon : Vivant
     {
@@ -130,15 +130,20 @@ namespace AtelierXNA
             //AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
             //Utiliser la formule de calcul des stats et HP en fonction du base stat et du niveau
             //Remplir la liste Stats, mais surtout StatsFixes
+
+            //  Stat = (2 * (BaseStat + 2) * Level)/100 + 5
+            //  HP = (2 * (BaseStat + 2) * Level)/100 + Level + 10
+
+
         }
 
         public int Attaquer()//Temp
         {
             return Attack;
         }
-        public void Défendre(int pointsDeDamage)//Temp
+        public void Défendre(int pointsDeDamage)
         {
-            PtsVie = PtsVie - pointsDeDamage;
+            HP = HP - pointsDeDamage;
             //si la vie est à zéro, mettre EstEnVie à zéro
             if (HP <= 0)
             {

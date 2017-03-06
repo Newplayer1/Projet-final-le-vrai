@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace AtelierXNA
+namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
     public abstract class Vivant : ObjetDeBase, ICollisionable
     {
@@ -18,7 +18,7 @@ namespace AtelierXNA
         //Pour la position, dans ObjetDeBase et dans les PrimitiveDeBase-Animée, la position n'est jamais updatée... Alors comment fait-on pour avoir la position après déplacement? 
         //     - Solution : ----> Dans le Update, on ajoute la quantité de déplacement (vecteur?) à Position. Si pour quelconque raison le déplacement du vivant est restreint par une collision, 
         //                        il ne faut pas ajouter la longueur totale d'un déplacement normal, mais juste celle du déplacement qui a été possible de faire. (sinon la valeur dans Position accumulera les décalages par rapport à la vraie position du vivant.)
-        protected bool EstEnVie { get; set; }
+        public bool EstEnVie { get; protected set; }
         string NomTexture { get; set; }
         Texture2D Texture { get; set; }
         public BoundingSphere SphèreDeCollision { get; protected set; }

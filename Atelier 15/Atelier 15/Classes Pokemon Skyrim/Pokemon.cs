@@ -12,6 +12,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
+    enum Status { NUL, BRN, FRZ, SLP, PSN, PAR }
     public class Pokemon : Vivant
     {
         const int MAX_POKEDEX_NUMBER = 151;
@@ -19,14 +20,18 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         const int MAX_NIVEAU = 100;
         const int MIN_NIVEAU = 0;
 
+        AccessBaseDeDonnée Database { get; set; }
+        Random Générateur { get; set; }
+        List<string> PokemonEnString { get; set; }
+
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
  *  - bool pokémon appartient au user ou non
  *  - copie des stats (que combat va overwrite pour modifier les stats d'un pkmn)
  *  - list pour storer les 4 attaques
- *  - type (vector2 qu'on va caster en int)
- *  - pts de vie (modifiable si pkmn center)
+ *  - type (string)
+ *  - HP (modifiable si pkmn center)
  *  - pts exp (modifiable par combat.cs)
  *  - status (brn, frz, slp, psn, par)
  *  - fonction attaquer ((seulement si pokemon du user, donc pas wild ou opponent)qui permet de prendre une des quatres attaques, retourne l'attaque choisie, fonction appelée par combat.cs sour la forme "User.Attack")
@@ -36,18 +41,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
  *  - fonction level up si exp atteint level complet: check if evolution, recalcul les stats, check if new move is learned
  *    */
 
-            
-        List<string> TypesRecu;
-        List<string> TypesOriginals;
-
-
-
         int PokedexNumber { get; set; }
         
-        float poids;
-        string type1;
-        string type2;
-        string nomSprite;
 
         public int Level { get; private set; }
         int Exp { get; set; }
@@ -67,13 +62,10 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         List<int> AttaquesList { get; set; }//Liste de 4 int référant à un numéro d'attaque
         bool EstSauvage { get; set; }
 
-        public string Type1 { get; private set; }
-        public string Type2 { get; private set; }
+        public string Type1 => PokemonEnString[8];
+        public string Type2 => PokemonEnString[9];
 
-
-
-
-
+        
         protected int Niveau
         {
             get { return Level; }
@@ -88,10 +80,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             }
         }
  
-
-
-
-
+        
         public Pokemon(Game game, int pokedexNumber, int level)
             : base(game)
         {
@@ -106,31 +95,43 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
             //au lieu de juste mettre l'attaque 0, on pourrait mettre aléatoirement parmi les attaques disponibles du pokémon au niveau mentionné 
 
-            CalculerStatsEtHP(PokedexNumber, Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
+            CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
         public Pokemon(Game game, int pokedexNumber, int level, List<int> attaques)
             : base(game)
         {
             PokedexNumber = pokedexNumber;
             Level = level;
+            PokemonEnString = new List<string>();
+            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
             AttaquesList = new List<int>(attaques);
 
-            CalculerStatsEtHP(PokedexNumber, Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
+            CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
 
-        void CalculerStatsEtHP(int pokedexNumber, int level)//inclu HP
+        void CalculerStatsEtHP(int level)//Refaire à chaque level up
         {
-            //AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
-            //Utiliser la formule de calcul des stats et HP en fonction du base stat et du niveau
-            //Remplir la liste Stats, mais surtout StatsFixes
+            MaxHp = (2 * (int.Parse(PokemonEnString[2]) + 2) * level) / 100 + level + 10;
 
-            //  Stat = (2 * (BaseStat + 2) * Level)/100 + 5
-            //  HP = (2 * (BaseStat + 2) * Level)/100 + Level + 10
+            float stat = 0;
+            int baseStat = 0;
+            for (int i = 1; i <= 5; i++)
+            {
+                baseStat = int.Parse(PokemonEnString[2 + i]);
 
-
+                stat = (2 * (baseStat + 2) * level) / 100 + 5;
+                StatsFixes.Add((int)stat);
+            }
+            RétablirStats();
         }
 
-        public int Attaquer()//Temp
+        void ChangerPokedexNumber(int nouveauPkdexNumber)// à faire si on évolue
+        {
+            PokedexNumber = nouveauPkdexNumber;
+            PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
+        }
+
+        public int Attaquer()//Temp, on va retourner le numéro de l'attaque, pas le stat "Attack"
         {
             return Attack;
         }
@@ -140,28 +141,40 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             //si la vie est à zéro, mettre EstEnVie à zéro
             if (HP <= 0)
             {
-                EstEnVie = false; //Hérité de Vivant, mis protected dans vivant
+                EstEnVie = false; //Hérité de Vivant, mis public dans vivant
                 HP = 0;
             }
         }
         public int AttaqueAléatoire()//Temp
         {
-            return Attack;
+            int attaqueAléatoire = 0;
+            int index = 0;
+
+            do
+            {
+                index = Générateur.Next(0, 4);
+                attaqueAléatoire = AttaquesList[index];
+            }
+            while (AttaquesList[index] < 0) ;
+
+            return attaqueAléatoire;
         }
 
 
-        public void RétablirStats()//Après chaque combat TRÈS IMPORTANT
+        public void RétablirStats()//Après chaque combat (et level up) TRÈS IMPORTANT
         {
-            Stats = StatsFixes;
+            Stats = new List<int>(StatsFixes);
         }
 
         public void GainExp(int valeur)
         {
             Exp = Exp + valeur;
+            //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
         }
 
         public override void Initialize()
         {
+            Générateur = new Random();
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

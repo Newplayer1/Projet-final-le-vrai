@@ -88,17 +88,17 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                     //Important de garder dans la boucle, si la vitesse est changée par une attaque effect, et que l'adversaire ou le user devient plus rapide, il a droit de frapper deux fois
 
 
-
+                    
                     if (UserPkmPrioritaire)  //Si le pokémon User est plus rapide
                     {
-                        OpponentPokemon.Défendre(UserPokemon.Attaquer());//fonctions temporaires, à modifier pour calculer les points de dommages avec la formule
-                        UserPokemon.Défendre(OpponentPokemon.AttaqueAléatoire());
+                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));//fonctions temporaires, à modifier pour calculer les points de dommages avec la formule
+                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire()));
                         UserPkmPrioritaire = false;//fin de son tour
                     }
                     else   //Si le pokémon adverse est le plus rapide
                     {
-                        UserPokemon.Défendre(OpponentPokemon.AttaqueAléatoire()); // c'est le tour du pokémon adverse
-                        OpponentPokemon.Défendre(UserPokemon.Attaquer());
+                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire())); // c'est le tour du pokémon adverse
+                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));
                         UserPkmPrioritaire = true;
                     }
 
@@ -138,7 +138,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             base.Update(gameTime);//Utile?
         }
 
-        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)
+        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)// s'il y a un damage
         {
             float damage;
             //devra changer selon le type de l'attaque et les deux types de l'opponent
@@ -148,6 +148,12 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             damage = ((2 * attaquant.Level / 5 + 2) * Atk.Power * (attaquant.Attack / opposant.Defense) / 50 + 2) * multiplicateurType;
             return (int)damage;
         }
+        void AppliquerEffet()
+        {
+
+        }
+
+
 
         /*
          * 

@@ -21,7 +21,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         Pokemon UserPokemon { get; set; }
         Pokemon OpponentPokemon { get; set; }
         
-
+        AccessBaseDeDonnée Database { get; set; }
         public bool EnCombat { get; set; }
         public bool EstOpponentSauvage { get; set; }
 
@@ -58,7 +58,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         Pokemon LancerPokémon(int index, Trainer trainer)
         {
-            while (!trainer.PokemonsSurLui[index].EstEnVie())
+            while (!trainer.PokemonsSurLui[index].EstEnVie)
             {
                 index++;
             }
@@ -76,7 +76,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             while (UserTrainer.EstEnVie() && OpponentTrainer.EstEnVie())
             {
                 //UserPkmPrioritaire = true;
-                while (UserPokemon.EstEnVie() && OpponentPokemon.EstEnVie())
+                while (UserPokemon.EstEnVie && OpponentPokemon.EstEnVie)
                 {
                     //Système de tours entre pkmns ici
                     AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
@@ -103,7 +103,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                     }
 
                 }
-                if (!OpponentPokemon.EstEnVie())//sorti de la boucle de combat: l'un des deux est mort
+                if (!OpponentPokemon.EstEnVie)//sorti de la boucle de combat: l'un des deux est mort
                 {
                     //Message/animation/whatever, opponent has been defeated!
                     UserPokemon.GainExp(OpponentPokemon.Level * 10);
@@ -138,10 +138,22 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             base.Update(gameTime);//Utile?
         }
 
-        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, )
+        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)
         {
+            int damage;
 
+            Database.AccessDonnéesAttaqueStats(attaqueChoisie)[2];
+            damage = ((2 * attaquant.Level / 5 + 2) * PowerDeLAttaque * (attaquant.Attack / opposant.Defense)) / 50 + 2) * type;
         }
+
+        /*
+         * 
+                //Fonction access direct
+        public int AttaquesStatsPower(int attaqueNumber)
+        {
+            return int.Parse(AccessDonnéesAttaqueStats(attaqueNumber)[2]);
+        }
+        */
         /*
          Damage = ( (2*UserPokemon/5 + 2) * PowerDeLAttaque * (UserAttack/OpponentDefense))/50 + 2) * type
 	        Level : Level de UserPokemon

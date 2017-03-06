@@ -5,9 +5,9 @@ using System.Text;
 using System.Data.OleDb;
 
 
-namespace AtelierXNA.Classes_Pokemon_Skyrim
+namespace AtelierXNA
 {
-    class AccessBaseDeDonnée
+    internal class AccessBaseDeDonnée
     {
         private OleDbConnection connection { get; set; }
         private OleDbCommand commande { get; set; }
@@ -151,13 +151,20 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         {
             return Weakness[row - 1][col - 1];
         }
-        public List<string> AccessDonnéesPokemonStats(int PokedexNumber)
+        public List<string> AccessDonnéesPokemonStats(int pokedexNumber)
         {
-            return Pokemons[PokedexNumber - 1];
+            return Pokemons[pokedexNumber - 1];
         }
-        public List<string> AccessDonnéesAttaqueStats(int AttaqueNumber)
+        public List<string> AccessDonnéesAttaqueStats(int attaqueNumber)
         {
-            return Attaque[AttaqueNumber - 1];
+            return Attaque[attaqueNumber - 1];
+        }
+
+
+        //Fonction access direct
+        public int AttaquesStatsPower(int attaqueNumber)
+        {
+            return int.Parse(AccessDonnéesAttaqueStats(attaqueNumber)[2]);
         }
     }
 }

@@ -48,12 +48,12 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             }
         }
 
-        public override bool EstEnVie()
+        public new bool EstEnVie()
         {
             int cpt = 0;
             foreach (Pokemon p in PokemonsSurLui/*liste de pokemons que le trainer a !!!!!!*/)
             {
-                if (!(p.EstEnVie()))
+                if (!(p.EstEnVie))
                 {
                     ++cpt;
                 }

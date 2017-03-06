@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace AtelierXNA
+namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
 
     public class Combat : Microsoft.Xna.Framework.GameComponent
@@ -137,5 +137,20 @@ namespace AtelierXNA
             EnCombat = false;//Ou on pourrait changer le gamestate?
             base.Update(gameTime);//Utile?
         }
+
+        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, )
+        {
+
+        }
+        /*
+         Damage = ( (2*UserPokemon/5 + 2) * PowerDeLAttaque * (UserAttack/OpponentDefense))/50 + 2) * type
+	        Level : Level de UserPokemon
+	        PowerDeLAttaque : La force de l'attaque (genre de 10 à 120)
+	        UserAttack : le stat d'attaque (ou super attack) du user
+	        OpponentDefense: le stat de défense (ou de super defense) de l'opponent
+	        type : 0 (ineffective); 0.25, 0.5 (not very effective); 1 (normally effective); 2 or 4 (very effective)
+		        Selon la ligne du type de l'attaque, va chercher le type de l'opponent sur la ligne. (dual-type: multiplie les facteurs)
+
+         */
     }
 }

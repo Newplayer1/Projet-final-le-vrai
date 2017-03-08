@@ -44,6 +44,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             EnCombat = true; //GameState = Battle
 
             if (!EstOpponentSauvage)

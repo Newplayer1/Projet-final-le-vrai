@@ -69,7 +69,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         }
 
 
-        public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie(both trainer et son pokémon
+        public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie (both trainer et son pokémon)
         {
             bool UserPkmPrioritaire;
             

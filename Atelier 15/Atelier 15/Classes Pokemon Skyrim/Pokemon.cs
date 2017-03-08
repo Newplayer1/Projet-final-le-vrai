@@ -14,13 +14,11 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
     enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
     enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000}
+
     public class Pokemon : Vivant
     {
-        const int MAX_POKEDEX_NUMBER = 151;
-        const int MIN_POKEDEX_NUMBER = 0;
-        const int MAX_NIVEAU = 100;
-        const int MIN_NIVEAU = 0;
 
+        const int MAX_LEVEL = 100;
 
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
@@ -65,24 +63,11 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         List<int> AttaquesList { get; set; }//Liste de 4 int référant à un numéro d'attaque
         bool EstSauvage { get; set; }
-
+        bool EstÉchangé { get; set; }
         public string Type1 => PokemonEnString[8];
         public string Type2 => PokemonEnString[9];
 
-        
-        protected int Niveau
-        {
-            get { return Level; }
-            set
-            {
-                if(!(value > MAX_NIVEAU || value >= MIN_NIVEAU))
-                Level = value;
-                else
-                {
-                    throw new Exception();
-                }
-            }
-        }
+
  
         
         public Pokemon(Game game, int pokedexNumber, int level)
@@ -96,7 +81,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             AttaquesList.Add(-1);//Négatif siginife aucune attaque
             AttaquesList.Add(-1);
             AttaquesList.Add(-1);
-
+            EstÉchangé = false;
+            EstSauvage = false;
             //au lieu de juste mettre l'attaque 0, on pourrait mettre aléatoirement parmi les attaques disponibles du pokémon au niveau mentionné 
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
             CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
@@ -109,6 +95,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             PokemonEnString = new List<string>();
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
             AttaquesList = new List<int>(attaques);
+            EstÉchangé = false;
+            EstSauvage = false;
 
             CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
@@ -174,27 +162,67 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         {
             Exp = Exp + valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
-            if (ExpGrowth == ExpGrowthClass.Fast.ToString())
+            if (Level < MAX_LEVEL && DoitLevelUp())
             {
-
+                ExécuterSéquenceLevelUp();
             }
-            if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())
+        }
+        public int GiveExp()
+        {
+            float a = 1;
+            float t = 1;
+
+            if (!EstSauvage)
+                a = 1.5f;
+            if (EstÉchangé)
+                t = 1.5f;
+            
+            return (int)((a * t * BaseExp * Level) / (7));
+        }
+
+        void ExécuterSéquenceLevelUp()
+        {
+            Level++;
+            VérifierSiÉvolution();// ajouter int du niveau d'évolution
+            VérifierSiNouvelleAttaqueApprise();
+            CalculerStatsEtHP(Level);//inclu RétablirStats()
+        }
+
+        void VérifierSiÉvolution(int niveauÉvolution)
+        {
+            if (Level >= niveauÉvolution)//if le niveau d'évolution a été atteint
             {
-
+                ChangerPokedexNumber(PokedexNumber + 1);
+                //Exécuter animation d'évolution?
             }
-            if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
-            {
+        }
+        void VérifierSiNouvelleAttaqueApprise()
+        {
+        }
 
-            }
-            if (ExpGrowth == ExpGrowthClass.Slow.ToString())
-            {
+        bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
+        {
+            bool valeurVérité = false;
+            int levelSuivant = Level + 1;
 
-            }
+            if (ExpGrowth == ExpGrowthClass.Fast.ToString()) //Changer pour un switch case?
+                valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
+
+            else if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())//Est-ce que ToString ramène le string ou le nombre en string?
+                valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
+
+            else if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
+                valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
+            
+            else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
+                valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+
+            return valeurVérité;
         }
 
         public override void Initialize()
         {
-            Générateur = new Random();
+            Générateur = new Random();//?
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

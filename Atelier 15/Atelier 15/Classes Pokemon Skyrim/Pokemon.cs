@@ -12,7 +12,8 @@ using System.Data.OleDb;
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
-    enum Status { NUL, BRN, FRZ, SLP, PSN, PAR }
+    enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
+    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000}
     public class Pokemon : Vivant
     {
         const int MAX_POKEDEX_NUMBER = 151;
@@ -20,10 +21,13 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         const int MAX_NIVEAU = 100;
         const int MIN_NIVEAU = 0;
 
+
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }
-
+        int PokedexNumber { get; set; }
+        string ExpGrowth => PokemonEnString[11];
+        int BaseExp => int.Parse(PokemonEnString[12]);
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
@@ -41,8 +45,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
  *  - fonction level up si exp atteint level complet: check if evolution, recalcul les stats, check if new move is learned
  *    */
 
-        int PokedexNumber { get; set; }
-        
+
+
 
         public int Level { get; private set; }
         int Exp { get; set; }
@@ -94,7 +98,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             AttaquesList.Add(-1);
 
             //au lieu de juste mettre l'attaque 0, on pourrait mettre aléatoirement parmi les attaques disponibles du pokémon au niveau mentionné 
-
+            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
             CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
         public Pokemon(Game game, int pokedexNumber, int level, List<int> attaques)
@@ -170,6 +174,22 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         {
             Exp = Exp + valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
+            if (ExpGrowth == ExpGrowthClass.Fast.ToString())
+            {
+
+            }
+            if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())
+            {
+
+            }
+            if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
+            {
+
+            }
+            if (ExpGrowth == ExpGrowthClass.Slow.ToString())
+            {
+
+            }
         }
 
         public override void Initialize()

@@ -25,6 +25,10 @@ namespace AtelierXNA
         }
         public override void Update(GameTime gameTime)
         {
+            GérerTransition();//tout ce qui a rapport avec l'affichage des choses 
+            //Ex: quand on rentre dans un combat de pokémons
+            GérerÉtat(); // tout ce qui a rapport avec le changement d'état
+            // Ex: Le pokemon est vivant et a un final hit qui le tue ... il passe maintenant mort
             base.Update(gameTime);
         }
     }

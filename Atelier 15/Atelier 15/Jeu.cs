@@ -31,5 +31,38 @@ namespace AtelierXNA
             // Ex: Le pokemon est vivant et a un final hit qui le tue ... il passe maintenant mort
             base.Update(gameTime);
         }
+        private void GérerTransition()
+        {
+            switch (ÉtatJeu)
+            {
+                case États.INITIALISATION:
+                    GérerTransitionINITIALISATION();
+                    break;
+                case États.JEU3D:
+                    GérerTransitionJEU();
+                    break;
+                case États.Combat:
+                    GérerTransitionCombat();
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void GérerÉtat()
+        {
+            switch (ÉtatJeu)
+            {
+                case États.INITIALISATION:
+                    InitialiserParcours();
+                    InitialiserCaméra();
+                    break;
+                case États.JEU:
+                    GérerClavier();
+                    VérifierCollision();
+                    break;
+                default: //États.FIN:
+                    break;
+            }
+        }
     }
 }

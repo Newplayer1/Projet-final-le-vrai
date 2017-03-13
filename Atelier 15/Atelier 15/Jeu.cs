@@ -28,7 +28,7 @@ namespace AtelierXNA
         }
         public override void Update(GameTime gameTime)
         {
-            GÈrerClavier();
+            //GÈrerClavier();
             GÈrerTransition();
             GÈrer…tat(); 
             base.Update(gameTime);
@@ -41,22 +41,22 @@ namespace AtelierXNA
                     GÈrerTransitionPageTitre();
                     break;
                 case …tats.JEU3D:
-                    GÈrerTransitionJEU3D();
+                    AjoutJEU3D();
                     break;
-                case …tats.COMBAT:
-                    GÈrerTransitionCombat();
-                    break;
-                case …tats.MAISON:
-                    GÈrerTransitionMaison();
-                    break;
-                case …tats.GYM:
-                    GÈrerTransitionGym();
-                    break;
-                case …tats.FIN:
-                    GÈrerTransitionFin();
-                    break;
-                default:
-                    break;
+                //case …tats.COMBAT:
+                //    GÈrerTransitionCombat();
+                //    break;
+                //case …tats.MAISON:
+                //    GÈrerTransitionMaison();
+                //    break;
+                //case …tats.GYM:
+                //    GÈrerTransitionGym();
+                //    break;
+                //case …tats.FIN:
+                //    GÈrerTransitionFin();
+                //    break;
+                //default:
+                //    break;
             }
         }
         private void GÈrer…tat()
@@ -64,31 +64,39 @@ namespace AtelierXNA
             switch (…tatJeu)
             {
                 case …tats.PAGE_TITRE:
-                    PageTitre();
+                    //PageTitre();
                     break;
                 case …tats.JEU3D:
-                    GÈrerCollision();
-                    GÈrerCombat();
-                    GÈrerComputer();
+                    //GÈrerCollision();
+                    //GÈrerCombat();
+                    //GÈrerComputer();
                     break;
-                case …tats.COMBAT:
-                    Combat();
-                    break;
-                case …tats.MAISON:
-                    GÈrerCollision();
-                    GÈrerVitesseDÈplacement();
-                    GÈrerComputer();
-                    break;
-                case …tats.GYM:
-                    GÈrerVitesseDÈplacement();
-                    GÈrerComputer();
-                    GÈrerCombat();
-                    break;
-                default: //…tats.FIN:
-                    Fin();
-                    SauvegardeAuto();
-                    break;
+                //case …tats.COMBAT:
+                //    Combat();
+                //    break;
+                //case …tats.MAISON:
+                //    GÈrerCollision();
+                //    GÈrerVitesseDÈplacement();
+                //    GÈrerComputer();
+                //    break;
+                //case …tats.GYM:
+                //    GÈrerVitesseDÈplacement();
+                //    GÈrerComputer();
+                //    GÈrerCombat();
+                //    break;
+                //default: //…tats.FIN:
+                //    Fin();
+                //    SauvegardeAuto();
+                //    break;
             }
+        }
+        private void AjoutJEU3D()
+        {
+            //Game.Components.Add(new TerrainAvecBase());
+        }
+        private void GÈrerTransitionPageTitre()
+        {
+            Game.Components.Add(new );
         }
     }
 }

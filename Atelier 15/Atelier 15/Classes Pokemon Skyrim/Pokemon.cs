@@ -24,8 +24,9 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }
         int PokedexNumber { get; set; }
-        string ExpGrowth => PokemonEnString[11];
-        int BaseExp => int.Parse(PokemonEnString[12]);
+        ExpGrowthClass ExpGrowth { get; set; } //Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//PokemonEnString[11]
+        int BaseExp { get; set; } //=> int.Parse(PokemonEnString[12]);
+        int NiveauEvolution { get; set; }
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
@@ -92,8 +93,9 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         {
             PokedexNumber = pokedexNumber;
             Level = level;
+
             PokemonEnString = new List<string>();
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
+            
             AttaquesList = new List<int>(attaques);
             EstÉchangé = false;
             EstSauvage = false;
@@ -183,17 +185,22 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         void ExécuterSéquenceLevelUp()
         {
             Level++;
-            VérifierSiÉvolution();// ajouter int du niveau d'évolution
+            VérifierSiÉvolution(NiveauEvolution);// ajouter int du niveau d'évolution
             VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
         }
 
         void VérifierSiÉvolution(int niveauÉvolution)
         {
-            if (Level >= niveauÉvolution)//if le niveau d'évolution a été atteint
+            if ((niveauÉvolution > 0) && (Level >= niveauÉvolution))//if le niveau d'évolution a été atteint
             {
                 ChangerPokedexNumber(PokedexNumber + 1);
                 //Exécuter animation d'évolution?
+            }
+            
+            else if (niveauÉvolution < 0)
+            {
+                //Gestion du cas spécial Eevee ici
             }
         }
         void VérifierSiNouvelleAttaqueApprise()
@@ -205,24 +212,50 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             bool valeurVérité = false;
             int levelSuivant = Level + 1;
 
-            if (ExpGrowth == ExpGrowthClass.Fast.ToString()) //Changer pour un switch case?
-                valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
-
-            else if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())//Est-ce que ToString ramène le string ou le nombre en string?
-                valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
-
-            else if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
-                valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
-            
-            else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
-                valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
-
+            switch (ExpGrowth)
+            {
+                case ExpGrowthClass.Fast:
+                    valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
+                    break;
+                case ExpGrowthClass.MediumFast:
+                    valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
+                    break;
+                case ExpGrowthClass.MediumSlow:
+                    valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
+                    break;
+                case ExpGrowthClass.Slow:
+                    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+                    break;
+            }
             return valeurVérité;
+
+
+            //if (ExpGrowth == ExpGrowthClass.Fast.ToString()) //Changer pour un switch case?
+            //    valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
+
+            //else if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())//Est-ce que ToString ramène le string ou le nombre en string?
+            //    valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
+
+            //else if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
+            //    valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
+
+            //else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
+            //    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+
+
         }
 
         public override void Initialize()
         {
-            Générateur = new Random();//?
+            Générateur = Game.Services.GetService(typeof(Random)) as Random;
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+
+
+            PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
+
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+            BaseExp = int.Parse(PokemonEnString[12]);
+            NiveauEvolution = int.Parse(PokemonEnString[13]);
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

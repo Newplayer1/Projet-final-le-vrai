@@ -28,6 +28,7 @@ namespace AtelierXNA
         }
         public override void Update(GameTime gameTime)
         {
+            GÈrerClavier();
             GÈrerTransition();
             GÈrer…tat(); 
             base.Update(gameTime);
@@ -66,19 +67,26 @@ namespace AtelierXNA
                     PageTitre();
                     break;
                 case …tats.JEU3D:
-                    JEU3D();
+                    GÈrerCollision();
+                    GÈrerCombat();
+                    GÈrerComputer();
                     break;
                 case …tats.COMBAT:
                     Combat();
                     break;
                 case …tats.MAISON:
-                    Maison();
+                    GÈrerCollision();
+                    GÈrerVitesseDÈplacement();
+                    GÈrerComputer();
                     break;
                 case …tats.GYM:
-                    Gym();
+                    GÈrerVitesseDÈplacement();
+                    GÈrerComputer();
+                    GÈrerCombat();
                     break;
                 default: //…tats.FIN:
                     Fin();
+                    SauvegardeAuto();
                     break;
             }
         }

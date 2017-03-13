@@ -24,7 +24,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }
         int PokedexNumber { get; set; }
-        string ExpGrowth => PokemonEnString[11];
+        ExpGrowthClass ExpGrowth { get; set; } //Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//PokemonEnString[11]
         int BaseExp => int.Parse(PokemonEnString[12]);
         /*    
  *  doit storer:
@@ -92,8 +92,9 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         {
             PokedexNumber = pokedexNumber;
             Level = level;
+
             PokemonEnString = new List<string>();
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
+            
             AttaquesList = new List<int>(attaques);
             EstÉchangé = false;
             EstSauvage = false;
@@ -205,24 +206,46 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             bool valeurVérité = false;
             int levelSuivant = Level + 1;
 
-            if (ExpGrowth == ExpGrowthClass.Fast.ToString()) //Changer pour un switch case?
-                valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
-
-            else if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())//Est-ce que ToString ramène le string ou le nombre en string?
-                valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
-
-            else if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
-                valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
-            
-            else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
-                valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
-
+            switch (ExpGrowth)
+            {
+                case ExpGrowthClass.Fast:
+                    valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
+                    break;
+                case ExpGrowthClass.MediumFast:
+                    valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
+                    break;
+                case ExpGrowthClass.MediumSlow:
+                    valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
+                    break;
+                case ExpGrowthClass.Slow:
+                    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+                    break;
+            }
             return valeurVérité;
+
+
+            //if (ExpGrowth == ExpGrowthClass.Fast.ToString()) //Changer pour un switch case?
+            //    valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
+
+            //else if (ExpGrowth == ExpGrowthClass.MediumFast.ToString())//Est-ce que ToString ramène le string ou le nombre en string?
+            //    valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
+
+            //else if (ExpGrowth == ExpGrowthClass.MediumSlow.ToString())
+            //    valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
+
+            //else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
+            //    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+
+
         }
 
         public override void Initialize()
         {
             Générateur = new Random();//?
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+
+            PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

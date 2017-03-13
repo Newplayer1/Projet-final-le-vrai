@@ -25,7 +25,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         List<string> PokemonEnString { get; set; }
         int PokedexNumber { get; set; }
         ExpGrowthClass ExpGrowth { get; set; } //Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//PokemonEnString[11]
-        int BaseExp => int.Parse(PokemonEnString[12]);
+        int BaseExp { get; set; } //=> int.Parse(PokemonEnString[12]);
+        int NiveauEvolution { get; set; }
         /*    
  *  doit storer:
  *  - stats d'un pokemon en fct du niveau (recalculé si level up)
@@ -184,17 +185,22 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         void ExécuterSéquenceLevelUp()
         {
             Level++;
-            VérifierSiÉvolution();// ajouter int du niveau d'évolution
+            VérifierSiÉvolution(NiveauEvolution);// ajouter int du niveau d'évolution
             VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
         }
 
         void VérifierSiÉvolution(int niveauÉvolution)
         {
-            if (Level >= niveauÉvolution)//if le niveau d'évolution a été atteint
+            if ((niveauÉvolution > 0) && (Level >= niveauÉvolution))//if le niveau d'évolution a été atteint
             {
                 ChangerPokedexNumber(PokedexNumber + 1);
                 //Exécuter animation d'évolution?
+            }
+            
+            else if (niveauÉvolution < 0)
+            {
+                //Gestion du cas spécial Eevee ici
             }
         }
         void VérifierSiNouvelleAttaqueApprise()
@@ -241,11 +247,15 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         public override void Initialize()
         {
-            Générateur = new Random();//?
+            Générateur = Game.Services.GetService(typeof(Random)) as Random;
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
 
+
             PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
+
             ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+            BaseExp = int.Parse(PokemonEnString[12]);
+            NiveauEvolution = int.Parse(PokemonEnString[13]);
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

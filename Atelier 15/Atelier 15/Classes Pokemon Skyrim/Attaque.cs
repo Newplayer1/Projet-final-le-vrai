@@ -11,7 +11,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
     {
         AccessBaseDeDonnée Database { get; set; }
         List<string> AttaqueEnString { get; set; }
-        List<string> WeaknessesEnString { get; set; }
+        List<int> Weaknesses { get; set; }
 
         public int NuméroAttaque => int.Parse(AttaqueEnString[0]);
         public string Name => AttaqueEnString[1];
@@ -22,11 +22,11 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         public Attaque(int attaqueNumber)
         {
             AttaqueEnString = new List<string>();
-            WeaknessesEnString = new List<string>();
+            Weaknesses = new List<int>();
             AttaqueEnString = Database.AccessDonnéesAttaqueStats(attaqueNumber);
             
             AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
-            WeaknessesEnString = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
+            Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
         }
 
         public float GetTypeMultiplier(string premierType, string secondType)
@@ -34,8 +34,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             int indexPremierType = (int)Enum.Parse(typeof(PokemonTypes), premierType);
             int indexSecondType = (int)Enum.Parse(typeof(PokemonTypes), secondType);
 
-            int multiplierPremierType = int.Parse(WeaknessesEnString[indexPremierType + 2]);//+2 parce qu'on skip la colonne du numéro de type et du nom de type
-            int multiplierSecondType = int.Parse(WeaknessesEnString[indexSecondType + 2]);
+            int multiplierPremierType = Weaknesses[indexPremierType + 2];//+2 parce qu'on skip la colonne du numéro de type et du nom de type
+            int multiplierSecondType = Weaknesses[indexSecondType + 2];
 
             return (multiplierPremierType / 100) * (multiplierSecondType / 100);
         }

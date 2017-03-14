@@ -12,7 +12,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
-    enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
+    public enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
     enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
 
     public class Pokemon : Vivant
@@ -56,9 +56,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         bool EstSauvage { get; set; }
         public string Type1 => PokemonEnString[8];
         public string Type2 => PokemonEnString[9];
-
-
-
+        
 
         public Pokemon(Game game, int pokedexNumber, int level, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
             : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
@@ -67,8 +65,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             Level = level;
 
             AttaquesList = new List<int>();
-            AttaquesList.Add(0);
-            AttaquesList.Add(-1);//Négatif siginife aucune attaque
+            AttaquesList.Add(28);
+            AttaquesList.Add(29);//Négatif siginife aucune attaque
             AttaquesList.Add(-1);
             AttaquesList.Add(-1);
             EstSauvage = false;
@@ -182,13 +180,25 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 //Exécuter animation d'évolution?
             }
 
-            else if (niveauÉvolution < 0)
+            else if (niveauÉvolution < 0 && (Level >= 25))//Gestion du cas spécial Eevee ici
             {
-                //Gestion du cas spécial Eevee ici
+                if (HauteurDuJoueur <= (TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
+                {
+                    ChangerPokedexNumber(PokedexNumber + 1);
+                }
+                if (HauteurDuJoueur <= 2*(TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
+                {
+                    ChangerPokedexNumber(PokedexNumber + 2);
+                }
+                if (HauteurDuJoueur <= TerrainAvecBase.HAUTEUR_MAXIMALE)
+                {
+                    ChangerPokedexNumber(PokedexNumber + 3);
+                }
             }
         }
         void VérifierSiNouvelleAttaqueApprise()//? wut
         {
+            
         }
 
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
@@ -225,8 +235,19 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
             //else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
             //    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+        }
 
-
+        public void SetStatus(int value)
+        {
+            Status = (Status)value;
+        }
+        public void SetStatus(string value)
+        {
+            Status = (Status)Enum.Parse(typeof(Status), value.Trim().ToUpper());
+        }
+        public Status GetStatus()
+        {
+            return Status;
         }
 
         public override void Initialize()

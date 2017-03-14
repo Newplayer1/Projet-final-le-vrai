@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using System.Data.OleDb;
 
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
-
     enum PokemonTypes { Null, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
     public class Attaque : Microsoft.Xna.Framework.GameComponent
     {
@@ -30,7 +36,6 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         public override void Initialize()
         {
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-
             AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque);
 
             AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque

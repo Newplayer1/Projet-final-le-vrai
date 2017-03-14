@@ -17,8 +17,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
     public class Pokemon : Vivant
     {
-
         const int MAX_LEVEL = 100;
+        const int NIVEAU_EVOLUTION_EEVEE = 25;
 
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
@@ -167,7 +167,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         void ExécuterSéquenceLevelUp()
         {
             Level++;
-            VérifierSiÉvolution(NiveauEvolution);// ajouter int du niveau d'évolution
+            VérifierSiÉvolution(NiveauEvolution);
             VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
         }
@@ -180,17 +180,17 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 //Exécuter animation d'évolution?
             }
 
-            else if (niveauÉvolution < 0 && (Level >= 25))//Gestion du cas spécial Eevee ici
+            else if (niveauÉvolution < 0 && (Level >= NIVEAU_EVOLUTION_EEVEE))//Gestion du cas spécial Eevee ici
             {
                 if (HauteurDuJoueur <= (TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
                 {
                     ChangerPokedexNumber(PokedexNumber + 1);
                 }
-                if (HauteurDuJoueur <= 2*(TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
+                else if (HauteurDuJoueur <= 2*(TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
                 {
                     ChangerPokedexNumber(PokedexNumber + 2);
                 }
-                if (HauteurDuJoueur <= TerrainAvecBase.HAUTEUR_MAXIMALE)
+                else if (HauteurDuJoueur <= TerrainAvecBase.HAUTEUR_MAXIMALE)
                 {
                     ChangerPokedexNumber(PokedexNumber + 3);
                 }
@@ -250,20 +250,35 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             return Status;
         }
 
+        public void AjouterHP(int value)//Effet d'un item ou d'une attaque
+        {
+            HP += value;
+            if (HP > MaxHp)
+                HP = MaxHp;
+        }
+
+        public void FullRestore() //par un item ou par pokemon center
+        {
+            AjouterHP(MaxHp);
+            RétablirStats();
+            SetStatus("null");
+        }
+
         public override void Initialize()
         {
             Générateur = Game.Services.GetService(typeof(Random)) as Random;
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
 
-
             PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
 
             ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+
             BaseExp = int.Parse(PokemonEnString[12]);
             NiveauEvolution = int.Parse(PokemonEnString[13]);
-            Status = Status.NULL;
+
             base.Initialize();
         }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

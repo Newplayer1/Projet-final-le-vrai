@@ -13,7 +13,7 @@ using System.Data.OleDb;
 namespace AtelierXNA.Classes_Pokemon_Skyrim
 {
     enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
-    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000}
+    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
 
     public class Pokemon : Vivant
     {
@@ -29,8 +29,13 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         int BaseExp { get; set; }
         int NiveauEvolution { get; set; }
 
-
-
+        public int this[int index]
+        {
+            get
+            {
+                return AttaquesList[index];
+            }
+        }
 
         public int Level { get; private set; }
         int Exp { get; set; }
@@ -53,8 +58,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         public string Type2 => PokemonEnString[9];
 
 
- 
-        
+
+
         public Pokemon(Game game, int pokedexNumber, int level, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
             : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
@@ -79,7 +84,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             Level = level;
 
             PokemonEnString = new List<string>();
-            
+
             AttaquesList = new List<int>(attaques);
             EstSauvage = false;
             Status = Status.NULL;
@@ -132,7 +137,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 index = Générateur.Next(0, 4);
                 attaqueAléatoire = AttaquesList[index];
             }
-            while (AttaquesList[index] < 0) ;
+            while (AttaquesList[index] < 0);
 
             return attaqueAléatoire;
         }
@@ -176,7 +181,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
                 ChangerPokedexNumber(PokedexNumber + 1);
                 //Exécuter animation d'évolution?
             }
-            
+
             else if (niveauÉvolution < 0)
             {
                 //Gestion du cas spécial Eevee ici

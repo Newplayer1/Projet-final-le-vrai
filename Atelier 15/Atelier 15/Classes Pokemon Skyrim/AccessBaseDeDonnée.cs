@@ -73,7 +73,7 @@ namespace AtelierXNA
             {
                 List<string> Tempo = new List<string>();
 
-                Tempo.Add(reader.GetInt32(0).ToString());
+                Tempo.Add(reader.GetInt16(0).ToString());
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetInt16(2).ToString());
                 Tempo.Add(reader.GetInt16(3).ToString());
@@ -83,7 +83,10 @@ namespace AtelierXNA
                 Tempo.Add(reader.GetInt16(7).ToString());
                 Tempo.Add(reader.GetString(8));
                 Tempo.Add(reader.GetString(9));
-                Tempo.Add(reader.GetInt32(10).ToString());
+                Tempo.Add(reader.GetInt16(10).ToString());
+                Tempo.Add(reader.GetString(11));
+                Tempo.Add(reader.GetInt16(12).ToString());
+                Tempo.Add(reader.GetInt16(13).ToString());
 
                 Pokemons.Add(Tempo);
             }
@@ -98,24 +101,24 @@ namespace AtelierXNA
             {
                 List<int> Tempo = new List<int>();
 
-                Tempo.Add(reader.GetInt32(2));
-                Tempo.Add(reader.GetInt32(3));
-                Tempo.Add(reader.GetInt32(4));
-                Tempo.Add(reader.GetInt32(5));
-                Tempo.Add(reader.GetInt32(6));
-                Tempo.Add(reader.GetInt32(7));
-                Tempo.Add(reader.GetInt32(8));
-                Tempo.Add(reader.GetInt32(9));
-                Tempo.Add(reader.GetInt32(10));
-                Tempo.Add(reader.GetInt32(11));
-                Tempo.Add(reader.GetInt32(12));
-                Tempo.Add(reader.GetInt32(13));
-                Tempo.Add(reader.GetInt32(14));
-                Tempo.Add(reader.GetInt32(15));
-                Tempo.Add(reader.GetInt32(16));
-                Tempo.Add(reader.GetInt32(17));
-                Tempo.Add(reader.GetInt32(18));
-                Tempo.Add(reader.GetInt32(19));
+                Tempo.Add(reader.GetInt16(2));
+                Tempo.Add(reader.GetInt16(3));
+                Tempo.Add(reader.GetInt16(4));
+                Tempo.Add(reader.GetInt16(5));
+                Tempo.Add(reader.GetInt16(6));
+                Tempo.Add(reader.GetInt16(7));
+                Tempo.Add(reader.GetInt16(8));
+                Tempo.Add(reader.GetInt16(9));
+                Tempo.Add(reader.GetInt16(10));
+                Tempo.Add(reader.GetInt16(11));
+                Tempo.Add(reader.GetInt16(12));
+                Tempo.Add(reader.GetInt16(13));
+                Tempo.Add(reader.GetInt16(14));
+                Tempo.Add(reader.GetInt16(15));
+                Tempo.Add(reader.GetInt16(16));
+                Tempo.Add(reader.GetInt16(17));
+                Tempo.Add(reader.GetInt16(18));
+                Tempo.Add(reader.GetInt16(19));
 
                 Weakness.Add(Tempo);
             }
@@ -130,11 +133,11 @@ namespace AtelierXNA
             {
                 List<string> Tempo = new List<string>();
 
-                Tempo.Add(reader.GetInt32(0).ToString());
+                Tempo.Add(reader.GetInt16(0).ToString());
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetString(2));
-                Tempo.Add(reader.GetInt32(3).ToString());
-                Tempo.Add(reader.GetInt32(4).ToString());
+                Tempo.Add(reader.GetInt16(3).ToString());
+                Tempo.Add(reader.GetInt16(4).ToString());
 
                 TypeLevelAttaque.Add(Tempo);
             }

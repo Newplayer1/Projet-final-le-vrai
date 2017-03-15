@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
+        enum États { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         États ÉtatJeu { get; set; }
@@ -24,27 +25,36 @@ namespace AtelierXNA
         {
             ÉtatJeu = Game.Services.GetService(typeof(États)) as États;
             base.Initialize();
+            ÉtatJeu = États.PAGE_TITRE;
         }
         public override void Update(GameTime gameTime)
         {
-            GérerTransition();//tout ce qui a rapport avec l'affichage des choses 
-            //Ex: quand on rentre dans un combat de pokémons
-            GérerÉtat(); // tout ce qui a rapport avec le changement d'état
-            // Ex: Le pokemon est vivant et a un final hit qui le tue ... il passe maintenant mort
+            GérerClavier();
+            GérerTransition();
+            GérerÉtat(); 
             base.Update(gameTime);
         }
         private void GérerTransition()
         {
             switch ()
             {
-                case États.INITIALISATION:
-                    GérerTransitionINITIALISATION();
+                case États.PAGE_TITRE:
+                    GérerTransitionPageTitre();
                     break;
                 case États.JEU3D:
-                    GérerTransitionJEU();
+                    GérerTransitionJEU3D();
                     break;
-                case États.Combat:
+                case États.COMBAT:
                     GérerTransitionCombat();
+                    break;
+                case États.MAISON:
+                    GérerTransitionMaison();
+                    break;
+                case États.GYM:
+                    GérerTransitionGym();
+                    break;
+                case États.FIN:
+                    GérerTransitionFin();
                     break;
                 default:
                     break;
@@ -54,15 +64,30 @@ namespace AtelierXNA
         {
             switch (ÉtatJeu)
             {
-                case États.INITIALISATION:
-                    InitialiserParcours();
-                    InitialiserCaméra();
+                case États.PAGE_TITRE:
+                    PageTitre();
                     break;
-                case États.JEU:
-                    GérerClavier();
-                    VérifierCollision();
+                case États.JEU3D:
+                    GérerCollision();
+                    GérerCombat();
+                    GérerComputer();
+                    break;
+                case États.COMBAT:
+                    Combat();
+                    break;
+                case États.MAISON:
+                    GérerCollision();
+                    GérerVitesseDéplacement();
+                    GérerComputer();
+                    break;
+                case États.GYM:
+                    GérerVitesseDéplacement();
+                    GérerComputer();
+                    GérerCombat();
                     break;
                 default: //États.FIN:
+                    Fin();
+                    SauvegardeAuto();
                     break;
             }
         }

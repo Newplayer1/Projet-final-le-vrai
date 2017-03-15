@@ -171,7 +171,7 @@ namespace AtelierXNA
         {
             return TypeLevelAttaque[numéroDuType - 1][level - 1].ToString();
         }
-        public List<string> AccessDonnéesArrayWeaknessStrengh(int row)
+        public List<int> AccessDonnéesArrayWeaknessStrengh(int row)
         {
             return Weakness[row - 1];
         }

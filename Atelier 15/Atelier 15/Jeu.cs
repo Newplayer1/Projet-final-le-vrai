@@ -14,6 +14,7 @@ namespace AtelierXNA
 {
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        États ÉtatJeu { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -21,6 +22,7 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            ÉtatJeu = Game.Services.GetService(typeof(États)) as États;
             base.Initialize();
         }
         public override void Update(GameTime gameTime)
@@ -33,7 +35,7 @@ namespace AtelierXNA
         }
         private void GérerTransition()
         {
-            switch (ÉtatJeu)
+            switch ()
             {
                 case États.INITIALISATION:
                     GérerTransitionINITIALISATION();

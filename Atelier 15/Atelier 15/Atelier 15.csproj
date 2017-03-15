@@ -131,7 +131,9 @@
     <Compile Include="Atelier.cs" />
     <Compile Include="Classes Pokemon Skyrim\AccessBaseDeDonnée.cs" />
     <Compile Include="Classes Pokemon Skyrim\Attaque.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Button1.cs" />
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
+    <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />
@@ -194,9 +196,6 @@
       <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

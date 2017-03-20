@@ -10,13 +10,12 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace MainMenu
+namespace AtelierXNA
 {
     public class PageTitre : Microsoft.Xna.Framework.DrawableGameComponent
     {
         const float INTERVALLEMAJ = 1 / 60f;
         GraphicsDeviceManager graphics;
-        GraphicsDevice Sprites;
         SpriteBatch spriteBatch;
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
@@ -34,7 +33,10 @@ namespace MainMenu
 
         public PageTitre(Game game)
           : base(game)
-      { }
+      {
+            graphics = Game.Services.GetService(typeof(GraphicsDeviceManager)) as GraphicsDeviceManager;
+
+        }
 
 
         Button1 btnOptions;
@@ -45,7 +47,7 @@ namespace MainMenu
 
         public override void Initialize()
         {
-            GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Images");
+            GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
             //Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
             //Services.AddService(typeof(RessourcesManager<Song>), GestionnaireDeChansons);
@@ -58,14 +60,13 @@ namespace MainMenu
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(Sprites);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //Screen Ajustments
-            graphics.PreferredBackBufferWidth = (int)screenSize.X;
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;
+            graphics.PreferredBackBufferWidth = (int)screenSize.X;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            //IsMouseVisible = true;
 
             AjoutDeboutons();
         }
@@ -124,7 +125,7 @@ namespace MainMenu
         }
         public override void Draw(GameTime gameTime)
         {
-            Sprites.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             switch (CurrentGameState)
             {

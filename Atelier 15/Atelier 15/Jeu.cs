@@ -12,10 +12,10 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-        enum …tats { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
+        enum …tatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        …tats …tatJeu { get; set; }
+        …tatsJeu …tatJeu { get; set; }
         public Jeu(Game game)
             : base(game)
         {
@@ -24,11 +24,11 @@ namespace AtelierXNA
         public override void Initialize()
         {
             base.Initialize();
-            …tatJeu = …tats.PAGE_TITRE;
+            …tatJeu = …tatsJeu.PAGE_TITRE;
         }
         public override void Update(GameTime gameTime)
         {
-            GÈrerClavier();
+            //GÈrerClavier();
             GÈrerTransition();
             GÈrer…tat(); 
             base.Update(gameTime);
@@ -37,57 +37,57 @@ namespace AtelierXNA
         {
             switch (…tatJeu)
             {
-                case …tats.PAGE_TITRE:
-                    GÈrerTransitionPageTitre();
+                case …tatsJeu.PAGE_TITRE:
+                    //GÈrerTransitionPageTitre();
                     break;
-                case …tats.JEU3D:
-                    GÈrerTransitionJEU3D();
-                    break;
-                case …tats.COMBAT:
-                    GÈrerTransitionCombat();
-                    break;
-                case …tats.MAISON:
-                    GÈrerTransitionMaison();
-                    break;
-                case …tats.GYM:
-                    GÈrerTransitionGym();
-                    break;
-                case …tats.FIN:
-                    GÈrerTransitionFin();
-                    break;
-                default:
-                    break;
+                //case …tats.JEU3D:
+                //    GÈrerTransitionJEU3D();
+                //    break;
+                //case …tats.COMBAT:
+                //    GÈrerTransitionCombat();
+                //    break;
+                //case …tats.MAISON:
+                //    GÈrerTransitionMaison();
+                //    break;
+                //case …tats.GYM:
+                //    GÈrerTransitionGym();
+                //    break;
+                //case …tats.FIN:
+                //    GÈrerTransitionFin();
+                //    break;
+                //default:
+                //    break;
             }
         }
         private void GÈrer…tat()
         {
             switch (…tatJeu)
             {
-                case …tats.PAGE_TITRE:
-                    PageTitre();
+                case …tatsJeu.PAGE_TITRE:
+                    Game.Components.Add(new PageTitre(Game));
                     break;
-                case …tats.JEU3D:
-                    GÈrerCollision();
-                    GÈrerCombat();
-                    GÈrerComputer();
-                    break;
-                case …tats.COMBAT:
-                    Combat();
-                    break;
-                case …tats.MAISON:
-                    GÈrerCollision();
-                    GÈrerVitesseDÈplacement();
-                    GÈrerComputer();
-                    break;
-                case …tats.GYM:
-                    GÈrerVitesseDÈplacement();
-                    GÈrerComputer();
-                    GÈrerCombat();
-                    break;
-                default: //…tats.FIN:
-                    Fin();
-                    SauvegardeAuto();
-                    break;
+                //case …tats.JEU3D:
+                //    GÈrerCollision();
+                //    GÈrerCombat();
+                //    GÈrerComputer();
+                //    break;
+                //case …tats.COMBAT:
+                //    Combat();
+                //    break;
+                //case …tats.MAISON:
+                //    GÈrerCollision();
+                //    GÈrerVitesseDÈplacement();
+                //    GÈrerComputer();
+                //    break;
+                //case …tats.GYM:
+                //    GÈrerVitesseDÈplacement();
+                //    GÈrerComputer();
+                //    GÈrerCombat();
+                //    break;
+                //default: //…tats.FIN:
+                //    Fin();
+                //    SauvegardeAuto();
+                //    break;
             }
         }
     }

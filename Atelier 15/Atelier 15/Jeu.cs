@@ -23,7 +23,6 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            ÉtatJeu = Game.Services.GetService(typeof(États)) as États;
             base.Initialize();
             ÉtatJeu = ÉtatsJeu.PAGE_TITRE;
         }
@@ -36,7 +35,7 @@ namespace AtelierXNA
         }
         private void GérerTransition()
         {
-            switch ()
+            switch (ÉtatJeu)
             {
                 case ÉtatsJeu.PAGE_TITRE:
                     //GérerTransitionPageTitre();

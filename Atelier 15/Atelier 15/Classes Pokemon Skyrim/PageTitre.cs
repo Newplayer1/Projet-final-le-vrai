@@ -19,8 +19,9 @@ namespace AtelierXNA
         SpriteBatch spriteBatch;
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
+        public bool NewGameReached { get; set; }
+        public bool LoadGameReached { get; set; }
 
-        MediaState Son = MediaState.Playing;
         Vector2 screenSize;
 
         enum GameState
@@ -28,6 +29,7 @@ namespace AtelierXNA
             MainMenu,
             Options,
             Playing,
+            LoadGame,
         }
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -44,6 +46,9 @@ namespace AtelierXNA
         Button1 btnLoadGame;
         Button1 btnSoundOn;
         Button1 btnSoundOff;
+        Button1 btnBack;
+        //Button1 tempOn;
+        //Button1 tempOff;
 
         public override void Initialize()
         {
@@ -72,16 +77,18 @@ namespace AtelierXNA
         }
         private void AjoutDeboutons()
         {
-            btnOptions = new Button1(GestionnaireDeTextures.Find("btn_Options"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnNewGame = new Button1(GestionnaireDeTextures.Find("Btn_New_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnLoadGame = new Button1(GestionnaireDeTextures.Find("btn_Load_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnSoundOn = new Button1(GestionnaireDeTextures.Find("SoundOn"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnSoundOff = new Button1(GestionnaireDeTextures.Find("SoundOff"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnOptions = new Button1(Game, GestionnaireDeTextures.Find("btn_Options"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnNewGame = new Button1(Game,GestionnaireDeTextures.Find("Btn_New_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnLoadGame = new Button1(Game,GestionnaireDeTextures.Find("btn_Load_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnSoundOn = new Button1(Game,GestionnaireDeTextures.Find("SoundOn"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnSoundOff = new Button1(Game,GestionnaireDeTextures.Find("SoundOff"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnBack = new Button1(Game,GestionnaireDeTextures.Find("btn_back"), graphics.GraphicsDevice, INTERVALLEMAJ);
             btnNewGame.ResetPosition(new Vector2(75, 320));
             btnOptions.ResetPosition(new Vector2(275, 320));
             btnLoadGame.ResetPosition(new Vector2(175, 320));
             btnSoundOn.ResetPosition(new Vector2(425, 280));
             btnSoundOff.ResetPosition(new Vector2(425, 280));
+            btnBack.ResetPosition(new Vector2(0, 320));
 
         }
 
@@ -93,34 +100,67 @@ namespace AtelierXNA
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
+                    //MediaPlayer.Play(ChansonTitre);
                     if (btnOptions.isclicked) CurrentGameState = GameState.Options;
                     btnOptions.Update(mouse, gameTime);
                     if (btnNewGame.isclicked) CurrentGameState = GameState.Playing;
                     btnNewGame.Update(mouse, gameTime);
-                    if (btnLoadGame.isclicked) CurrentGameState = GameState.Playing;
+                    if (btnLoadGame.isclicked) CurrentGameState = GameState.LoadGame;
                     btnLoadGame.Update(mouse, gameTime);
                     break;
+                case GameState.Playing:
+                    NewStateReached(CurrentGameState, NewGameReached);
+                    break;
+                case GameState.LoadGame:
+                    LoadStateReached(CurrentGameState, LoadGameReached);
+                    break;
                 case GameState.Options:
-                    GérerSon(mouse, gameTime);
+                    if (btnBack.isclicked) CurrentGameState = GameState.MainMenu;
+                    if (btnSoundOn.isclicked || btnSoundOff.isclicked) GestionMusique();
 
+
+                    //SoundOn.ResetPosition(new Vector2(1000, 1000));
+                    //SoundOff.ResetPosition(new Vector2(380, 320));
+
+                    //if(SoundOff.isclicked)
+                    //{
+                    //        GestionMusique();
+                    //    SoundOn.ResetPosition(new Vector2(380, 320));
+                    //    SoundOff.ResetPosition(new Vector2(1000, 1000));
+                    //}
+                    btnBack.Update(mouse, gameTime);
+                    btnSoundOn.Update(mouse, gameTime);
+                    btnSoundOff.Update(mouse, gameTime);
                     break;
             }
             base.Update(gameTime);
         }
-        private void GérerSon(MouseState mouse, GameTime gameTime)
+        private bool NewStateReached(GameState CurrentGameState, bool NewGameReached)
         {
-            btnSoundOn.Update(mouse, gameTime);
-
-            if (btnSoundOn.isclicked)
+            if (CurrentGameState == GameState.Playing) NewGameReached = true;
+            return NewGameReached;
+        }
+        private bool LoadStateReached(GameState CurrentGameState, bool LoadGameReached)
+        {
+            if (CurrentGameState == GameState.LoadGame) LoadGameReached = true;
+            return LoadGameReached;
+        }
+        private void GestionMusique()
+        {
+            if (MediaPlayer.State == MediaState.Paused)
             {
-                Son = MediaState.Paused;
-                btnSoundOff.Update(mouse, gameTime);
+                MediaPlayer.Resume();
             }
-
-            if (btnSoundOff.isclicked)
+            else
             {
-                Son = MediaState.Playing;
-                btnSoundOn.Update(mouse, gameTime);
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    MediaPlayer.Pause();
+                }
+                //else
+                //{
+                //    MediaPlayer.Play(ChansonTitre);
+                //}
             }
         }
         public override void Draw(GameTime gameTime)
@@ -140,6 +180,8 @@ namespace AtelierXNA
                 case GameState.Options:
                     spriteBatch.Draw(GestionnaireDeTextures.Find("BackGround"), new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y), Color.White);
                     btnSoundOn.Draw(spriteBatch);
+                    btnSoundOff.Draw(spriteBatch);
+                    btnBack.Draw(spriteBatch);
                     break;
             }
             spriteBatch.End();

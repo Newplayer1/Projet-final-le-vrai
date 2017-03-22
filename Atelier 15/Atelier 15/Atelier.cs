@@ -18,6 +18,7 @@ namespace AtelierXNA
         Caméra CaméraJeu { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
+        PageTitre PageTitre { get; set; }
 
 
         public Atelier()
@@ -35,10 +36,9 @@ namespace AtelierXNA
         protected override void Initialize()
         {
             GestionInput = new InputManager(this);
+           
             Components.Add(GestionInput);
             
-
-            Services.AddService(typeof(ÉtatsDépart), ÉtatDépart);
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
             Services.AddService(typeof(RessourcesManager<Song>), new RessourcesManager<Song>(this, "Songs"));
@@ -48,7 +48,9 @@ namespace AtelierXNA
             Services.AddService(typeof(GraphicsDeviceManager), PériphériqueGraphique);
             Services.AddService(typeof(SpriteBatch), new SpriteBatch(GraphicsDevice));
             Services.AddService(typeof(AccessBaseDeDonnée), new AccessBaseDeDonnée());
-            Components.Add(new PageTitre(this));
+            PageTitre = new PageTitre(this);
+            Components.Add(PageTitre);
+            ÉtatDépart = ÉtatsDépart.PAGE_TITRE;
             base.Initialize();
         }
         protected override void Update(GameTime gameTime)
@@ -65,6 +67,16 @@ namespace AtelierXNA
             switch (ÉtatDépart)
             {
                 case ÉtatsDépart.PAGE_TITRE:
+                    if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
+                    {
+                        ÉtatDépart = ÉtatsDépart.JEU3D;
+                        //LoadSauvegarde();
+                    }
+                    if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
+                    {
+                        ÉtatDépart = ÉtatsDépart.JEU3D;
+                        //NewGame();
+                    }
                     break;
                 case ÉtatsDépart.JEU3D:
                     GérerTransitionJEU();
@@ -76,10 +88,8 @@ namespace AtelierXNA
             switch (ÉtatDépart)
             {
                 case ÉtatsDépart.PAGE_TITRE:
-                    if(false)
-                    {
-                        ÉtatDépart = ÉtatsDépart.JEU3D;
-                    }
+
+                    
                     break;
                 case ÉtatsDépart.JEU3D:
                     //InitialiserParcours();

@@ -41,29 +41,40 @@ namespace AtelierXNA
         }
         public void Update(MouseState mouse, GameTime gametime)
         {
-            GérerSouris(mouse);
+            rectangle = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+            Rectangle mouserectangle = new Rectangle(mouse.X, mouse.Y, 1, 1);
+            GérerSouris(mouse, mouserectangle, rectangle);
 
             float tempsÉcoulé = (float)gametime.ElapsedGameTime.TotalSeconds;
             tempsÉcouléDepuisMAJ += tempsÉcoulé;
             if (tempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
 
+                if (mouserectangle.Intersects(rectangle))
+                {
+
+                    if (colour.A == COULEUR_MAX) down = false;
+                    if (colour.A == 0) down = true;
+                    if (down == true) colour.A += 3; else colour.A -= 3; // sujet porté à modification!!!
+                }
+
+            else if (colour.A < COULEUR_MAX)
+                    {
+                        colour.A += 3;
+                        isclicked = false;
+                    }
+
+
                 ActualiserÉtatSouris();
 
             }
         }
 
-        private void GérerSouris(MouseState mouse)
+        private void GérerSouris(MouseState mouse, Rectangle mouserectangle, Rectangle rectangle)
         {
-            rectangle = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
-            Rectangle mouserectangle = new Rectangle(mouse.X, mouse.Y, 1, 1);
 
             if (mouserectangle.Intersects(rectangle))
             {
-
-                if (colour.A == COULEUR_MAX) down = false;
-                if (colour.A == 0) down = true;
-                if (down == true) colour.A += 3; else colour.A -= 3; // sujet porté à modification!!!
                 if (EstNouveauClicGauche())
                 {
                     isclicked = true;
@@ -72,17 +83,7 @@ namespace AtelierXNA
                         isclicked = false;
                     }
                 }
-
-                //else { isclicked = false; }
-
             }
-
-            else if (colour.A < COULEUR_MAX)
-            {
-                colour.A += 3;
-                isclicked = false;
-            }
-
 
         }
         void ActualiserÉtatSouris()

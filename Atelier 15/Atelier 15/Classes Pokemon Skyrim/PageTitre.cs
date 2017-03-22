@@ -20,18 +20,19 @@ namespace AtelierXNA
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
         public bool NewGameReached { get; set; }
-        public bool LoadGameReached { get; set; }
+        public bool LoadGameReached { get; set; } /*= true;*/
 
+        public PageTitreState CurrentPageTitreState { get; private set; }
         Vector2 screenSize;
 
-        enum GameState
+        public enum PageTitreState
         {
             MainMenu,
             Options,
             Playing,
-            LoadGame,
+            LoadGame
         }
-        GameState CurrentGameState = GameState.MainMenu;
+        
 
         public PageTitre(Game game)
           : base(game)
@@ -52,6 +53,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
+            CurrentPageTitreState = PageTitreState.MainMenu;
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
             //Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
@@ -97,25 +99,24 @@ namespace AtelierXNA
         {
             MouseState mouse = Mouse.GetState();
 
-            switch (CurrentGameState)
+            switch (CurrentPageTitreState)
             {
-                case GameState.MainMenu:
+                case PageTitreState.MainMenu:
                     //MediaPlayer.Play(ChansonTitre);
-                    if (btnOptions.isclicked) CurrentGameState = GameState.Options;
+                    if (btnOptions.isclicked) CurrentPageTitreState = PageTitreState.Options;
                     btnOptions.Update(mouse, gameTime);
-                    if (btnNewGame.isclicked) CurrentGameState = GameState.Playing;
+                    if (btnNewGame.isclicked)
+                        CurrentPageTitreState = PageTitreState.Playing;
                     btnNewGame.Update(mouse, gameTime);
-                    if (btnLoadGame.isclicked) CurrentGameState = GameState.LoadGame;
+                    if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.LoadGame;
                     btnLoadGame.Update(mouse, gameTime);
                     break;
-                case GameState.Playing:
-                    NewStateReached(CurrentGameState, NewGameReached);
+                case PageTitreState.Playing:
                     break;
-                case GameState.LoadGame:
-                    LoadStateReached(CurrentGameState, LoadGameReached);
+                case PageTitreState.LoadGame:
                     break;
-                case GameState.Options:
-                    if (btnBack.isclicked) CurrentGameState = GameState.MainMenu;
+                case PageTitreState.Options:
+                    if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
                     if (btnSoundOn.isclicked || btnSoundOff.isclicked) GestionMusique();
 
 
@@ -135,16 +136,16 @@ namespace AtelierXNA
             }
             base.Update(gameTime);
         }
-        private bool NewStateReached(GameState CurrentGameState, bool NewGameReached)
-        {
-            if (CurrentGameState == GameState.Playing) NewGameReached = true;
-            return NewGameReached;
-        }
-        private bool LoadStateReached(GameState CurrentGameState, bool LoadGameReached)
-        {
-            if (CurrentGameState == GameState.LoadGame) LoadGameReached = true;
-            return LoadGameReached;
-        }
+        //private void NewStateReached(PageTitreState CurrentPageTitreState, bool NewGameReached)
+        //{
+        //    if (CurrentPageTitreState == PageTitreState.Playing)
+        //        NewGameReached = true;
+        //}
+        //private void LoadStateReached(PageTitreState CurrentPageTitreState, bool LoadGameReached)
+        //{
+        //    if (CurrentPageTitreState == PageTitreState.LoadGame)
+        //        LoadGameReached = true;
+        //}
         private void GestionMusique()
         {
             if (MediaPlayer.State == MediaState.Paused)
@@ -167,17 +168,17 @@ namespace AtelierXNA
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            switch (CurrentGameState)
+            switch (CurrentPageTitreState)
             {
-                case GameState.MainMenu:
+                case PageTitreState.MainMenu:
                     spriteBatch.Draw(GestionnaireDeTextures.Find("BackGround"), new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y), Color.White);
                     btnOptions.Draw(spriteBatch);
                     btnNewGame.Draw(spriteBatch);
                     btnLoadGame.Draw(spriteBatch);
                     break;
-                case GameState.Playing:
+                case PageTitreState.Playing:
                     break;
-                case GameState.Options:
+                case PageTitreState.Options:
                     spriteBatch.Draw(GestionnaireDeTextures.Find("BackGround"), new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y), Color.White);
                     btnSoundOn.Draw(spriteBatch);
                     btnSoundOff.Draw(spriteBatch);

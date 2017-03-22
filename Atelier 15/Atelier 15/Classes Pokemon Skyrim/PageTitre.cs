@@ -20,6 +20,7 @@ namespace AtelierXNA
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
         Texture2D Background { get; set; }
+        Texture2D Controls { get; set; }
         Rectangle RectangleAffichage { get; set; }
         public PageTitreState CurrentPageTitreState { get; private set; }
         Vector2 screenSize;
@@ -29,6 +30,7 @@ namespace AtelierXNA
             MainMenu,
             Options,
             Playing,
+            Controls,
             LoadGame
         }
         
@@ -47,16 +49,12 @@ namespace AtelierXNA
         Button1 btnSoundOn;
         Button1 btnSoundOff;
         Button1 btnBack;
-        //Button1 tempOn;
-        //Button1 tempOff;
 
         public override void Initialize()
         {
             CurrentPageTitreState = PageTitreState.MainMenu;
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
-            //Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
-            //Services.AddService(typeof(RessourcesManager<Song>), GestionnaireDeChansons);
 
             screenSize = new Vector2(800, 400);
             base.Initialize();
@@ -68,12 +66,12 @@ namespace AtelierXNA
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Background = GestionnaireDeTextures.Find("BackGround");
+            Controls = GestionnaireDeTextures.Find("controls");
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
             
             //Screen Ajustments
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;
             graphics.PreferredBackBufferWidth = (int)screenSize.X;
-            //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             AjoutDeboutons();
@@ -112,27 +110,16 @@ namespace AtelierXNA
                     if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.LoadGame;
                     btnLoadGame.Update(mouse, gameTime);
                     break;
-                case PageTitreState.Playing:
-                    break;
-                case PageTitreState.LoadGame:
-                    break;
                 case PageTitreState.Options:
                     if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
                     if (btnSoundOn.isclicked || btnSoundOff.isclicked) GestionMusique();
-
-
-                    //SoundOn.ResetPosition(new Vector2(1000, 1000));
-                    //SoundOff.ResetPosition(new Vector2(380, 320));
-
-                    //if(SoundOff.isclicked)
-                    //{
-                    //        GestionMusique();
-                    //    SoundOn.ResetPosition(new Vector2(380, 320));
-                    //    SoundOff.ResetPosition(new Vector2(1000, 1000));
-                    //}
                     btnBack.Update(mouse, gameTime);
                     btnSoundOn.Update(mouse, gameTime);
                     btnSoundOff.Update(mouse, gameTime);
+                    break;
+                case PageTitreState.Controls:
+                    if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.Options;
+                    btnBack.Update(mouse, gameTime);
                     break;
             }
             base.Update(gameTime);
@@ -177,7 +164,9 @@ namespace AtelierXNA
                     btnNewGame.Draw(spriteBatch);
                     btnLoadGame.Draw(spriteBatch);
                     break;
-                case PageTitreState.Playing:
+                case PageTitreState.Controls:
+                    spriteBatch.Draw(Controls, RectangleAffichage, Color.White);
+                    btnBack.Draw(spriteBatch);
                     break;
                 case PageTitreState.Options:
                     spriteBatch.Draw(Background, RectangleAffichage, Color.White);

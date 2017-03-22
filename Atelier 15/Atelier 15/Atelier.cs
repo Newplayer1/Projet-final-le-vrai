@@ -68,16 +68,22 @@ namespace AtelierXNA
             switch (ÉtatDépart)
             {
                 case ÉtatsDépart.PAGE_TITRE:
+                    
                     if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
+                        PériphériqueGraphique.IsFullScreen = true;
+                        PériphériqueGraphique.ApplyChanges();
                         //LoadSauvegarde(); dans l'Initialize
                     }
                     if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
                     {
                         //NewGame();
                         ÉtatDépart = ÉtatsDépart.JEU3D;
+                        PériphériqueGraphique.IsFullScreen = true;
+                        PériphériqueGraphique.ApplyChanges();
                     }
+                        
                     break;
                 case ÉtatsDépart.JEU3D:
                     GérerTransitionJEU();
@@ -100,6 +106,7 @@ namespace AtelierXNA
         private void GérerTransitionJEU()
         {
             Components.Remove(PageTitre);
+            
         }
 
         void NettoyerListeComponents()

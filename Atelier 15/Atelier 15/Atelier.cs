@@ -18,7 +18,7 @@ namespace AtelierXNA
         Caméra CaméraJeu { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
-        PageTitre PageTitre { get; set; }
+        public PageTitre PageTitre { get; private set; }
 
 
         public Atelier()
@@ -38,7 +38,8 @@ namespace AtelierXNA
             GestionInput = new InputManager(this);
            
             Components.Add(GestionInput);
-            
+            Components.Add(new ArrièrePlan(this, "CielWindowsXp"));
+
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
             Services.AddService(typeof(RessourcesManager<Song>), new RessourcesManager<Song>(this, "Songs"));
@@ -51,6 +52,8 @@ namespace AtelierXNA
             PageTitre = new PageTitre(this);
             Components.Add(PageTitre);
             ÉtatDépart = ÉtatsDépart.PAGE_TITRE;
+
+            //LoadSauvegarde();
             base.Initialize();
         }
         protected override void Update(GameTime gameTime)
@@ -70,16 +73,18 @@ namespace AtelierXNA
                     if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
-                        //LoadSauvegarde();
+                        //LoadSauvegarde(); dans l'Initialize
                     }
-                    if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
+                    if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
                     {
-                        ÉtatDépart = ÉtatsDépart.JEU3D;
                         //NewGame();
+                        ÉtatDépart = ÉtatsDépart.JEU3D;
                     }
                     break;
                 case ÉtatsDépart.JEU3D:
                     GérerTransitionJEU();
+                    //InitialiserParcours();
+                    //InitialiserCaméra();
                     break;
             }
         }
@@ -87,28 +92,16 @@ namespace AtelierXNA
         {
             switch (ÉtatDépart)
             {
-                case ÉtatsDépart.PAGE_TITRE:
-
-                    
-                    break;
                 case ÉtatsDépart.JEU3D:
-                    //InitialiserParcours();
-                    //InitialiserCaméra();
                     //VérifierCollision();
+                    break;
+                default:
                     break;
             }
         }
         private void GérerTransitionJEU()
         {
-            CaméraJeu = new CaméraSubjective(this, Vector3.Zero, Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
-            Components.Add(CaméraJeu);
-            Components.Add(new ArrièrePlanSpatial(this, "CielÉtoilé", INTERVALLE_MAJ_STANDARD));
-            Components.Add(new Afficheur3D(this));
-            Components.Add(new Jeu(this));
-            Components.Add(new AfficheurFPS(this, "Arial", Color.Red, INTERVALLE_CALCUL_FPS));
-
-
-            Services.AddService(typeof(Caméra), CaméraJeu);
+            Components.Remove(PageTitre);
         }
 
         void NettoyerListeComponents()

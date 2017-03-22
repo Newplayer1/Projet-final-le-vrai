@@ -15,6 +15,8 @@ namespace AtelierXNA
         enum ÉtatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
+        const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
+        const float INTERVALLE_CALCUL_FPS = 1f;
         ÉtatsJeu ÉtatJeu { get; set; }
         public Jeu(Game game)
             : base(game)
@@ -23,8 +25,13 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            //CaméraJeu = new CaméraSubjective(this, Vector3.Zero, Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
+            //Game.Components.Add(CaméraJeu);
+            Game.Components.Add(new ArrièrePlanSpatial(Game, "CielWindowsXp", INTERVALLE_MAJ_STANDARD));
+            Game.Components.Add(new Afficheur3D(Game));
+            Game.Components.Add(new Jeu(Game));
+            Game.Components.Add(new AfficheurFPS(Game, "Arial20", Color.Red, INTERVALLE_CALCUL_FPS));
             base.Initialize();
-            ÉtatJeu = ÉtatsJeu.PAGE_TITRE;
         }
         public override void Update(GameTime gameTime)
         {

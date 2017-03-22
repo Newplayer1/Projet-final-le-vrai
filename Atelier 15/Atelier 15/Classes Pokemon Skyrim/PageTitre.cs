@@ -19,9 +19,8 @@ namespace AtelierXNA
         SpriteBatch spriteBatch;
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
-        public bool NewGameReached { get; set; }
-        public bool LoadGameReached { get; set; } /*= true;*/
-
+        Texture2D Background { get; set; }
+        Rectangle RectangleAffichage { get; set; }
         public PageTitreState CurrentPageTitreState { get; private set; }
         Vector2 screenSize;
 
@@ -68,7 +67,9 @@ namespace AtelierXNA
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            Background = GestionnaireDeTextures.Find("BackGround");
+            RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
+            
             //Screen Ajustments
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;
             graphics.PreferredBackBufferWidth = (int)screenSize.X;
@@ -166,12 +167,12 @@ namespace AtelierXNA
         }
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             switch (CurrentPageTitreState)
             {
                 case PageTitreState.MainMenu:
-                    spriteBatch.Draw(GestionnaireDeTextures.Find("BackGround"), new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y), Color.White);
+                    spriteBatch.Draw(Background, RectangleAffichage, Color.White);
                     btnOptions.Draw(spriteBatch);
                     btnNewGame.Draw(spriteBatch);
                     btnLoadGame.Draw(spriteBatch);
@@ -179,7 +180,7 @@ namespace AtelierXNA
                 case PageTitreState.Playing:
                     break;
                 case PageTitreState.Options:
-                    spriteBatch.Draw(GestionnaireDeTextures.Find("BackGround"), new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y), Color.White);
+                    spriteBatch.Draw(Background, RectangleAffichage, Color.White);
                     btnSoundOn.Draw(spriteBatch);
                     btnSoundOff.Draw(spriteBatch);
                     btnBack.Draw(spriteBatch);

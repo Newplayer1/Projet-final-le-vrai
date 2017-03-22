@@ -14,8 +14,6 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         GraphicsDeviceManager PériphériqueGraphique { get; set; }
-
-        Caméra CaméraJeu { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
         public PageTitre PageTitre { get; private set; }

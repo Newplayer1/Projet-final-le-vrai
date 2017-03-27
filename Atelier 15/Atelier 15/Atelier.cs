@@ -36,7 +36,7 @@ namespace AtelierXNA
             GestionInput = new InputManager(this);
            
             Components.Add(GestionInput);
-            Components.Add(new ArrièrePlan(this, "CielWindowsXp"));
+            //Components.Add(new ArrièrePlan(this, "CielWindowsXp"));
 
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
@@ -72,15 +72,17 @@ namespace AtelierXNA
                     if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
-                        PériphériqueGraphique.IsFullScreen = true;
+                        //PériphériqueGraphique.IsFullScreen = true;
                         PériphériqueGraphique.ApplyChanges();
+                        Components.Add(new Jeu(this));
                         //LoadSauvegarde(); dans l'Initialize
                     }
                     if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
                     {
                         //NewGame();
                         ÉtatDépart = ÉtatsDépart.JEU3D;
-                        PériphériqueGraphique.IsFullScreen = true;
+                        Components.Add(new Jeu(this));
+                        //PériphériqueGraphique.IsFullScreen = true;
                         PériphériqueGraphique.ApplyChanges();
                     }
                         

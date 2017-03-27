@@ -238,8 +238,11 @@ namespace AtelierXNA
         public Vector3 GetNormale(int x, int y)
         {
             return new Vector3(NormalesSommets[x, y].X, NormalesSommets[x, y].Y, NormalesSommets[x, y].Z);
+
+            //return new Vector3(NormalesSommets[x - 256, y].X, NormalesSommets[x, y].Y, NormalesSommets[x, y].Z);
+
         }
-        
+
 
         void InitialiserSommetsCôtéA(int A_0)
         {

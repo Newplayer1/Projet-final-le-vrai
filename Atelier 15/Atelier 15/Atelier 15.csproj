@@ -136,6 +136,7 @@
     <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
+    <Compile Include="Classes Pokemon Skyrim\TerrainAvecBase.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />
     <Compile Include="Classes Pokemon Skyrim\Vivant.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Caméra.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="Composantes de base AS3D_XNA\RessourceDeBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturée.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\TerrainAvecBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TexteCentré.cs" />
     <Compile Include="Jeu.cs" />
     <Compile Include="ObjetDeBase.cs" />

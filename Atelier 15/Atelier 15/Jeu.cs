@@ -19,6 +19,7 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         ÉtatsJeu ÉtatJeu { get; set; }
         Caméra CaméraJeu { get; set; }
+        String[] TexturesTerrain = new string[] { "Sable", "Herbe" };
         public Jeu(Game game)
             : base(game)
         {
@@ -32,9 +33,10 @@ namespace AtelierXNA
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "CielWindowsXp"));
             Game.Components.Add(new Afficheur3D(Game));
-            Game.Components.Add(new Jeu(Game));
-            Game.Components.Add(new AfficheurFPS(Game, "Arial20", Color.Red, INTERVALLE_CALCUL_FPS));
+            Game.Components.Add(new AfficheurFPS(Game,"Arial20",Color.Black, INTERVALLE_CALCUL_FPS));
             Game.Services.AddService((typeof (CaméraSubjective)),CaméraJeu);
+            Game.Components.Add(new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256,25,256), "Carte", TexturesTerrain, "Base", INTERVALLE_MAJ_STANDARD));
+
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

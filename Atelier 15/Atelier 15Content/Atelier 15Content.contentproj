@@ -78,11 +78,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\TerrainPokemonA.jpg">
-      <Name>TerrainPokemonA</Name>
+    <None Include="Textures\Carte">
+      <Name>Carte</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Textures\Pokeball.png">

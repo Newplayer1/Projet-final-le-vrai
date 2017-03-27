@@ -282,7 +282,7 @@ namespace AtelierXNA
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
             EffetDeBase.Texture = TextureTerrain;
-
+            // Game.Window.Title = CaméraJeu.Position.ToString() + " ----- " + Origine.ToString();
             Draw(PrimitiveType.TriangleList, 0, NbTrianglesSurface, TextureTerrain);
             Draw(PrimitiveType.TriangleStrip, NbTrianglesSurface * 3, NbTrianglesBase, TextureBase);
         }

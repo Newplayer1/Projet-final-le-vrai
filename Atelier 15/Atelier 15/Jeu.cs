@@ -17,9 +17,11 @@ namespace AtelierXNA
     {
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
         const float INTERVALLE_CALCUL_FPS = 1f;
+
+        TerrainAvecBase TerrainDeJeu { get; set; }
+
         ÉtatsJeu ÉtatJeu { get; set; }
-        Caméra CaméraJeu { get; set; }
-        String[] TexturesTerrain = new string[] { "Sable", "Herbe" };
+        String[] TexturesTerrain = new string[] { "Sable", "HerbeB" };
         public Jeu(Game game)
             : base(game)
         {
@@ -27,17 +29,19 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            CaméraJeu = new CaméraSubjective(Game, Vector3.Zero, Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
-            Game.Components.Add(CaméraJeu);
+            const float ÉCHELLE_OBJET = 0.01f;
+            Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
+            //Vector3 positionObjet = new Vector3(100, 20, -100);
+            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
+
 
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "CielWindowsXp"));
-            Game.Components.Add(new Afficheur3D(Game));
-            Game.Components.Add(new AfficheurFPS(Game,"Arial20",Color.Black, INTERVALLE_CALCUL_FPS));
-            Game.Services.AddService((typeof (CaméraSubjective)),CaméraJeu);
-            Game.Components.Add(new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256,25,256), "Carte", TexturesTerrain, "Base", INTERVALLE_MAJ_STANDARD));
+            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 25, 256), "TerrainPokemon", TexturesTerrain, "Base", INTERVALLE_MAJ_STANDARD);
 
-            base.Initialize();
+            Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
+            Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
+            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionObjet, INTERVALLE_MAJ_STANDARD, 1f));
         }
         public override void Update(GameTime gameTime)
         {

@@ -16,7 +16,10 @@ namespace AtelierXNA
         GraphicsDeviceManager PériphériqueGraphique { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
+        Caméra CaméraJeu { get; set; }
         public PageTitre PageTitre { get; private set; }
+
+        RessourcesManager<Model> GestionnaireDeModèles { get; set; }
 
 
         public Atelier()
@@ -38,10 +41,14 @@ namespace AtelierXNA
             Components.Add(GestionInput);
             //Components.Add(new ArrièrePlan(this, "CielWindowsXp"));
 
+            GestionnaireDeModèles = new RessourcesManager<Model>(this, "Models");
+
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
             Services.AddService(typeof(RessourcesManager<Song>), new RessourcesManager<Song>(this, "Songs"));
             Services.AddService(typeof(RessourcesManager<Texture2D>), new RessourcesManager<Texture2D>(this, "Textures"));
+            Services.AddService(typeof(RessourcesManager<Model>), GestionnaireDeModèles);
+
             Services.AddService(typeof(InputManager), GestionInput);
 
             Services.AddService(typeof(GraphicsDeviceManager), PériphériqueGraphique);
@@ -69,21 +76,19 @@ namespace AtelierXNA
             {
                 case ÉtatsDépart.PAGE_TITRE:
                     
-                    if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
+                    if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame || PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
                         //PériphériqueGraphique.IsFullScreen = true;
                         PériphériqueGraphique.ApplyChanges();
+                        CaméraJeu = new CaméraSubjective(this, new Vector3(96,16,-96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
+                        Components.Add(CaméraJeu);
+                        Services.AddService((typeof (Caméra)),CaméraJeu);
+                        Components.Add(new Afficheur3D(this));
                         Components.Add(new Jeu(this));
+                        Components.Add(new AfficheurFPS(this,"Arial20",Color.Red, INTERVALLE_CALCUL_FPS));
+            base.Initialize();
                         //LoadSauvegarde(); dans l'Initialize
-                    }
-                    if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
-                    {
-                        //NewGame();
-                        ÉtatDépart = ÉtatsDépart.JEU3D;
-                        Components.Add(new Jeu(this));
-                        //PériphériqueGraphique.IsFullScreen = true;
-                        PériphériqueGraphique.ApplyChanges();
                     }
                         
                     break;

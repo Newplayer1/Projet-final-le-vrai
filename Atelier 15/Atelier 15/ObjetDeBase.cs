@@ -10,10 +10,10 @@ namespace AtelierXNA
    {
       string NomModèle { get; set; }
       RessourcesManager<Model> GestionnaireDeModèles { get; set; }
-      public Caméra CaméraJeu { get; private set; }
+      public Caméra CaméraJeu { get; set; }
       public float Échelle { get; protected set; }
       public Vector3 Rotation { get; protected set; }
-      public Vector3 Position { get; protected set; }
+      public Vector3 Position { get;  set; }
 
       protected Model Modèle { get; private set; }
       protected Matrix[] TransformationsModèle { get; private set; }

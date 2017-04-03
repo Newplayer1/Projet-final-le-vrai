@@ -14,12 +14,14 @@ namespace AtelierXNA
 
     public class Trainer : ObjetDeBase
     {
-        const int DISTANCE_MODÈLE_CAMÉRA = 20;
+        const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 0.25f;
 
-        const int NB_PIXELS_DE_DÉPLACEMENT = 1;
-
+        const float DÉPLACEMEMENT_MODÈLE = 0.05f;
+        public  float Hauteur {get; private set;}
         TerrainAvecBase Terrain { get; set; }
+        protected Point PositionSouris { get; set; }
+        private Point AnciennePositionSouris { get; set; }
 
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
@@ -49,16 +51,15 @@ namespace AtelierXNA
             Rayon = rayon;
 
             SphèreDeCollisionBalle = new BoundingSphere(position, Rayon);
+            Hauteur = 2000 * Rayon * Échelle; 
         }
 
         public override void Initialize()
         {
             TempsÉcouléDepuisMAJ = 0;
             base.Initialize();
-
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-
             // AnciennePositionCaméra = CaméraJeu.Position; // --> à continuer
 
         }
@@ -67,7 +68,7 @@ namespace AtelierXNA
         {
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
-
+            PositionSouris = GestionInput.GetPositionSouris();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
                 GérerClavier();
@@ -86,18 +87,18 @@ namespace AtelierXNA
         {
             if (GestionInput.EstClavierActivé)
             {
-                int déplacementHorizontal = GérerTouche(Keys.U) - GérerTouche(Keys.J); // touche d = ajoute des pixels à mon image. touche a = enlève des pixels
-                int déplacementProfondeur = GérerTouche(Keys.K) - GérerTouche(Keys.H);
+                float déplacementHorizontal = GérerTouche(Keys.S) - GérerTouche(Keys.W); // touche d = ajoute des pixels à mon image. touche a = enlève des pixels
+                float déplacementProfondeur = GérerTouche(Keys.A) - GérerTouche(Keys.D);
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {
                     CalculerPosition(déplacementHorizontal, déplacementProfondeur);
                 }
             }
 
-            // AjusterPositionCaméra();
+             AjusterPositionCaméra();
         }
 
-        void CalculerPosition(int déplacementHorizontal, int déplacementProfondeur)
+        void CalculerPosition(float déplacementHorizontal, float déplacementProfondeur)
         {
             Vector3 vecteurRayon = new Vector3(0, 0, 0); // Test................
             // Position = new Vector3(Position.X, (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + vecteurRayon).Y, Position.Z);
@@ -105,8 +106,8 @@ namespace AtelierXNA
 
             SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);  //--> À utiliser pour que lorsque le modèle 3D entre en collision avec une porte.
 
-            float posX = CalculerPosition(déplacementHorizontal, Position.X);
-            float posZ = CalculerPosition(déplacementProfondeur, Position.Z);
+            float posX = CalculerPosition2(déplacementHorizontal, Position.X);
+            float posZ = CalculerPosition2(déplacementProfondeur, Position.Z);
 
             Vector2 vecteurPosition = new Vector2(posX + Terrain.NbColonnes / 2, posZ + Terrain.NbRangées / 2);
 
@@ -120,7 +121,7 @@ namespace AtelierXNA
             SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);
         }
 
-        float CalculerPosition(int déplacement, float posActuelle)
+        float CalculerPosition2(float déplacement, float posActuelle)
         {
             float position = posActuelle + déplacement;
 
@@ -130,35 +131,50 @@ namespace AtelierXNA
             return position;
         }
 
-        int GérerTouche(Keys touche)
+        float GérerTouche(Keys touche)
         {
-            return GestionInput.EstEnfoncée(touche) ? NB_PIXELS_DE_DÉPLACEMENT : 0;
+            return GestionInput.EstEnfoncée(touche) ? DÉPLACEMEMENT_MODÈLE : 0;
         }
 
 
         void AjusterPositionCaméra()
         {
-            //Vector3 vecteurNormalisé = Position - AnciennePositionCaméra;
-
-            // Vector3 position = Position - DISTANCE_MODÈLE_CAMÉRA * Vector3.Normalize(vecteurNormalisé);
-
-            //position.Y = 21;
-
-            //CaméraJeu.Déplacer(position, Position, Vector3.Up);
-
-            //AnciennePositionCaméra = position;
-
-
-
-            float positionX = Position.X - DISTANCE_MODÈLE_CAMÉRA/*- DISTANCE_MODÈLE_CAMÉRA * Vector3.Normalize(Position - AnciennePositionCaméra) + HAUTEUR_CAMÉRA * Vector3.Up*/;
-            float positionY = 25;
-            float positionZ = Position.Z - DISTANCE_MODÈLE_CAMÉRA;
-
+            
+            //Bouger
+            float positionX = Position.X;
+            float positionY = Position.Y + Hauteur;
+            float positionZ = Position.Z + (DISTANCE_MODÈLE_CAMÉRA);
             Vector3 positionCaméra = new Vector3(positionX, positionY, positionZ);
+            CaméraJeu.Déplacer(positionCaméra, new Vector3(Position.X,Position.Y + 1.1f, Position.Z), Vector3.Up);
+           
 
-            //position.Y = 25;
 
-            CaméraJeu.Déplacer(positionCaméra, Position, Vector3.Up);
+            //Tourner
+            PositionSouris = GestionInput.GetPositionSouris();
+            CaméraJeu.Cible = new Vector3(PositionSouris.X - Game.Window.ClientBounds.Width / 2, 0, 0);
+            (CaméraJeu as CaméraSubjective).Direction = CaméraJeu.Cible - Position;
+            CaméraJeu.Déplacer(positionCaméra, (CaméraJeu as CaméraSubjective).Direction, Vector3.Up);
+            if(PositionSouris.X == Game.Window.ClientBounds.Width)
+            {
+                AnciennePositionSouris = PositionSouris;
+                PositionSouris = new Point(Game.Window.ClientBounds.Width / 2, PositionSouris.Y);
+
+
+                CaméraJeu.Cible = new Vector3(PositionSouris.X - Game.Window.ClientBounds.Width / 2, 0, 0);
+                (CaméraJeu as CaméraSubjective).Direction = CaméraJeu.Cible - Position;
+                CaméraJeu.Déplacer(positionCaméra, (CaméraJeu as CaméraSubjective).Direction, Vector3.Up);
+                PositionSouris = AnciennePositionSouris;
+            }
+            if (PositionSouris.X == 0)
+            {
+                AnciennePositionSouris = PositionSouris;
+                PositionSouris = new Point(Game.Window.ClientBounds.Width / 2, PositionSouris.Y);
+
+                CaméraJeu.Cible = new Vector3(PositionSouris.X - Game.Window.ClientBounds.Width / 2, 0, 0);
+                (CaméraJeu as CaméraSubjective).Direction = CaméraJeu.Cible - Position;
+                CaméraJeu.Déplacer(positionCaméra, (CaméraJeu as CaméraSubjective).Direction, Vector3.Up);
+                PositionSouris = AnciennePositionSouris;
+            }
 
             AnciennePositionCaméra = positionCaméra;
         }
@@ -166,7 +182,7 @@ namespace AtelierXNA
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Game.Window.Title = "........" + Position.ToString();
+            Game.Window.Title = "........" + CaméraJeu.Position.ToString() + "........" + Position.ToString();
         }
     }
 }

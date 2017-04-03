@@ -13,8 +13,8 @@ namespace AtelierXNA
       public BoundingFrustum Frustum { get; protected set; }
 
       // Propriétés relatives au "Point de vue"
-		public Vector3 Position { get; protected set; }
-		public Vector3 Cible { get; protected set; }
+		public Vector3 Position { get;  set; }
+		public Vector3 Cible { get;  set; }
 		public Vector3 OrientationVerticale { get; protected set; }
  
       // Propriétés relatives au "Volume de visualisation"

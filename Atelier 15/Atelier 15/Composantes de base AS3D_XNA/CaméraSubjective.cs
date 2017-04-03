@@ -15,7 +15,7 @@ namespace AtelierXNA
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
         const float RAYON_COLLISION = 1f;
 
-        Vector3 Direction { get; set; }
+        public Vector3 Direction { get; set; }
         Vector3 Latéral { get; set; }
         float VitesseTranslation { get; set; }
         float VitesseRotation { get; set; }
@@ -68,7 +68,7 @@ namespace AtelierXNA
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
 
             Angle = new Vector3(DELTA_LACET, DELTA_TANGAGE, DELTA_ROULIS);
-
+            GérerLacet();
             // float nbRangées = Terrain.NbRangées;
 
         }
@@ -110,12 +110,15 @@ namespace AtelierXNA
             OrientationVerticale = Vector3.Normalize(OrientationVerticale);
 
             Direction = Cible - Position;
+
             Direction = Vector3.Normalize(Direction);
 
 
             CréerPointDeVue();
+            //OrientationVerticale = Vector3.Transform(OrientationVerticale, Matrix.CreateFromAxisAngle(Latéral, (float)-Math.PI / 4));
+            //Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, (float)  Math.PI / 4));
+            CréerPointDeVue();
         }
-
         public override void Update(GameTime gameTime)
         {
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -155,8 +158,8 @@ namespace AtelierXNA
         {
             Vector3 nouvellePosition = Position;
 
-            float déplacementDirection = (GérerTouche(Keys.W) - GérerTouche(Keys.S)) * VitesseTranslation;
-            float déplacementLatéral = (GérerTouche(Keys.D) - GérerTouche(Keys.A)) * VitesseTranslation;
+            float déplacementDirection = (GérerTouche(Keys.J) - GérerTouche(Keys.U)) * VitesseTranslation;
+            float déplacementLatéral = (GérerTouche(Keys.K) - GérerTouche(Keys.H)) * VitesseTranslation;
 
             // Calcul du déplacement avant arrière
             // Calcul du déplacement latéral
@@ -204,21 +207,22 @@ namespace AtelierXNA
         {
             // Gestion du lacet (yaw)
             // À compléter
-            if (GestionInput.EstEnfoncée(Keys.Left))
-            {
-                Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, Angle.X * VitesseRotation));
+            //if (GestionInput.EstEnfoncée(Keys.Left))
+            //{
+            //    Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, Angle.X * VitesseRotation));
 
-                Latéral = Vector3.Cross(OrientationVerticale, Direction);
-                Latéral = Vector3.Normalize(Latéral);
-            }
+            //    Latéral = Vector3.Cross(OrientationVerticale, Direction);
+            //    Latéral = Vector3.Normalize(Latéral);
+            //}
 
-            if (GestionInput.EstEnfoncée(Keys.Right))
-            {
-                Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, Angle.X * -VitesseRotation));
+            //if (GestionInput.EstEnfoncée(Keys.Right))
+            //{
+            //    Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, Angle.X * -VitesseRotation));
 
-                Latéral = Vector3.Cross(OrientationVerticale, Direction);
-                Latéral = Vector3.Normalize(Latéral);
-            }
+            //    Latéral = Vector3.Cross(OrientationVerticale, Direction);
+            //    Latéral = Vector3.Normalize(Latéral);
+            //}
+
         }
 
         void GérerTangage()

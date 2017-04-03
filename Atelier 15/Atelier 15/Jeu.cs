@@ -29,11 +29,11 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            const float ÉCHELLE_OBJET = 0.01f;
+            const float ÉCHELLE_OBJET = 0.001f;
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             Vector3 positionCPU = new Vector3(96, 16.37255f, -30);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
-            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
+            Vector3 rotationObjet = new Vector3(0, (float)Math.PI, 0);
 
 
             //LoadSauvegarde();
@@ -42,8 +42,9 @@ namespace AtelierXNA
 
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
-            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU,INTERVALLE_MAJ_STANDARD, 1f));
-            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionObjet, INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
+            //Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionObjet, INTERVALLE_MAJ_STANDARD, 1f));
+
         }
         public override void Update(GameTime gameTime)
         {

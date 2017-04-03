@@ -36,6 +36,7 @@ namespace AtelierXNA
 
         protected override void Initialize()
         {
+
             GestionInput = new InputManager(this);
            
             Components.Add(GestionInput);
@@ -80,15 +81,17 @@ namespace AtelierXNA
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
                         //PériphériqueGraphique.IsFullScreen = true;
-                        
-                        CaméraJeu = new CaméraSubjective(this, new Vector3(96,16,-96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
+                        PériphériqueGraphique.IsFullScreen = true;
+                        PériphériqueGraphique.ApplyChanges();
+
+                        CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero /*new Vector3(80, 16, -96)*/, Vector3.Up, INTERVALLE_MAJ_STANDARD);
+
                         Components.Add(CaméraJeu);
                         Services.AddService((typeof (Caméra)),CaméraJeu);
                         Components.Add(new Afficheur3D(this));
                         Components.Add(new Jeu(this));
                         Components.Add(new AfficheurFPS(this,"Arial20",Color.Red, INTERVALLE_CALCUL_FPS));
-            PériphériqueGraphique.IsFullScreen = true;
-                        PériphériqueGraphique.ApplyChanges();
+                        
                         //LoadSauvegarde(); dans l'Initialize
                     }
                         

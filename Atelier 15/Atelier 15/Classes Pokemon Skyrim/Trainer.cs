@@ -17,7 +17,7 @@ namespace AtelierXNA
         const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 0.25f;
 
-        const float DÉPLACEMEMENT_MODÈLE = 0.05f;
+        const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public  float Hauteur {get; private set;}
         TerrainAvecBase Terrain { get; set; }
         protected Point PositionSouris { get; set; }

@@ -22,6 +22,7 @@ namespace AtelierXNA
         Texture2D Background { get; set; }
         Texture2D Controls { get; set; }
         Rectangle RectangleAffichage { get; set; }
+        Song Chanson { get; set; }
         public PageTitreState CurrentPageTitreState { get; private set; }
         Vector2 screenSize;
 
@@ -49,12 +50,14 @@ namespace AtelierXNA
         Button1 btnSoundOn;
         Button1 btnSoundOff;
         Button1 btnBack;
+        Button1 controls;
 
         public override void Initialize()
         {
             CurrentPageTitreState = PageTitreState.MainMenu;
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
+            
 
             screenSize = new Vector2(800, 400);
             base.Initialize();
@@ -67,8 +70,12 @@ namespace AtelierXNA
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Background = GestionnaireDeTextures.Find("BackGround");
             Controls = GestionnaireDeTextures.Find("controls");
+            Chanson = GestionnaireDeChansons.Find("hey");
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
-            
+
+            //Audio Ajustments
+            MediaPlayer.Play(Chanson);
+
             //Screen Ajustments
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;
             graphics.PreferredBackBufferWidth = (int)screenSize.X;
@@ -84,12 +91,15 @@ namespace AtelierXNA
             btnSoundOn = new Button1(Game,GestionnaireDeTextures.Find("SoundOn"), graphics.GraphicsDevice, INTERVALLEMAJ);
             btnSoundOff = new Button1(Game,GestionnaireDeTextures.Find("SoundOff"), graphics.GraphicsDevice, INTERVALLEMAJ);
             btnBack = new Button1(Game,GestionnaireDeTextures.Find("btn_back"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnNewGame.ResetPosition(new Vector2(75, 320));
+            controls = new Button1(Game, GestionnaireDeTextures.Find("btn_Controles"), graphics.GraphicsDevice, INTERVALLEMAJ);
+
+            btnNewGame.ResetPosition(new Vector2(75, 315));
             btnOptions.ResetPosition(new Vector2(275, 320));
             btnLoadGame.ResetPosition(new Vector2(175, 320));
-            btnSoundOn.ResetPosition(new Vector2(425, 280));
-            btnSoundOff.ResetPosition(new Vector2(425, 280));
+            btnSoundOn.ResetPosition(new Vector2(375, 325));
+            btnSoundOff.ResetPosition(new Vector2(475, 325));
             btnBack.ResetPosition(new Vector2(0, 320));
+            controls.ResetPosition(new Vector2(375, 320));
 
         }
 
@@ -103,22 +113,26 @@ namespace AtelierXNA
                 case PageTitreState.MainMenu:
                     //MediaPlayer.Play(ChansonTitre);
                     if (btnOptions.isclicked) CurrentPageTitreState = PageTitreState.Options;
-                    btnOptions.Update(mouse, gameTime);
-                    if (btnNewGame.isclicked)
-                        CurrentPageTitreState = PageTitreState.Playing;
-                    btnNewGame.Update(mouse, gameTime);
+                    if (btnNewGame.isclicked) CurrentPageTitreState = PageTitreState.Playing;
                     if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.LoadGame;
+                    if (controls.isclicked) CurrentPageTitreState = PageTitreState.Controls;
+
                     btnLoadGame.Update(mouse, gameTime);
+                    btnNewGame.Update(mouse, gameTime);
+                    btnOptions.Update(mouse, gameTime);
+                    controls.Update(mouse, gameTime);
                     break;
                 case PageTitreState.Options:
                     if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
-                    if (btnSoundOn.isclicked || btnSoundOff.isclicked) GestionMusique();
+                    if (btnSoundOn.isclicked) MediaPlayer.Resume();
+                    if (btnSoundOff.isclicked) MediaPlayer.Pause();
+
                     btnBack.Update(mouse, gameTime);
                     btnSoundOn.Update(mouse, gameTime);
                     btnSoundOff.Update(mouse, gameTime);
                     break;
                 case PageTitreState.Controls:
-                    if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.Options;
+                    if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
                     btnBack.Update(mouse, gameTime);
                     break;
             }
@@ -134,24 +148,24 @@ namespace AtelierXNA
         //    if (CurrentPageTitreState == PageTitreState.LoadGame)
         //        LoadGameReached = true;
         //}
-        private void GestionMusique()
-        {
-            if (MediaPlayer.State == MediaState.Paused)
-            {
-                MediaPlayer.Resume();
-            }
-            else
-            {
-                if (MediaPlayer.State == MediaState.Playing)
-                {
-                    MediaPlayer.Pause();
-                }
-                //else
-                //{
-                //    MediaPlayer.Play(ChansonTitre);
-                //}
-            }
-        }
+        //private void GestionMusique()
+        //{
+        //    if (MediaPlayer.State == MediaState.Paused)
+        //    {
+        //        MediaPlayer.Resume();
+        //    }
+        //    else
+        //    {
+        //        if (MediaPlayer.State == MediaState.Playing)
+        //        {
+        //            MediaPlayer.Pause();
+        //        }
+        //        //else
+        //        //{
+        //        //    MediaPlayer.Play(ChansonTitre);
+        //        //}
+        //    }
+        //}
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
@@ -163,6 +177,7 @@ namespace AtelierXNA
                     btnOptions.Draw(spriteBatch);
                     btnNewGame.Draw(spriteBatch);
                     btnLoadGame.Draw(spriteBatch);
+                    controls.Draw(spriteBatch);
                     break;
                 case PageTitreState.Controls:
                     spriteBatch.Draw(Controls, RectangleAffichage, Color.White);

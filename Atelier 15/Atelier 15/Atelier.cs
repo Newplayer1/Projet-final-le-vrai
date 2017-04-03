@@ -80,14 +80,15 @@ namespace AtelierXNA
                     {
                         ÉtatDépart = ÉtatsDépart.JEU3D;
                         //PériphériqueGraphique.IsFullScreen = true;
-                        PériphériqueGraphique.ApplyChanges();
+                        
                         CaméraJeu = new CaméraSubjective(this, new Vector3(96,16,-96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
                         Components.Add(CaméraJeu);
                         Services.AddService((typeof (Caméra)),CaméraJeu);
                         Components.Add(new Afficheur3D(this));
                         Components.Add(new Jeu(this));
                         Components.Add(new AfficheurFPS(this,"Arial20",Color.Red, INTERVALLE_CALCUL_FPS));
-            base.Initialize();
+            PériphériqueGraphique.IsFullScreen = true;
+                        PériphériqueGraphique.ApplyChanges();
                         //LoadSauvegarde(); dans l'Initialize
                     }
                         
@@ -113,7 +114,7 @@ namespace AtelierXNA
         private void GérerTransitionJEU()
         {
             Components.Remove(PageTitre);
-            
+
         }
 
         void NettoyerListeComponents()

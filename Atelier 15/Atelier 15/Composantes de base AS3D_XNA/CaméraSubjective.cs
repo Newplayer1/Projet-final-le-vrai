@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace AtelierXNA
 {
@@ -25,6 +26,9 @@ namespace AtelierXNA
 
 
         Vector3 Angle { get; set; }
+
+        TerrainAvecBase Terrain { get; set; }
+
 
         bool estEnZoom;
         bool EstEnZoom
@@ -61,9 +65,12 @@ namespace AtelierXNA
             TempsÉcouléDepuisMAJ = 0;
             base.Initialize();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
 
             Angle = new Vector3(DELTA_LACET, DELTA_TANGAGE, DELTA_ROULIS);
-            
+
+            // float nbRangées = Terrain.NbRangées;
+
         }
 
         protected override void CréerPointDeVue()
@@ -79,7 +86,7 @@ namespace AtelierXNA
             Latéral = Vector3.Normalize(Latéral);
 
             //OrientationVerticale = Vector3.Normalize(OrientationVerticale);
-            
+
             Vue = Matrix.CreateLookAt(Position, Position + Direction, OrientationVerticale);
             GénérerFrustum();
         }
@@ -104,7 +111,6 @@ namespace AtelierXNA
 
             Direction = Cible - Position;
             Direction = Vector3.Normalize(Direction);
-
 
 
             CréerPointDeVue();
@@ -145,10 +151,10 @@ namespace AtelierXNA
             }
         }
 
-        private void GérerDéplacement()
+        protected void GérerDéplacement()
         {
             Vector3 nouvellePosition = Position;
-            
+
             float déplacementDirection = (GérerTouche(Keys.W) - GérerTouche(Keys.S)) * VitesseTranslation;
             float déplacementLatéral = (GérerTouche(Keys.D) - GérerTouche(Keys.A)) * VitesseTranslation;
 
@@ -162,7 +168,7 @@ namespace AtelierXNA
         }
 
 
-        private void EffectuerDéplacementDirec(float déplacement)
+        void EffectuerDéplacementDirec(float déplacement)
         {
             if (déplacement != 0)
             {
@@ -170,28 +176,39 @@ namespace AtelierXNA
             }
         }
 
-        private void EffectuerDéplacementLat(float déplacement)
+        void EffectuerDéplacementLat(float déplacement)
         {
             if (déplacement != 0)
+            {
                 Position += Latéral * déplacement;
+
+                //float posY = (Terrain.GetPointSpatial(Math.Abs((int)Math.Round(Position.X, 0)), Terrain.NbRangées - Math.Abs((int)Math.Round(Position.Z, 0)))).Y;
+
+                //if (Position.Y != posY)
+                //{
+                //    float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + vecteurRayon).Y;
+
+                //    Position = new Vector3(Position.X, posY, Position.Z);
+                //}
+            }
         }
 
-        private void GérerRotation()
+        void GérerRotation()
         {
             GérerLacet();
             GérerTangage();
             GérerRoulis();
         }
 
-        private void GérerLacet()
+        void GérerLacet()
         {
             // Gestion du lacet (yaw)
             // À compléter
-            if(GestionInput.EstEnfoncée(Keys.Left))
+            if (GestionInput.EstEnfoncée(Keys.Left))
             {
                 Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, Angle.X * VitesseRotation));
 
-                Latéral = Vector3.Cross(OrientationVerticale,Direction);
+                Latéral = Vector3.Cross(OrientationVerticale, Direction);
                 Latéral = Vector3.Normalize(Latéral);
             }
 
@@ -204,7 +221,7 @@ namespace AtelierXNA
             }
         }
 
-        private void GérerTangage()
+        void GérerTangage()
         {
             // Gestion du tangage
             // À compléter
@@ -227,7 +244,7 @@ namespace AtelierXNA
             }
         }
 
-        private void GérerRoulis()
+        void GérerRoulis()
         {
             if (GestionInput.EstEnfoncée(Keys.PageDown))
             {
@@ -246,7 +263,7 @@ namespace AtelierXNA
             }
         }
 
-        private void GestionClavier()
+        void GestionClavier()
         {
             if (GestionInput.EstNouvelleTouche(Keys.Z))
             {
@@ -255,3 +272,101 @@ namespace AtelierXNA
         }
     }
 }
+
+
+
+
+
+
+/*
+ * 
+ * Dans le constructeur 
+ * 
+ *  MoveTo(position, rotation);
+
+ * 
+    private void UpdateLookAt()
+        {
+            Matrix rotationMatrix = Matrix.CreateRotationX(cameraRotation.X) * Matrix.CreateRotationY(cameraRotation.Y);
+            Vector3 lookAtOffSet = Vector3.Transform(Vector3.UnitZ, rotationMatrix);
+
+            cameraLookAt = cameraPosition + lookAtOffSet;
+
+        }
+
+ * 
+ * 
+ * Avant la méthode update 
+ * 
+ * 
+ * 
+   private Vector3 PreviewMove(Vector3 amount)
+        {
+            Matrix rotate = Matrix.CreateRotationY(Rotation.Y); // cameraRoatation.Y???
+
+            Vector3 movement = new Vector3(amount.X, amount.Y, amount.Z);
+            movement = Vector3.Transform(movement, rotate);
+
+            return Position + movement;
+        }
+
+        void Move(Vector3 scale)
+        {
+            MoveTo(PreviewMove(scale), Rotation);
+        }
+
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * Au début de la méthode update 
+ * 
+ *             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            currentMouseState = Mouse.GetState();
+ * 
+ * 
+ * Dans la fin de la méthode Update
+ 
+     
+                 float deltaX;
+            float deltaY;
+
+            if(currentMouseState != previousMouseState)
+            {
+                deltaX = currentMouseState.X - (Game.GraphicsDevice.Viewport.Width / 2);
+                deltaY = currentMouseState.Y - (Game.GraphicsDevice.Viewport.Height / 2);
+
+                mouseRotationBuffer.X -= 0.01f * deltaX * dt;
+                mouseRotationBuffer.Y -= 0.01f * deltaY * dt;
+
+                if(mouseRotationBuffer.Y < MathHelper.ToRadians(-75.0f))
+                    mouseRotationBuffer.Y = mouseRotationBuffer.Y - (mouseRotationBuffer.Y - MathHelper.ToRadians(-75.0f));
+
+                if (mouseRotationBuffer.Y < MathHelper.ToRadians(75.0f))
+                    mouseRotationBuffer.Y = mouseRotationBuffer.Y - (mouseRotationBuffer.Y - MathHelper.ToRadians(75.0f));
+
+                Rotation = new Vector3(-MathHelper.Clamp(mouseRotationBuffer.Y, MathHelper.ToRadians(-75.0f), MathHelper.ToRadians(75.0f)), MathHelper.WrapAngle(mouseRotationBuffer.X), 0);
+
+                deltaX = 0;
+                deltaY = 0;
+            }
+
+            Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
+
+            previousMouseState = currentMouseState;
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     */

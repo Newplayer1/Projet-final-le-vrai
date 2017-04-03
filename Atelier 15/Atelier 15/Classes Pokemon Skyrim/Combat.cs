@@ -45,7 +45,7 @@
 //        public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
 //        {
 //            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-//            EnCombat = true; //GameState = Battle
+//            EnCombat = true; //GameState = Combat
 
 //            if (!EstOpponentSauvage)
 //            {
@@ -74,40 +74,19 @@
 //            bool UserPkmPrioritaire;
             
 
-//            while (UserTrainer.EstEnVie() && OpponentTrainer.EstEnVie())
-//            {
-//                //UserPkmPrioritaire = true;
-//                while (UserPokemon.EstEnVie && OpponentPokemon.EstEnVie)
-//                {
-//                    //Système de tours entre pkmns ici
-//                    AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
+            while (UserTrainer.EstEnVie() && OpponentTrainer.EstEnVie())
+            {
+                //UserPkmPrioritaire = true;
+                while (UserPokemon.EstEnVie && OpponentPokemon.EstEnVie)
+                {
+                    //Système de tours entre pkmns ici
+                    AfficherMenuAttaques(); //On va commencer par savoir comment choisir une attaque, après on fera un menu pour fight/bag/pokemons/run
 
-//                    if (UserPokemon.Speed < OpponentPokemon.Speed)//le tour du joueur sauf si prouvé du contraire
-//                        UserPkmPrioritaire = false;
-//                    else
-//                        UserPkmPrioritaire = true;
-//                    //Important de garder dans la boucle, si la vitesse est changée par une attaque effect, et que l'adversaire ou le user devient plus rapide, il a droit de frapper deux fois
-
-
-                    
-//                    if (UserPkmPrioritaire)  //Si le pokémon User est plus rapide
-//                    {
-//                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));//fonctions temporaires, à modifier pour calculer les points de dommages avec la formule
-//                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire()));
-//                        UserPkmPrioritaire = false;//fin de son tour
-//                    }
-//                    else   //Si le pokémon adverse est le plus rapide
-//                    {
-//                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire())); // c'est le tour du pokémon adverse
-//                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));
-//                        UserPkmPrioritaire = true;
-//                    }
-
-//                }
-//                if (!OpponentPokemon.EstEnVie)//sorti de la boucle de combat: l'un des deux est mort
-//                {
-//                    //Message/animation/whatever, opponent has been defeated!
-//                    UserPokemon.GainExp(OpponentPokemon.Level * 10);
+                    if (UserPokemon.Speed < OpponentPokemon.Speed)//le tour du joueur sauf si prouvé du contraire
+                        UserPkmPrioritaire = false;
+                    else
+                        UserPkmPrioritaire = true;
+                    //Important de garder dans la boucle, si la vitesse est changée par une attaque effect, et que l'adversaire ou le user devient plus rapide, il a droit de frapper deux fois
 
 //                    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //Throw next pokemon
 //                }
@@ -117,27 +96,55 @@
 //                    //Ouvrir inventaire, sélectionner un index
 //                    int prochainPokemon = SélectionnerUnPokémonEnInventaire();
 
-//                    UserPokemon = LancerPokémon(prochainPokemon, UserTrainer);
-//                }
+                    
+                    if (UserPkmPrioritaire)  //Si le pokémon User est plus rapide
+                    {
+                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));//fonctions temporaires, à modifier pour calculer les points de dommages avec la formule
+                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire()));
+                        UserPkmPrioritaire = false;//fin de son tour
+                    }
+                    else   //Si le pokémon adverse est le plus rapide
+                    {
+                        UserPokemon.Défendre(CalculPointsDamage(OpponentPokemon, UserPokemon, OpponentPokemon.AttaqueAléatoire())); // c'est le tour du pokémon adverse
+                        OpponentPokemon.Défendre(CalculPointsDamage(UserPokemon, OpponentPokemon, numéroAttaqueChoisie));
+                        UserPkmPrioritaire = true;
+                    }
 
-//            }
+                }
+                if (!OpponentPokemon.EstEnVie)//sorti de la boucle de combat: l'un des deux est mort
+                {
+                    //Message/animation/whatever, opponent has been defeated!
+                    UserPokemon.GainExp(OpponentPokemon.Level * 10);
 
-//            //Trainer has been defeated! ou Opponent has been defeated!
-//            if (UserTrainer.EstEnVie())
-//            {//le User a gagné
-//                //Changement de la toune?
-//                //Gagne du cash, ptit message genre "wow le ptit con m'a battu holyshit man"
-//            }
-//            else
-//            {//Le User a perdu
-//                //Donne du cash, ptit message genre "wow t'es ben faible ptit con"
-//                //User wrap au pokémon center (une méthode de téléportation dans le trainer pour le déplacer perhaps?)
-//            }
+                    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //Throw next pokemon
+                }
+                else
+                {
+                    //trainer pokemon fainted! Tu dois choisir un autre pokémon dans ton inventaire
+                    //Ouvrir inventaire, sélectionner un index
+                    int prochainPokemon = SélectionnerUnPokémonEnInventaire();
 
-//            //Le combat est fini
-//            EnCombat = false;//Ou on pourrait changer le gamestate?
-//            base.Update(gameTime);//Utile?
-//        }
+                    UserPokemon = LancerPokémon(prochainPokemon, UserTrainer);
+                }
+
+            }
+
+            //Trainer has been defeated! ou Opponent has been defeated!
+            if (UserTrainer.EstEnVie())
+            {//le User a gagné
+                //Changement de la toune?
+                //Gagne du cash, ptit message genre "wow le ptit con m'a battu holyshit man"
+            }
+            else
+            {//Le User a perdu
+                //Donne du cash, ptit message genre "wow t'es ben faible ptit con"
+                //User wrap au pokémon center (une méthode de téléportation dans le trainer pour le déplacer perhaps?)
+            }
+
+            //Le combat est fini
+            EnCombat = false;//Ou on pourrait changer le gamestate?
+            base.Update(gameTime);//Utile?
+        }
 
 //        int CalculPointsDamage(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)// s'il y a un damage
 //        {

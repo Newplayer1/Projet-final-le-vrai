@@ -12,40 +12,30 @@
 
 //namespace AtelierXNA.Classes_Pokemon_Skyrim
 //{
-//    enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
-//    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000}
+//    public enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
+//    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
 
 //    public class Pokemon : Vivant
 //    {
-
 //        const int MAX_LEVEL = 100;
+//        const int NIVEAU_EVOLUTION_EEVEE = 25;
 
 //        AccessBaseDeDonnée Database { get; set; }
 //        Random Générateur { get; set; }
 //        List<string> PokemonEnString { get; set; }
 //        int PokedexNumber { get; set; }
 //        ExpGrowthClass ExpGrowth { get; set; } //Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//PokemonEnString[11]
-//        int BaseExp { get; set; } //=> int.Parse(PokemonEnString[12]);
+//        Status Status { get; set; }
+//        int BaseExp { get; set; }
 //        int NiveauEvolution { get; set; }
-//        /*    
-// *  doit storer:
-// *  - stats d'un pokemon en fct du niveau (recalculé si level up)
-// *  - bool pokémon appartient au user ou non
-// *  - copie des stats (que combat va overwrite pour modifier les stats d'un pkmn)
-// *  - list pour storer les 4 attaques
-// *  - type (string)
-// *  - HP (modifiable si pkmn center)
-// *  - pts exp (modifiable par combat.cs)
-// *  - status (brn, frz, slp, psn, par)
-// *  - fonction attaquer ((seulement si pokemon du user, donc pas wild ou opponent)qui permet de prendre une des quatres attaques, retourne l'attaque choisie, fonction appelée par combat.cs sour la forme "User.Attack")
-// *  - fonction défense (qui recoit les dommages calculés par combat.cs selon le type et attaques)
-// *  - fonction riposter ((seulement si adverse) choisi une attaque aléatoire dans la liste d'attaques, appelé par combat "Opponent.Riposte" )
-// *  - fonction évoluer (séquentiel)
-// *  - fonction level up si exp atteint level complet: check if evolution, recalcul les stats, check if new move is learned
-// *    */
 
-
-
+//        public int this[int index]
+//        {
+//            get
+//            {
+//                return AttaquesList[index];
+//            }
+//        }
 
 //        public int Level { get; private set; }
 //        int Exp { get; set; }
@@ -64,42 +54,38 @@
 
 //        List<int> AttaquesList { get; set; }//Liste de 4 int référant à un numéro d'attaque
 //        bool EstSauvage { get; set; }
-//        bool EstÉchangé { get; set; }
 //        public string Type1 => PokemonEnString[8];
 //        public string Type2 => PokemonEnString[9];
-
-
- 
         
-//        public Pokemon(Game game, int pokedexNumber, int level)
-//            : base(game)
+
+//        public Pokemon(Game game, int pokedexNumber, int level, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+//            : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
 //        {
 //            PokedexNumber = pokedexNumber;
 //            Level = level;
 
 //            AttaquesList = new List<int>();
-//            AttaquesList.Add(0);
-//            AttaquesList.Add(-1);//Négatif siginife aucune attaque
+//            AttaquesList.Add(28);
+//            AttaquesList.Add(29);//Négatif siginife aucune attaque
 //            AttaquesList.Add(-1);
 //            AttaquesList.Add(-1);
-//            EstÉchangé = false;
 //            EstSauvage = false;
+//            Status = Status.NULL;
 //            //au lieu de juste mettre l'attaque 0, on pourrait mettre aléatoirement parmi les attaques disponibles du pokémon au niveau mentionné 
 //            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
 //            CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
 //        }
-//        public Pokemon(Game game, int pokedexNumber, int level, List<int> attaques)
-//            : base(game)
+//        public Pokemon(Game game, int pokedexNumber, int level, List<int> attaques, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+//            : base(game, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
 //        {
 //            PokedexNumber = pokedexNumber;
 //            Level = level;
 
 //            PokemonEnString = new List<string>();
-            
-//            AttaquesList = new List<int>(attaques);
-//            EstÉchangé = false;
-//            EstSauvage = false;
 
+//            AttaquesList = new List<int>(attaques);
+//            EstSauvage = false;
+//            Status = Status.NULL;
 //            CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
 //        }
 
@@ -149,7 +135,7 @@
 //                index = Générateur.Next(0, 4);
 //                attaqueAléatoire = AttaquesList[index];
 //            }
-//            while (AttaquesList[index] < 0) ;
+//            while (AttaquesList[index] < 0);
 
 //            return attaqueAléatoire;
 //        }
@@ -172,20 +158,16 @@
 //        public int GiveExp()
 //        {
 //            float a = 1;
-//            float t = 1;
 
 //            if (!EstSauvage)
 //                a = 1.5f;
-//            if (EstÉchangé)
-//                t = 1.5f;
-            
-//            return (int)((a * t * BaseExp * Level) / (7));
+//            return (int)((a * BaseExp * Level) / (7));
 //        }
 
 //        void ExécuterSéquenceLevelUp()
 //        {
 //            Level++;
-//            VérifierSiÉvolution(NiveauEvolution);// ajouter int du niveau d'évolution
+//            VérifierSiÉvolution(NiveauEvolution);
 //            VérifierSiNouvelleAttaqueApprise();
 //            CalculerStatsEtHP(Level);//inclu RétablirStats()
 //        }
@@ -197,14 +179,26 @@
 //                ChangerPokedexNumber(PokedexNumber + 1);
 //                //Exécuter animation d'évolution?
 //            }
-            
-//            else if (niveauÉvolution < 0)
+
+//            else if (niveauÉvolution < 0 && (Level >= NIVEAU_EVOLUTION_EEVEE))//Gestion du cas spécial Eevee ici
 //            {
-//                //Gestion du cas spécial Eevee ici
+//                if (HauteurDuJoueur <= (TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
+//                {
+//                    ChangerPokedexNumber(PokedexNumber + 1);
+//                }
+//                else if (HauteurDuJoueur <= 2*(TerrainAvecBase.HAUTEUR_MAXIMALE / 3f))
+//                {
+//                    ChangerPokedexNumber(PokedexNumber + 2);
+//                }
+//                else if (HauteurDuJoueur <= TerrainAvecBase.HAUTEUR_MAXIMALE)
+//                {
+//                    ChangerPokedexNumber(PokedexNumber + 3);
+//                }
 //            }
 //        }
-//        void VérifierSiNouvelleAttaqueApprise()
+//        void VérifierSiNouvelleAttaqueApprise()//? wut
 //        {
+            
 //        }
 
 //        bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
@@ -241,8 +235,33 @@
 
 //            //else if (ExpGrowth == ExpGrowthClass.Slow.ToString())
 //            //    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
+//        }
 
+//        public void SetStatus(int value)
+//        {
+//            Status = (Status)value;
+//        }
+//        public void SetStatus(string value)
+//        {
+//            Status = (Status)Enum.Parse(typeof(Status), value.Trim().ToUpper());
+//        }
+//        public Status GetStatus()
+//        {
+//            return Status;
+//        }
 
+//        public void AjouterHP(int value)//Effet d'un item ou d'une attaque
+//        {
+//            HP += value;
+//            if (HP > MaxHp)
+//                HP = MaxHp;
+//        }
+
+//        public void FullRestore() //par un item ou par pokemon center
+//        {
+//            AjouterHP(MaxHp);
+//            RétablirStats();
+//            SetStatus("null");
 //        }
 
 //        public override void Initialize()
@@ -250,14 +269,16 @@
 //            Générateur = Game.Services.GetService(typeof(Random)) as Random;
 //            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
 
-
 //            PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
 
 //            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+
 //            BaseExp = int.Parse(PokemonEnString[12]);
 //            NiveauEvolution = int.Parse(PokemonEnString[13]);
+
 //            base.Initialize();
 //        }
+
 //        public override void Update(GameTime gameTime)
 //        {
 //            base.Update(gameTime);

@@ -12,10 +12,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-        enum États { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
+        enum ÉtatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        États ÉtatJeu { get; set; }
+        const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
+        const float INTERVALLE_CALCUL_FPS = 1f;
+
+        TerrainAvecBase TerrainDeJeu { get; set; }
+
+        ÉtatsJeu ÉtatJeu { get; set; }
+        String[] TexturesTerrain = new string[] { "Sable", "HerbeB" };
         public Jeu(Game game)
             : base(game)
         {
@@ -23,8 +29,21 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            base.Initialize();
-            ÉtatJeu = États.PAGE_TITRE;
+            const float ÉCHELLE_OBJET = 0.01f;
+            Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
+            Vector3 positionCPU = new Vector3(96, 16.37255f, -30);
+            //Vector3 positionObjet = new Vector3(100, 20, -100);
+            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
+
+
+            //LoadSauvegarde();
+            Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
+            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 25, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
+
+            Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
+            Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
+            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU,INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionObjet, INTERVALLE_MAJ_STANDARD, 1f));
         }
         public override void Update(GameTime gameTime)
         {
@@ -37,12 +56,12 @@ namespace AtelierXNA
         {
             switch (ÉtatJeu)
             {
-                case États.PAGE_TITRE:
-                    GérerTransitionPageTitre();
+                case ÉtatsJeu.PAGE_TITRE:
+                    //GérerTransitionPageTitre();
                     break;
-                case États.JEU3D:
-                    AjoutJEU3D();
-                    break;
+                //case États.JEU3D:
+                //    GérerTransitionJEU3D();
+                //    break;
                 //case États.COMBAT:
                 //    GérerTransitionCombat();
                 //    break;
@@ -63,14 +82,14 @@ namespace AtelierXNA
         {
             switch (ÉtatJeu)
             {
-                case États.PAGE_TITRE:
-                    //PageTitre();
+                case ÉtatsJeu.PAGE_TITRE:
+                    Game.Components.Add(new PageTitre(Game));
                     break;
-                case États.JEU3D:
-                    //GérerCollision();
-                    //GérerCombat();
-                    //GérerComputer();
-                    break;
+                //case États.JEU3D:
+                //    GérerCollision();
+                //    GérerCombat();
+                //    GérerComputer();
+                //    break;
                 //case États.COMBAT:
                 //    Combat();
                 //    break;
@@ -89,14 +108,6 @@ namespace AtelierXNA
                 //    SauvegardeAuto();
                 //    break;
             }
-        }
-        private void AjoutJEU3D()
-        {
-            //Game.Components.Add(new TerrainAvecBase());
-        }
-        private void GérerTransitionPageTitre()
-        {
-            Game.Components.Add(new );
         }
     }
 }

@@ -10,7 +10,7 @@ namespace AtelierXNA
    {
       string NomModèle { get; set; }
       RessourcesManager<Model> GestionnaireDeModèles { get; set; }
-      Caméra CaméraJeu { get; set; }
+      public Caméra CaméraJeu { get; private set; }
       public float Échelle { get; protected set; }
       public Vector3 Rotation { get; protected set; }
       public Vector3 Position { get; protected set; }
@@ -36,7 +36,14 @@ namespace AtelierXNA
          Monde *= Matrix.CreateTranslation(Position);
          base.Initialize();
       }
-      protected override void LoadContent()
+        protected void CalculerMonde()
+        {
+            Monde = Matrix.Identity;
+            Monde *= Matrix.CreateScale(Échelle);
+            Monde *= Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
+            Monde *= Matrix.CreateTranslation(Position);
+        }
+        protected override void LoadContent()
       {
          CaméraJeu = Game.Services.GetService(typeof(Caméra)) as Caméra;
          GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;

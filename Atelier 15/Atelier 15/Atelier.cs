@@ -53,7 +53,7 @@ namespace AtelierXNA
 
             Services.AddService(typeof(GraphicsDeviceManager), PériphériqueGraphique);
             Services.AddService(typeof(SpriteBatch), new SpriteBatch(GraphicsDevice));
-            Services.AddService(typeof(AccessBaseDeDonnée), new AccessBaseDeDonnée());
+            //Services.AddService(typeof(AccessBaseDeDonnée), new AccessBaseDeDonnée());
             PageTitre = new PageTitre(this);
             Components.Add(PageTitre);
             ÉtatDépart = ÉtatsDépart.PAGE_TITRE;

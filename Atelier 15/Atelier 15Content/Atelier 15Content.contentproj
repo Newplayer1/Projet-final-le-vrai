@@ -213,8 +213,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Allo.fbx">
-      <Name>Allo</Name>
+    <Compile Include="Models\Maison.fbx">
+      <Name>Maison</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Professor.fbx">
+      <Name>Professor</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>

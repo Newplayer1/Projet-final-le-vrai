@@ -6,6 +6,8 @@ namespace AtelierXNA
 {
     public class CaméraSubjective : Caméra
     {
+
+        public Vector2 Souris { get; private set; }
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         const float ACCÉLÉRATION = 0.001f;
         const float VITESSE_INITIALE_ROTATION = 5f;
@@ -14,7 +16,6 @@ namespace AtelierXNA
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
         const float RAYON_COLLISION = 1f;
-
         public Vector3 Direction { get; set; }
         Vector3 Latéral { get; set; }
         float VitesseTranslation { get; set; }
@@ -66,9 +67,10 @@ namespace AtelierXNA
             base.Initialize();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
-
             Angle = new Vector3(DELTA_LACET, DELTA_TANGAGE, DELTA_ROULIS);
             GérerLacet();
+
+            Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             // float nbRangées = Terrain.NbRangées;
 
         }
@@ -113,10 +115,7 @@ namespace AtelierXNA
 
             Direction = Vector3.Normalize(Direction);
 
-
-            CréerPointDeVue();
-            //OrientationVerticale = Vector3.Transform(OrientationVerticale, Matrix.CreateFromAxisAngle(Latéral, (float)-Math.PI / 4));
-            //Direction = Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, (float)  Math.PI / 4));
+            
             CréerPointDeVue();
         }
         public override void Update(GameTime gameTime)
@@ -124,6 +123,7 @@ namespace AtelierXNA
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             GestionClavier();
+                TournerCaméraAvecSouris();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
                 if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
@@ -135,10 +135,20 @@ namespace AtelierXNA
                 }
                 TempsÉcouléDepuisMAJ = 0;
             }
-
+                Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             base.Update(gameTime);
         }
+        private void TournerCaméraAvecSouris()
+        {
+            float FacteurDéplacement = 0.0001f;
 
+            //déplacement hrizontale Angle
+            if (GestionInput.GetPositionSouris().X != Souris.X)
+            {
+                Vue *= Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(GestionInput.GetPositionSouris().X - Souris.X * FacteurDéplacement), 0);
+
+            }
+        }
         private int GérerTouche(Keys touche)
         {
             return GestionInput.EstEnfoncée(touche) ? 1 : 0;
@@ -184,18 +194,10 @@ namespace AtelierXNA
             if (déplacement != 0)
             {
                 Position += Latéral * déplacement;
-
-                //float posY = (Terrain.GetPointSpatial(Math.Abs((int)Math.Round(Position.X, 0)), Terrain.NbRangées - Math.Abs((int)Math.Round(Position.Z, 0)))).Y;
-
-                //if (Position.Y != posY)
-                //{
-                //    float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + vecteurRayon).Y;
-
-                //    Position = new Vector3(Position.X, posY, Position.Z);
-                //}
             }
         }
 
+        
         void GérerRotation()
         {
             GérerLacet();

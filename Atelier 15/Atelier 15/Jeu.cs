@@ -43,7 +43,8 @@ namespace AtelierXNA
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
             Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
-            Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Allo", ÉCHELLE_OBJET* 100,rotationObjet,positionCPU));
+            //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Maison", ÉCHELLE_OBJET * 100, rotationObjet, positionCPU));
+            Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Professor", ÉCHELLE_OBJET * 1000, rotationObjet, positionCPU));
 
         }
         public override void Update(GameTime gameTime)

@@ -8,7 +8,7 @@ namespace AtelierXNA
       protected const float DISTANCE_PLAN_RAPPROCHÉ = 0.001f;
       protected const float DISTANCE_PLAN_ÉLOIGNÉ = 500;
 
-      public Matrix Vue { get; protected set; }
+      public Matrix Vue { get;  set; }
       public Matrix Projection { get; protected set; }
       public BoundingFrustum Frustum { get; protected set; }
 

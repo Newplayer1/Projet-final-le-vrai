@@ -9,9 +9,10 @@ namespace AtelierXNA
 
         public Vector2 Souris { get; private set; }
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
+        const double ANGLE_MAX = MathHelper.Pi/6;
         const float ACCÉLÉRATION = 0.001f;
-        const float VITESSE_INITIALE_ROTATION = 5f;
-        const float VITESSE_INITIALE_TRANSLATION = 0.5f;
+        const float VITESSE_INITIALE_ROTATION = 1.5f;
+        const float VITESSE_INITIALE_TRANSLATION = 0.05f;
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
@@ -20,10 +21,10 @@ namespace AtelierXNA
         Vector3 Latéral { get; set; }
         float VitesseTranslation { get; set; }
         float VitesseRotation { get; set; }
-
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         InputManager GestionInput { get; set; }
+        public Vector3 nouvellePosition {get;set;}
 
 
         Vector3 Angle { get; set; }
@@ -69,7 +70,6 @@ namespace AtelierXNA
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
             Angle = new Vector3(DELTA_LACET, DELTA_TANGAGE, DELTA_ROULIS);
             GérerLacet();
-
             Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             // float nbRangées = Terrain.NbRangées;
 
@@ -77,45 +77,18 @@ namespace AtelierXNA
 
         protected override void CréerPointDeVue()
         {
-            // Méthode appelée s'il est nécessaire de recalculer la matrice de vue.
-            // Calcul et normalisation de certains vecteurs
-            //
-            // Appelée dans le update
-            //
-            // (à compléter)
-
             Latéral = Vector3.Cross(Direction, OrientationVerticale);
             Latéral = Vector3.Normalize(Latéral);
-
-            //OrientationVerticale = Vector3.Normalize(OrientationVerticale);
-
             Vue = Matrix.CreateLookAt(Position, Position + Direction, OrientationVerticale);
             GénérerFrustum();
         }
 
         protected override void CréerPointDeVue(Vector3 position, Vector3 cible, Vector3 orientation)
         {
-            // À la construction, initialisation des propriétés Position, Cible et OrientationVerticale,
-            // ainsi que le calcul des vecteur Direction, Latéral et le recalcul du vecteur OrientationVerticale
-            // permettant de calculer la matrice de vue de la caméra subjective
-            //
-            // Appelée dans le construteur
-            //
-            // (à compléter)
-
-            //Création de la matrice de vue (point de vue)
-
             Position = position;
             Cible = cible;
-            OrientationVerticale = orientation;
-
-            OrientationVerticale = Vector3.Normalize(OrientationVerticale);
-
-            Direction = Cible - Position;
-
-            Direction = Vector3.Normalize(Direction);
-
-            
+            OrientationVerticale = Vector3.Normalize(orientation);
+            Direction = Vector3.Normalize(Cible - Position); 
             CréerPointDeVue();
         }
         public override void Update(GameTime gameTime)
@@ -123,31 +96,54 @@ namespace AtelierXNA
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             GestionClavier();
-                TournerCaméraAvecSouris();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
-                {
-                    GérerAccélération();
-                    GérerDéplacement();
-                    GérerRotation();
-                    CréerPointDeVue();
-                }
+                TournerCaméraAvecSouris();
+                DéplacementCaméraAvecJoueur();
+                CréerPointDeVue();
+
                 TempsÉcouléDepuisMAJ = 0;
             }
                 Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             base.Update(gameTime);
         }
+        private void DéplacementCaméraAvecJoueur()
+        {
+            nouvellePosition = Position;
+            float déplacementDirection = (GérerTouche(Keys.S) - GérerTouche(Keys.W)) * VitesseTranslation;
+            float déplacementLatéral = (GérerTouche(Keys.D) - GérerTouche(Keys.A)) * VitesseTranslation;
+            if(déplacementDirection != 0)
+            {
+                nouvellePosition += Vector3.Cross(Latéral,Vector3.Up)* déplacementDirection;
+            }
+            if(déplacementLatéral != 0)
+            {
+                nouvellePosition += Latéral * déplacementLatéral;
+            }     
+            Position = nouvellePosition;
+        }
         private void TournerCaméraAvecSouris()
         {
-            float FacteurDéplacement = 0.0001f;
-
-            //déplacement hrizontale Angle
+            int valYaw = GestionInput.GetPositionSouris().X >= Souris.X ? 1 : -1; 
+            int valPitch = GestionInput.GetPositionSouris().Y >= Souris.Y ? 1 : -1;
+            //déplacement hrizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
-                Vue *= Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(GestionInput.GetPositionSouris().X - Souris.X * FacteurDéplacement), 0);
-
+                Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
             }
+            // déplacement vertical Angle # limite = 45'
+            if (GestionInput.GetPositionSouris().Y != Souris.Y)
+            {
+                Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
+                Vector3 ancienneDirection = Direction;
+                float angleDirection = (float)Math.Asin(Direction.Y);
+                if (angleDirection > ANGLE_MAX || angleDirection < - ANGLE_MAX)
+                {
+                    Direction = ancienneDirection;
+                }
+            }
+
+
         }
         private int GérerTouche(Keys touche)
         {

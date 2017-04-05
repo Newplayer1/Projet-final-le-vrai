@@ -33,7 +33,7 @@ namespace AtelierXNA
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             Vector3 positionCPU = new Vector3(96, 16.37255f, -30);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
-            Vector3 rotationObjet = new Vector3(0, (float)Math.PI, 0);
+            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI/4, 0);
 
 
             //LoadSauvegarde();
@@ -45,7 +45,7 @@ namespace AtelierXNA
             Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
             //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Maison", ÉCHELLE_OBJET * 100, rotationObjet, positionCPU));
             Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Professor", ÉCHELLE_OBJET * 1000, rotationObjet, positionCPU));
-
+            Game.Services.AddService(typeof(Trainer), new Trainer(Game, "AZ", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
         }
         public override void Update(GameTime gameTime)
         {

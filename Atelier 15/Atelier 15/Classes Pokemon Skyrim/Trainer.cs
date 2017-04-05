@@ -14,8 +14,8 @@ namespace AtelierXNA
 
     public class Trainer : ObjetDeBase
     {
-        const int DISTANCE_MODÈLE_CAMÉRA = 1;
-        const float HAUTEUR_CAMÉRA = 0.25f;
+         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
+        const float HAUTEUR_CAMÉRA = 2f;
 
         const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public float Hauteur { get; private set; }
@@ -56,11 +56,8 @@ namespace AtelierXNA
         {
             TempsÉcouléDepuisMAJ = 0;
             base.Initialize();
-            Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-
-            // AnciennePositionCaméra = CaméraJeu.Position; // --> à continuer
-
+            Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
         }
 
         public override void Update(GameTime gameTime)
@@ -73,11 +70,23 @@ namespace AtelierXNA
                 EffectuerMiseÀJour();
                 TempsÉcouléDepuisMAJ = 0;
             }
+
+        }
+
+        private Vector3 BougerSelonLesNormales(Vector3 nouvellePosition)
+        {
+            Vector2 vecteurPosition = new Vector2(nouvellePosition.X + Terrain.NbColonnes / 2, nouvellePosition.Z + Terrain.NbRangées / 2);
+            float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
+            nouvellePosition = new Vector3(nouvellePosition.X, posY + HAUTEUR_CAMÉRA, nouvellePosition.Z);
+
+            return nouvellePosition;
         }
 
         protected void EffectuerMiseÀJour()
         {
             PositionAncienne = Position;
+            CaméraJeu.Position = BougerSelonLesNormales((CaméraJeu as CaméraSubjective).nouvellePosition);
+            Position = new Vector3(CaméraJeu.Position.X - 3, CaméraJeu.Position.Y - HAUTEUR_CAMÉRA, CaméraJeu.Position.Z + 3);
             CalculerMonde();
         }
 
@@ -89,65 +98,14 @@ namespace AtelierXNA
                 float déplacementProfondeur = GérerTouche(Keys.S) - GérerTouche(Keys.W);
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {
-                    CalculerPosition(déplacementHorizontal, déplacementProfondeur);
+                    SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius); 
                 }
             }
-
-            AjusterPositionCaméra();
         }
-
-        void CalculerPosition(float déplacementHorizontal, float déplacementProfondeur)
-        {
-            Vector3 vecteurRayon = new Vector3(0, 0, 0); // Test................
-            // Position = new Vector3(Position.X, (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + vecteurRayon).Y, Position.Z);
-
-
-            SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);  //--> À utiliser pour que lorsque le modèle 3D entre en collision avec une porte.
-
-            float posX = CalculerPosition2(déplacementHorizontal, Position.X);
-            float posZ = CalculerPosition2(déplacementProfondeur, Position.Z);
-
-            Vector2 vecteurPosition = new Vector2(posX + Terrain.NbColonnes / 2, posZ + Terrain.NbRangées / 2);
-
-            float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + vecteurRayon).Y;
-
-            // float posY = (Terrain.GetPointSpatial(Math.Abs((int)Math.Round(posX, 0)), Terrain.NbRangées - Math.Abs((int)Math.Round(posZ, 0)))).Y;
-
-
-            Position = new Vector3(posX, posY, posZ);
-
-            SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);
-        }
-
-        float CalculerPosition2(float déplacement, float posActuelle)
-        {
-            float position = posActuelle + déplacement;
-
-            position = MathHelper.Max(MathHelper.Min(position, Terrain.NbColonnes / 2), -Terrain.NbColonnes / 2);
-            position = MathHelper.Max(MathHelper.Min(position, Terrain.NbRangées / 2), -Terrain.NbRangées / 2);
-
-            return position;
-        }
-
         float GérerTouche(Keys touche)
         {
             return GestionInput.EstEnfoncée(touche) ? DÉPLACEMEMENT_MODÈLE : 0;
         }
-
-
-        void AjusterPositionCaméra()
-        {
-
-            //Bouger
-            float positionX = Position.X;
-            float positionY = Position.Y + Hauteur;
-            float positionZ = Position.Z + (DISTANCE_MODÈLE_CAMÉRA);
-            Vector3 positionCaméra = new Vector3(positionX, positionY, positionZ);
-            CaméraJeu.Déplacer(positionCaméra, new Vector3(Position.X, Position.Y + 1.1f, Position.Z), Vector3.Up);
-
-            
-        }
-
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);

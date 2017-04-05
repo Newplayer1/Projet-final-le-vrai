@@ -129,11 +129,27 @@ namespace AtelierXNA
             //déplacement hrizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
-                Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //bool valeur = false;
+                //foreach (Trainer T in Game.Components)
+                //{
+                //    valeur = true;
+                //}
+                //if(valeur)
+                //{
+                //    Trainer LeJoueur;
+                //    LeJoueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
+                //    Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation) * (LeJoueur.Position.X - Position.X)), Position.Y, (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) * (LeJoueur.Position.Z - Position.Z)));
+                //    CréerPointDeVue(Position, LeJoueur.Position,Vector3.Up);
+                //}
+                //else
+                //{
+                    Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                //}
             }
             // déplacement vertical Angle # limite = 45'
             if (GestionInput.GetPositionSouris().Y != Souris.Y)
-            {
+            { 
                 Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
                 Vector3 ancienneDirection = Direction;
                 float angleDirection = (float)Math.Asin(Direction.Y);

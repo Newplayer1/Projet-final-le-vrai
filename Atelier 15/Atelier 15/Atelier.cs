@@ -55,8 +55,10 @@ namespace AtelierXNA
             Services.AddService(typeof(GraphicsDeviceManager), PériphériqueGraphique);
             Services.AddService(typeof(SpriteBatch), new SpriteBatch(GraphicsDevice));
             //Services.AddService(typeof(AccessBaseDeDonnée), new AccessBaseDeDonnée());
+
             PageTitre = new PageTitre(this);
             Components.Add(PageTitre);
+
             ÉtatDépart = ÉtatsDépart.PAGE_TITRE;
 
             //LoadSauvegarde();
@@ -83,14 +85,15 @@ namespace AtelierXNA
                         //PériphériqueGraphique.IsFullScreen = true;
                         PériphériqueGraphique.IsFullScreen = false;
                         PériphériqueGraphique.ApplyChanges();
-
                         CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero /*new Vector3(80, 16, -96)*/, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 
                         Components.Add(CaméraJeu);
                         Services.AddService((typeof (Caméra)),CaméraJeu);
-                        Components.Add(new Afficheur3D(this));
-                        Components.Add(new Jeu(this));
-                        Components.Add(new AfficheurFPS(this,"Arial20",Color.Red, INTERVALLE_CALCUL_FPS));
+
+                        Components.Insert(Components.Count - 1, new Afficheur3D(this));
+                        Components.Insert(Components.Count - 1, new Jeu(this));
+                        
+                        Components.Add(new AfficheurFPS(this,"Arial20",Color.Green, INTERVALLE_CALCUL_FPS));
                         
                         //LoadSauvegarde(); dans l'Initialize
                     }

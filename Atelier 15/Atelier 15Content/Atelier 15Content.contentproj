@@ -164,7 +164,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\AZ.FBX">
+    <Compile Include="Models\Trainer\AZ.FBX">
       <Name>AZ</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -220,8 +220,37 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Professor.fbx">
-      <Name>Professor</Name>
+    <Compile Include="Models\4Charmander\Charmander.FBX">
+      <Name>Charmander</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\1Bulbasaur\images\" />
+    <Folder Include="Models\2Ivysaur\images\" />
+    <Folder Include="Models\3Venusaur\images\" />
+    <Folder Include="Models\5Charmeleon\" />
+    <Folder Include="Models\6Charizard\" />
+    <Folder Include="Models\7Squirte\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\1Bulbasaur\Bulbasaur.FBX">
+      <Name>Bulbasaur</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\2Ivysaur\Ivysaur.FBX">
+      <Name>Ivysaur</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\3Venusaur\VenusaurF.FBX">
+      <Name>VenusaurF</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>

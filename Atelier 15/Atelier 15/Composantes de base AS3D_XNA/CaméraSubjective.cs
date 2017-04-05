@@ -123,7 +123,7 @@ namespace AtelierXNA
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             GestionClavier();
-                TournerCaméraAvecSouris();
+               //// TournerCaméraAvecSouris();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
                 if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))

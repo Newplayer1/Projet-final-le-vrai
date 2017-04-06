@@ -164,13 +164,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Trainer\AZ.FBX">
-      <Name>AZ</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\HerbeB.bmp">
       <Name>HerbeB</Name>
       <Importer>TextureImporter</Importer>

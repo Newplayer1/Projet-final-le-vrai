@@ -16,10 +16,13 @@ namespace AtelierXNA
     {
          public const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 2f;
-
+        const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
+        const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
         const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public float Hauteur { get; private set; }
         TerrainAvecBase Terrain { get; set; }
+        const float VitesseRotation = 1.5f;
+        public Vector2 Souris { get; private set; }
 
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
@@ -30,6 +33,9 @@ namespace AtelierXNA
 
         BasicEffect EffetDeBase { get; set; }
         public BoundingSphere SphèreDeCollisionBalle { get; protected set; }
+        Vector3 Direction { get; set; }
+        Vector3 OrientationVertical { get; } = Vector3.Up;
+        Vector3 Latéral { get; set; } 
 
 
         //public bool EstEnCollision(object autreObjet)
@@ -58,6 +64,7 @@ namespace AtelierXNA
             base.Initialize();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
+            Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
         }
 
         public override void Update(GameTime gameTime)
@@ -69,107 +76,113 @@ namespace AtelierXNA
                 EffectuerMiseÀJour();
                 TempsÉcouléDepuisMAJ = 0;
             }
-
+            Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
         }
-
-        private Vector3 BougerSelonLesNormales(Vector3 nouvellePosition)
-        {
-            Vector2 vecteurPosition = new Vector2(nouvellePosition.X + Terrain.NbColonnes / 2, nouvellePosition.Z + Terrain.NbRangées / 2);
-            float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
-            nouvellePosition = new Vector3(nouvellePosition.X, posY + HAUTEUR_CAMÉRA, nouvellePosition.Z);
-
-            return nouvellePosition;
-        }
-
+        
         protected void EffectuerMiseÀJour()
         {
             BougerTrainer();
-            LimitesTerrain();
             //TournerTrainer();
-            Position = BougerSelonLesNormales(Position);
-            CaméraJeu.Position = new Vector3(Position.X +3, Position.Y + HAUTEUR_CAMÉRA, Position.Z  +3);
+            CaméraJeu.Position = new Vector3(Position.X +3 , Position.Y + HAUTEUR_CAMÉRA, Position.Z  -3);
             CalculerMonde();
+            
         }
-        private void LimitesTerrain()
-        {
 
-        }
         protected void BougerTrainer()
         {
             if (GestionInput.EstClavierActivé)
             {
-                float déplacementHorizontal = GérerTouche(Keys.A) - GérerTouche(Keys.D); // touche d = ajoute des pixels à mon image. touche a = enlève des pixels
-                float déplacementProfondeur = GérerTouche(Keys.S) - GérerTouche(Keys.W);
+                float déplacementHorizontal = GérerTouche(Keys.D) - GérerTouche(Keys.A); // touche d = ajoute des pixels à mon image. touche a = enlève des pixels
+                float déplacementProfondeur = GérerTouche(Keys.W) - GérerTouche(Keys.S);
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {
-                    Position += Vector3.Cross(Vector3.Right + Position, Vector3.Up) * déplacementProfondeur;
-                    Position += Vector3.Right * déplacementHorizontal;
-                    SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius); 
+                    CalculerPosition(déplacementHorizontal, déplacementProfondeur);
                 }
             }
         }
+
+        private void CalculerPosition(float déplacementHorizontal, float déplacementProfondeur)
+        {
+
+            Direction = ((CaméraJeu) as CaméraSubjective).Direction;
+            Latéral = Vector3.Cross(Direction, OrientationVertical);
+
+            Position += Direction * déplacementProfondeur;
+            Position += Latéral * déplacementHorizontal;
+            Limites();
+
+            Vector2 vecteurPosition = new Vector2(Position.X + Terrain.NbColonnes / 2, Position.Z + Terrain.NbRangées / 2);
+            float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
+            Position = new Vector3(Position.X, posY + HAUTEUR_CAMÉRA, Position.Z);
+
+            SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);
+        }
+        private void Limites()
+        {
+            Position = new Vector3( MathHelper.Max(MathHelper.Min(Position.X, Terrain.NbColonnes / 2), -Terrain.NbColonnes / 2),Position.Y,
+             MathHelper.Max(MathHelper.Min(Position.Z, Terrain.NbRangées / 2), -Terrain.NbRangées / 2));
+        }
         private void TournerCaméraAvecSouris()
         {
-            //int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
-            //int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
+            int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
+            int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
 
-            ////déplacement hrizontale Angle # pas de limite
-            //if (GestionInput.GetPositionSouris().X != Souris.X)
-            //{
+            //déplacement hrizontale Angle # pas de limite
+            if (GestionInput.GetPositionSouris().X != Souris.X)
+            {
 
-            //    bool valeur = false;
-            //    for (int i = 0; i < Game.Components.Count; i++)
-            //    {
-            //        if (Game.Components[i] is Trainer)
-            //            valeur = true;
-            //    }
-            //    //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //    if (valeur)
-            //    {
-            //        LeJoueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
-            //        Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
-            //            * (LeJoueur.Position.X - Position.X)), Position.Y,
-            //            (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
-            //            (LeJoueur.Position.Z - Position.Z)));
+                //bool valeur = false;
+                //for (int i = 0; i < Game.Components.Count; i++)
+                //{
+                //    if (Game.Components[i] is Trainer)
+                //        valeur = true;
+                //}
+                ////MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //if (valeur)
+                //{
+                //    ((CaméraJeu) as CaméraSubjective).Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
+                //        * (Position.X - ((CaméraJeu) as CaméraSubjective).Position.X)), ((CaméraJeu) as CaméraSubjective).Position.Y,
+                //        (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
+                //        (Position.Z - ((CaméraJeu) as CaméraSubjective).Position.Z)));
 
-            //        //Position = MathHelper.
-            //        //Vector3.Transform(Position,
-            //        //Matrix.CreateFromAxisAngle(LeJoueur.UpPositionTrainer, DELTA_LACET * valYaw * VitesseRotation));
+                //    //Position = MathHelper.
+                //    //Vector3.Transform(Position,
+                //    //Matrix.CreateFromAxisAngle(LeJoueur.UpPositionTrainer, DELTA_LACET * valYaw * VitesseRotation));
 
-            //        CréerPointDeVue(Position, LeJoueur.Position, Vector3.Up);
-            //        //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
-            //        //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
+                //    ((CaméraJeu) as CaméraSubjective).CréerPointDeVue(((CaméraJeu) as CaméraSubjective).Position, Position, Vector3.Up);
+                //    //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
+                //    //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
 
-            //        //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-            //    }
-            //    else
-            //    {
-            //        Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-            //    }
-            //}
-            //// déplacement vertical Angle # limite = 45'
-            //if (GestionInput.GetPositionSouris().Y != Souris.Y)
-            //{
-            //    Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
-            //    Vector3 ancienneDirection = Direction;
-            //    float angleDirection = (float)Math.Asin(Direction.Y);
-            //    //Marche pas
-            //    if (angleDirection < -100/*angleDirection > ANGLE_MAX || angleDirection < -ANGLE_MAX*/)
-            //    {
-            //        Direction = ancienneDirection;
-            //    }
-            //}
+                //    //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                //}
+                //else
+                //{
+                    ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                //}
+            }
+            // déplacement vertical Angle # limite = 45'
+            if (GestionInput.GetPositionSouris().Y != Souris.Y)
+            {
+                ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
+                Vector3 ancienneDirection = ((CaméraJeu) as CaméraSubjective).Direction;
+                float angleDirection = (float)Math.Asin(((CaméraJeu) as CaméraSubjective).Direction.Y);
+                //Marche pas
+                if (angleDirection < -100/*angleDirection > ANGLE_MAX || angleDirection < -ANGLE_MAX*/)
+                {
+                    ((CaméraJeu) as CaméraSubjective).Direction = ancienneDirection;
+                }
+            }
 
 
         }
         float GérerTouche(Keys touche)
         {
-            return GestionInput.EstEnfoncée(touche) ? DÉPLACEMEMENT_MODÈLE : 0;
+            return GestionInput.EstEnfoncée(touche) ? 1 : 0;
         }
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Game.Window.Title = "........" + CaméraJeu.Position.ToString() + "........" + Position.ToString() + "..........." + (CaméraJeu as CaméraSubjective).Souris.ToString();
+            Game.Window.Title = (CaméraJeu as CaméraSubjective).Souris.ToString();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace AtelierXNA
          CréerPointDeVue();
       }
 
-      protected virtual void CréerPointDeVue(Vector3 position, Vector3 cible, Vector3 orientationVerticale)
+      public virtual void CréerPointDeVue(Vector3 position, Vector3 cible, Vector3 orientationVerticale)
       {
          //Initialisation des propriétés de la matrice de vue (point de vue)
          Position = position;

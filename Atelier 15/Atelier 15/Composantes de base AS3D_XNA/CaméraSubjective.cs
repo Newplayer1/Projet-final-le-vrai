@@ -18,13 +18,12 @@ namespace AtelierXNA
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
         const float RAYON_COLLISION = 1f;
         public Vector3 Direction { get; set; }
-        Vector3 Latéral { get; set; }
+        public Vector3 Latéral { get; private set; }
         float VitesseTranslation { get; set; }
-        float VitesseRotation { get; set; }
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         InputManager GestionInput { get; set; }
-        Trainer LeJoueur { get; set; }
+        float VitesseRotation { get; set; }
 
 
         Vector3 Angle { get; set; }
@@ -83,7 +82,7 @@ namespace AtelierXNA
             GénérerFrustum();
         }
 
-        protected override void CréerPointDeVue(Vector3 position, Vector3 cible, Vector3 orientation)
+        public override void CréerPointDeVue(Vector3 position, Vector3 cible, Vector3 orientation)
         {
             Position = position;
             Cible = cible;

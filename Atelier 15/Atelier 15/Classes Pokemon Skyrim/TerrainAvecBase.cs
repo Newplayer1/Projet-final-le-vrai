@@ -294,6 +294,7 @@ namespace AtelierXNA
 {
     public class TerrainAvecBase : PrimitiveDeBaseAnimée
     {
+        public int HAUTEUR_MAXIMALE => (int)Étendue.Y;
         const int NB_TRIANGLES_PAR_TUILE = 2;
         const int NB_SOMMETS_PAR_TRIANGLE = 3;
         const float MAX_COULEUR = 255f;

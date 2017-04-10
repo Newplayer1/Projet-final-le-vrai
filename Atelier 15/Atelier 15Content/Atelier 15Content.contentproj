@@ -213,37 +213,217 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\4Charmander\Charmander.FBX">
-      <Name>Charmander</Name>
+    <Folder Include="Models\01\images\" />
+    <Folder Include="Models\02\images\" />
+    <Folder Include="Models\03\images\" />
+    <Folder Include="Models\04\images\" />
+    <Folder Include="Models\05\images\" />
+    <Folder Include="Models\06\images\" />
+    <Folder Include="Models\07\images\" />
+    <Folder Include="Models\08\images\" />
+    <Folder Include="Models\09\images\" />
+    <Folder Include="Models\10\images\" />
+    <Folder Include="Models\11\images\" />
+    <Folder Include="Models\12\images\" />
+    <Folder Include="Models\13\Images\" />
+    <Folder Include="Models\14\Images\" />
+    <Folder Include="Models\15\Images\" />
+    <Folder Include="Models\16\Images\" />
+    <Folder Include="Models\17\Images\" />
+    <Folder Include="Models\18\Images\" />
+    <Folder Include="Models\19\Images\" />
+    <Folder Include="Models\20\Images\" />
+    <Folder Include="Models\21\Images\" />
+    <Folder Include="Models\22\Images\" />
+    <Folder Include="Models\23\images\" />
+    <Folder Include="Models\24\images\" />
+    <Folder Include="Models\25\images\" />
+    <Folder Include="Models\26\images\" />
+    <Folder Include="Models\27\images\" />
+    <Folder Include="Models\28\images\" />
+    <Folder Include="Models\29\images\" />
+    <Folder Include="Models\30\images\" />
+    <Folder Include="Models\31\images\" />
+    <Folder Include="Models\32\images\" />
+    <Folder Include="Models\33\images\" />
+    <Folder Include="Models\34\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\01\01.FBX">
+      <Name>01</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\1Bulbasaur\images\" />
-    <Folder Include="Models\2Ivysaur\images\" />
-    <Folder Include="Models\3Venusaur\images\" />
-    <Folder Include="Models\5Charmeleon\" />
-    <Folder Include="Models\6Charizard\" />
-    <Folder Include="Models\7Squirte\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\1Bulbasaur\Bulbasaur.FBX">
-      <Name>Bulbasaur</Name>
+    <Compile Include="Models\02\02.FBX">
+      <Name>02</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\2Ivysaur\Ivysaur.FBX">
-      <Name>Ivysaur</Name>
+    <Compile Include="Models\03\03.FBX">
+      <Name>03</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\3Venusaur\VenusaurF.FBX">
-      <Name>VenusaurF</Name>
+    <Compile Include="Models\04\04.FBX">
+      <Name>04</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\05\05.FBX">
+      <Name>05</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\06\06.FBX">
+      <Name>06</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\07\07.FBX">
+      <Name>07</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\08\08.FBX">
+      <Name>08</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\09\09.FBX">
+      <Name>09</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\10\10.FBX">
+      <Name>10</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\11\11.FBX">
+      <Name>11</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\12\12.FBX">
+      <Name>12</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\13\13.FBX">
+      <Name>13</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\14\14.FBX">
+      <Name>14</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\15\15.FBX">
+      <Name>15</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\16\16.FBX">
+      <Name>16</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\17\17.FBX">
+      <Name>17</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\18\18.FBX">
+      <Name>18</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\19\19.FBX">
+      <Name>19</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\20\20.FBX">
+      <Name>20</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\21\21.FBX">
+      <Name>21</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\22\22.FBX">
+      <Name>22</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\23\23.FBX">
+      <Name>23</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\24\24.FBX">
+      <Name>24</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\25\25.FBX">
+      <Name>25</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\26\26.FBX">
+      <Name>26</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\27\27.FBX">
+      <Name>27</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\28\28.FBX">
+      <Name>28</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\29\29.FBX">
+      <Name>29</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\30\30.FBX">
+      <Name>30</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\31\31.FBX">
+      <Name>31</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\32\32.FBX">
+      <Name>32</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\33\33.FBX">
+      <Name>33</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\34\34.FBX">
+      <Name>34</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>

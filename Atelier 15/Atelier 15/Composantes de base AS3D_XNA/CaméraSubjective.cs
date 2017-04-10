@@ -24,7 +24,6 @@ namespace AtelierXNA
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         InputManager GestionInput { get; set; }
-        public Vector3 nouvellePosition {get;set;}
         Trainer LeJoueur { get; set; }
 
 
@@ -99,84 +98,13 @@ namespace AtelierXNA
             GestionClavier();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                TournerCaméraAvecSouris();
-                DéplacementCaméraAvecJoueur();
                 CréerPointDeVue();
-
                 TempsÉcouléDepuisMAJ = 0;
             }
                 Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             base.Update(gameTime);
         }
-        private void DéplacementCaméraAvecJoueur()
-        {
-            nouvellePosition = Position;
-            float déplacementDirection = (GérerTouche(Keys.S) - GérerTouche(Keys.W)) * VitesseTranslation;
-            float déplacementLatéral = (GérerTouche(Keys.D) - GérerTouche(Keys.A)) * VitesseTranslation;
-            if(déplacementDirection != 0)
-            {
-                nouvellePosition += Vector3.Cross(Latéral,Vector3.Up)* déplacementDirection;
-            }
-            if(déplacementLatéral != 0)
-            {
-                nouvellePosition += Latéral * déplacementLatéral;
-            }     
-            Position = nouvellePosition;
-        }
-        private void TournerCaméraAvecSouris()
-        {
-            int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1; 
-            int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
-
-            //déplacement hrizontale Angle # pas de limite
-            if (GestionInput.GetPositionSouris().X != Souris.X)
-            {
-                
-                bool valeur = false;
-                for (int i = 0;i < Game.Components.Count;i++)
-                {
-                    if(Game.Components[i] is Trainer)
-                        valeur = true;
-                }
-                //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                if (valeur)
-                {
-                    LeJoueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
-                    Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
-                        * (LeJoueur.Position.X - Position.X)), Position.Y,
-                        (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
-                        (LeJoueur.Position.Z - Position.Z)));
-
-                    //Position = MathHelper.
-                    //Vector3.Transform(Position,
-                    //Matrix.CreateFromAxisAngle(LeJoueur.UpPositionTrainer, DELTA_LACET * valYaw * VitesseRotation));
-
-                    CréerPointDeVue(Position, LeJoueur.Position, Vector3.Up);
-                    //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
-                    //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
-
-                    //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-                }
-                else
-                {
-                    Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-                }
-            }
-            // déplacement vertical Angle # limite = 45'
-            if (GestionInput.GetPositionSouris().Y != Souris.Y)
-            { 
-                Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
-                Vector3 ancienneDirection = Direction;
-                float angleDirection = (float)Math.Asin(Direction.Y);
-                //Marche pas
-                if (angleDirection < -100/*angleDirection > ANGLE_MAX || angleDirection < -ANGLE_MAX*/)
-                {
-                    Direction = ancienneDirection;
-                }
-            }
-
-
-        }
+        
         private int GérerTouche(Keys touche)
         {
             return GestionInput.EstEnfoncée(touche) ? 1 : 0;

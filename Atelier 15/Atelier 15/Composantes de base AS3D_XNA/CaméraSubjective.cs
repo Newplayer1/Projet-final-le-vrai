@@ -9,7 +9,7 @@ namespace AtelierXNA
 
         public Vector2 Souris { get; private set; }
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
-        const double ANGLE_MAX = MathHelper.Pi/6;
+        const double ANGLE_MAX = MathHelper.Pi/12;
         const float ACCÉLÉRATION = 0.001f;
         const float VITESSE_INITIALE_ROTATION = 1.5f;
         const float VITESSE_INITIALE_TRANSLATION = 0.05f;
@@ -25,6 +25,7 @@ namespace AtelierXNA
         float TempsÉcouléDepuisMAJ { get; set; }
         InputManager GestionInput { get; set; }
         public Vector3 nouvellePosition {get;set;}
+        Trainer LeJoueur { get; set; }
 
 
         Vector3 Angle { get; set; }
@@ -124,28 +125,42 @@ namespace AtelierXNA
         }
         private void TournerCaméraAvecSouris()
         {
-            int valYaw = GestionInput.GetPositionSouris().X >= Souris.X ? 1 : -1; 
-            int valPitch = GestionInput.GetPositionSouris().Y >= Souris.Y ? 1 : -1;
+            int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1; 
+            int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
+
             //déplacement hrizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
+                
+                bool valeur = false;
+                for (int i = 0;i < Game.Components.Count;i++)
+                {
+                    if(Game.Components[i] is Trainer)
+                        valeur = true;
+                }
                 //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //bool valeur = false;
-                //foreach (Trainer T in Game.Components)
-                //{
-                //    valeur = true;
-                //}
-                //if(valeur)
-                //{
-                //    Trainer LeJoueur;
-                //    LeJoueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
-                //    Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation) * (LeJoueur.Position.X - Position.X)), Position.Y, (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) * (LeJoueur.Position.Z - Position.Z)));
-                //    CréerPointDeVue(Position, LeJoueur.Position,Vector3.Up);
-                //}
-                //else
-                //{
+                if (valeur)
+                {
+                    LeJoueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
+                    Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
+                        * (LeJoueur.Position.X - Position.X)), Position.Y,
+                        (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
+                        (LeJoueur.Position.Z - Position.Z)));
+
+                    //Position = MathHelper.
+                    //Vector3.Transform(Position,
+                    //Matrix.CreateFromAxisAngle(LeJoueur.UpPositionTrainer, DELTA_LACET * valYaw * VitesseRotation));
+
+                    CréerPointDeVue(Position, LeJoueur.Position, Vector3.Up);
+                    //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
+                    //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
+
+                    //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                }
+                else
+                {
                     Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-                //}
+                }
             }
             // déplacement vertical Angle # limite = 45'
             if (GestionInput.GetPositionSouris().Y != Souris.Y)
@@ -153,7 +168,8 @@ namespace AtelierXNA
                 Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
                 Vector3 ancienneDirection = Direction;
                 float angleDirection = (float)Math.Asin(Direction.Y);
-                if (angleDirection > ANGLE_MAX || angleDirection < - ANGLE_MAX)
+                //Marche pas
+                if (angleDirection < -100/*angleDirection > ANGLE_MAX || angleDirection < -ANGLE_MAX*/)
                 {
                     Direction = ancienneDirection;
                 }

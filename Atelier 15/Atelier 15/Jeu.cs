@@ -29,7 +29,7 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
-            const float ÉCHELLE_OBJET = 0.001f;
+            const float ÉCHELLE_OBJET = 0.004f;
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
@@ -43,10 +43,10 @@ namespace AtelierXNA
 
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
-            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "1Bulbasaur/Bulbasaur", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Components.Insert(Game.Components.Count - 1, new Trainer(Game, "3Venusaur/VenusaurF", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
             //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Maison", ÉCHELLE_OBJET * 100, rotationObjet, positionCPU));
             //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Professor", ÉCHELLE_OBJET * 1000, rotationObjet, positionCPU));
-            Game.Services.AddService(typeof(Trainer), new Trainer(Game, "1Bulbasaur/Bulbasaur", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Services.AddService(typeof(Trainer), new Trainer(Game, "3Venusaur/VenusaurF", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
         }
         public override void Update(GameTime gameTime)
         {

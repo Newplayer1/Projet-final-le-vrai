@@ -24,6 +24,7 @@ namespace AtelierXNA
         float IntervalleMAJ { get; set; }
         float Temps…coulÈDepuisMAJ { get; set; }
         float Rayon { get; set; }
+        public Vector3 UpPositionTrainer { get; set; }
 
         Vector3 AnciennePositionCamÈra { get; set; }
         Vector3 PositionAncienne { get; set; }
@@ -54,6 +55,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
+            UpPositionTrainer = Vector3.Up + Position;
             Temps…coulÈDepuisMAJ = 0;
             base.Initialize();
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;

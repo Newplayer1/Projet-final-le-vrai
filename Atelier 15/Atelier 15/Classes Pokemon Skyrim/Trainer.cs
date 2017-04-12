@@ -98,7 +98,7 @@ namespace AtelierXNA
             {
                 //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                float rotation = DELTA_TANGAGE* VitesseRotation;
+                //float rotation = DELTA_TANGAGE* VitesseRotation;
 
 
                 //((CaméraJeu) as CaméraSubjective).Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
@@ -106,14 +106,14 @@ namespace AtelierXNA
                 //    (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
                 //    (Position.Z - ((CaméraJeu) as CaméraSubjective).Position.Z)));
 
-                ((CaméraJeu) as CaméraSubjective).CréerPointDeVue(((CaméraJeu) as CaméraSubjective).Position, Position, Vector3.Up);
+                //((CaméraJeu) as CaméraSubjective).CréerPointDeVue(((CaméraJeu) as CaméraSubjective).Position, Position, Vector3.Up);
                 //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
                 //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
 
                 //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-            }
-            //    ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
 
+                ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+            }
             // déplacement vertical Angle # limite = 45'
             if (GestionInput.GetPositionSouris().Y != Souris.Y)
             {

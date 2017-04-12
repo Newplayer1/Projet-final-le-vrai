@@ -19,8 +19,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
     {
         const int MAX_LEVEL = 100;
         const int NIVEAU_EVOLUTION_EEVEE = 25;
-
-        public BoundingSphere SphèreDeCollisionPokemon { get; set; }
+        
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }
@@ -272,7 +271,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             Générateur = Game.Services.GetService(typeof(Random)) as Random;
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Database = new AccessBaseDeDonnée();
-
+            
             PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
 
             ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
@@ -280,12 +279,13 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             BaseExp = int.Parse(PokemonEnString[12]);
             NiveauEvolution = int.Parse(PokemonEnString[13]);
 
+            //SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            //SphèreDeCollision = new BoundingSphere(, SphèreDeCollision.Radius);
+            SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)

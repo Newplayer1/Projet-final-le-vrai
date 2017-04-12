@@ -45,11 +45,7 @@ namespace AtelierXNA
 
         public void Sauvegarder(List<string> ÉlémentsASauvegarder)
         {
-            //foreach(string e in  ÉlémentsASauvegarder)
-            //{
-
-            //}
-            commande.CommandText = "insert into Sauvegarde(Test,Test2)Values('" + ÉlémentsASauvegarder[0] + "','" + ÉlémentsASauvegarder[1] + "')";
+            commande.CommandText = "insert into Sauvegarde(PositionX,PositionY,PositionZ)Values('" + ÉlémentsASauvegarder[0] + "','" + ÉlémentsASauvegarder[1] + "','" + ÉlémentsASauvegarder[2] + "')";
             commande.ExecuteNonQuery();
         }
         public List<string> LoadSauvegarde()
@@ -61,6 +57,8 @@ namespace AtelierXNA
             {
 
                 Tempo.Add(reader.GetString(0));
+                Tempo.Add(reader.GetString(1));
+                Tempo.Add(reader.GetString(2));
             }
             reader.Close();
             return Tempo;

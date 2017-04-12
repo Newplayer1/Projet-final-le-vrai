@@ -36,23 +36,14 @@ namespace AtelierXNA
         Vector3 OrientationVertical { get; } = Vector3.Up;
         Vector3 Latéral { get; set; }
 
-
-        //public bool EstEnCollision(object autreObjet)
-        //{
-        //    if (!(autreObjet is ICollisionable))
-        //    {
-        //        return false;
-        //    }
-        //    return SphèreDeCollisionBalle.Intersects(((ICollisionable)autreObjet).SphèreDeCollisionBalle);
-        //}
-
+        
         public Trainer(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
             : base(jeu, nomModèle, échelle, rotation, position)
         {
             IntervalleMAJ = intervallleMAJ;
             Rayon = rayon;
 
-            SphèreDeCollision = new BoundingSphere(position, Rayon);
+            //SphèreDeCollision = new BoundingSphere(position, Rayon);
             Hauteur = 2000 * Rayon * Échelle;
         }
 
@@ -76,6 +67,7 @@ namespace AtelierXNA
                 TempsÉcouléDepuisMAJ = 0;
             }
             Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
+            SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
         }
 
         protected void EffectuerMiseÀJour()
@@ -92,7 +84,7 @@ namespace AtelierXNA
             int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
             int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
 
-            //déplacement hrizontale Angle # pas de limite
+            //déplacement horizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
                 //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -171,7 +163,7 @@ namespace AtelierXNA
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Game.Window.Title = (CaméraJeu as CaméraSubjective).Souris.ToString();
+            Game.Window.Title = (CaméraJeu as CaméraSubjective).Souris.ToString() + "............." + Position.ToString();
         }
     }
 }

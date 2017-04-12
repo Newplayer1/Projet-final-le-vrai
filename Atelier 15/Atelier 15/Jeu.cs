@@ -17,41 +17,56 @@ namespace AtelierXNA
     {
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
         const float INTERVALLE_CALCUL_FPS = 1f;
-        const float ÉCHELLE_OBJET = 0.04f;
+        const float ÉCHELLE_OBJET = 0.004f;
+        const int POKEDEX_MAX = 35;
+        Trainer LeJoueur { get; set; }
+        InputManager GestionInput { get; set; }
+        AccessBaseDeDonnée DataBase { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         Random générateurAléatoire { get; set; }
-        //String[] TexturesTerrain = new string[] { "Sable", "HerbeB" };
+        List<Pokemon> PokemonSurLeTerrain { get; set; }
+
         public Jeu(Game game)
             : base(game)
         {
-
+            DataBase = new AccessBaseDeDonnée();
+            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI/4, 0);
+            Vector3 positionCPU = new Vector3(96, 18f, -30);
+            LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
+            PokemonSurLeTerrain = new List<Pokemon>();
+        }
+        public Jeu(Game game,List<string> Sauvegarde)
+            : base(game)
+        {
+            
+            DataBase = new AccessBaseDeDonnée();
+            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
+            LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            PokemonSurLeTerrain = new List<Pokemon>();
         }
         public override void Initialize()
         {
-            const float ÉCHELLE_OBJET = 0.004f;
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
-            Vector3 positionCPU = new Vector3(96, 18f, -30);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
-            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI/4, 0);
-            
 
-
+            ÉtatJeu = ÉtatsJeu.JEU3D;
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Insert(Game.Components.Count - 1, new Afficheur3D(Game));
             TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
-            Game.Components.Add(new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
-            Game.Services.AddService(typeof(Trainer), new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Components.Add(LeJoueur);
+            Game.Services.AddService(typeof(Trainer), LeJoueur);
+            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
         }
         public override void Update(GameTime gameTime)
         {
-            //GérerClavier();
-            GérerTransition();
+            GérerClavier();
+            //GérerTransition();
             GérerÉtat();
             if(Game.Components.Count < 20)
             {
@@ -61,30 +76,45 @@ namespace AtelierXNA
             }
             base.Update(gameTime);
         }
-        private void GérerTransition()
+
+        private void GérerClavier()
+        {
+            if (GestionInput.EstNouvelleTouche(Keys.Enter))
+            {
+                UploadSauvegarde();
+            }
+        }
+
+        private void UploadSauvegarde()
+        {
+            List<string> Sauvegarde = new List<string>();
+            Sauvegarde.Add(LeJoueur.Position.X.ToString());
+            Sauvegarde.Add(LeJoueur.Position.Y.ToString());
+            Sauvegarde.Add(LeJoueur.Position.Z.ToString());
+
+            DataBase.Sauvegarder(Sauvegarde);
+        }
+
+    private void GérerTransition()
         {
             switch (ÉtatJeu)
             {
-                case ÉtatsJeu.PAGE_TITRE:
-                    //GérerTransitionPageTitre();
+                case ÉtatsJeu.JEU3D:
                     break;
-                //case États.JEU3D:
-                //    GérerTransitionJEU3D();
-                //    break;
-                //case États.COMBAT:
-                //    GérerTransitionCombat();
-                //    break;
-                //case États.MAISON:
-                //    GérerTransitionMaison();
-                //    break;
-                //case États.GYM:
-                //    GérerTransitionGym();
-                //    break;
-                //case États.FIN:
-                //    GérerTransitionFin();
-                //    break;
-                //default:
-                //    break;
+                    //case États.COMBAT:
+                    //    GérerTransitionCombat();
+                    //    break;
+                    //case États.MAISON:
+                    //    GérerTransitionMaison();
+                    //    break;
+                    //case États.GYM:
+                    //    GérerTransitionGym();
+                    //    break;
+                    //case États.FIN:
+                    //    GérerTransitionFin();
+                    //    break;
+                    //default:
+                    //    break;
             }
         }
         private void AjoutPokemonsRandom()
@@ -94,10 +124,11 @@ namespace AtelierXNA
             PokemonRandom1 = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Insert(Game.Components.Count - 1, PokemonRandom1);
+            PokemonSurLeTerrain.Add(PokemonRandom1);
         }
         private string TrouverAléatoire()
         {
-            int unNombre = générateurAléatoire.Next(1, 35);
+            int unNombre = générateurAléatoire.Next(1, POKEDEX_MAX);
             string local = unNombre.ToString();
             if (local.Count() == 1)
             {
@@ -132,32 +163,36 @@ namespace AtelierXNA
         {
             switch (ÉtatJeu)
             {
-                case ÉtatsJeu.PAGE_TITRE:
-                    Game.Components.Add(new PageTitre(Game));
+                case ÉtatsJeu.JEU3D:
+                    GérerCollision();
                     break;
-                //case États.JEU3D:
-                //    GérerCollision();
-                //    GérerCombat();
-                //    GérerComputer();
-                //    break;
-                //case États.COMBAT:
-                //    Combat();
-                //    break;
-                //case États.MAISON:
-                //    GérerCollision();
-                //    GérerVitesseDéplacement();
-                //    GérerComputer();
-                //    break;
-                //case États.GYM:
-                //    GérerVitesseDéplacement();
-                //    GérerComputer();
-                //    GérerCombat();
-                //    break;
-                //default: //États.FIN:
-                //    Fin();
-                //    SauvegardeAuto();
-                //    break;
+                    //case États.COMBAT:
+                    //    Combat();
+                    //    break;
+                    //case États.MAISON:
+                    //    GérerCollision();
+                    //    GérerVitesseDéplacement();
+                    //    GérerComputer();
+                    //    break;
+                    //case États.GYM:
+                    //    GérerVitesseDéplacement();
+                    //    GérerComputer();
+                    //    GérerCombat();
+                    //    break;
+                    //default: //États.FIN:
+                    //    Fin();
+                    //    SauvegardeAuto();
+                    //    break;
             }
+        }
+
+        private void GérerCollision()
+        {
+            if (LeJoueur.EstEnCollision(PokemonSurLeTerrain.Where(x => x is Pokemon)))
+            {
+                Game.Exit();
+            }
+
         }
     }
 }

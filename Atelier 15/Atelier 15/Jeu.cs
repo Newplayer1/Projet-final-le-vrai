@@ -39,15 +39,16 @@ namespace AtelierXNA
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Insert(Game.Components.Count - 1, new Afficheur3D(Game));
-            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 25, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
+            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
-            PokemonRandom1 = new Classes_Pokemon_Skyrim.Pokemon(Game, 1, 1, "1/1", ÉCHELLE_OBJET, new Vector3(0,0,0), positionObjet);
+            PokemonRandom1 = new Classes_Pokemon_Skyrim.Pokemon(Game, 1, 1, "01/01", ÉCHELLE_OBJET, new Vector3(0,0,0), positionObjet);
             Game.Services.AddService(typeof(Classes_Pokemon_Skyrim.Pokemon), PokemonRandom1);
             Game.Components.Insert(Game.Components.Count - 1, PokemonRandom1);
+            Game.Components.Add(new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
             //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Maison", ÉCHELLE_OBJET * 100, rotationObjet, positionCPU));
             //Game.Components.Insert(Game.Components.Count - 1, new ObjetDeBase(Game, "Professor", ÉCHELLE_OBJET * 1000, rotationObjet, positionCPU));
-            //Game.Services.AddService(typeof(Trainer), new Trainer(Game, "3Venusaur/VenusaurF", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
+            Game.Services.AddService(typeof(Trainer), new Trainer(Game, "3Venusaur/VenusaurF", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f));
         }
         public override void Update(GameTime gameTime)
         {

@@ -20,6 +20,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
         const int MAX_LEVEL = 100;
         const int NIVEAU_EVOLUTION_EEVEE = 25;
 
+        public BoundingSphere SphèreDeCollisionPokemon { get; set; }
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }
@@ -284,6 +285,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
 
         public override void Update(GameTime gameTime)
         {
+            //SphèreDeCollision = new BoundingSphere(, SphèreDeCollision.Radius);
             base.Update(gameTime);
         }
         public override void Draw(GameTime gameTime)

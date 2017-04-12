@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace AtelierXNA.Classes_Pokemon_Skyrim
+namespace AtelierXNA
 {
     public abstract class Vivant : ObjetDeBase, ICollisionable
     {

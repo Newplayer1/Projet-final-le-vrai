@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    public class Trainer : ObjetDeBase
+    public class Trainer : Vivant
     {
         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 2f;
@@ -32,7 +32,6 @@ namespace AtelierXNA
         protected InputManager GestionInput { get; private set; }
 
         BasicEffect EffetDeBase { get; set; }
-        public BoundingSphere SphèreDeCollisionBalle { get; protected set; }
         Vector3 Direction { get; set; }
         Vector3 OrientationVertical { get; } = Vector3.Up;
         Vector3 Latéral { get; set; }
@@ -53,7 +52,7 @@ namespace AtelierXNA
             IntervalleMAJ = intervallleMAJ;
             Rayon = rayon;
 
-            SphèreDeCollisionBalle = new BoundingSphere(position, Rayon);
+            SphèreDeCollision = new BoundingSphere(position, Rayon);
             Hauteur = 2000 * Rayon * Échelle;
         }
 
@@ -156,7 +155,7 @@ namespace AtelierXNA
             Position = new Vector3(Position.X, posY, Position.Z);
             (CaméraJeu as CaméraSubjective).Position = new Vector3(Position.X + 3, posY + HAUTEUR_CAMÉRA, Position.Z + 3);
 
-            SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);
+            SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
 
         }
         private void Limites()

@@ -14,7 +14,7 @@ namespace AtelierXNA
 
     public class Trainer : ObjetDeBase
     {
-         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
+        public const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 2f;
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
@@ -28,14 +28,14 @@ namespace AtelierXNA
         float TempsÉcouléDepuisMAJ { get; set; }
         float Rayon { get; set; }
         public Vector3 UpPositionTrainer { get; set; }
-        
+
         protected InputManager GestionInput { get; private set; }
 
         BasicEffect EffetDeBase { get; set; }
         public BoundingSphere SphèreDeCollisionBalle { get; protected set; }
         Vector3 Direction { get; set; }
         Vector3 OrientationVertical { get; } = Vector3.Up;
-        Vector3 Latéral { get; set; } 
+        Vector3 Latéral { get; set; }
 
 
         //public bool EstEnCollision(object autreObjet)
@@ -78,14 +78,14 @@ namespace AtelierXNA
             }
             Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
         }
-        
+
         protected void EffectuerMiseÀJour()
         {
             BougerTrainer();
             TournerTrainer();
-            CaméraJeu.Position = new Vector3(Position.X +3 , Position.Y + HAUTEUR_CAMÉRA, Position.Z  -3);
+            CaméraJeu.Position = new Vector3(Position.X + 3, Position.Y + HAUTEUR_CAMÉRA, Position.Z - 3);
             CalculerMonde();
-            
+
         }
 
         private void TournerTrainer()
@@ -96,29 +96,24 @@ namespace AtelierXNA
             //déplacement hrizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
-                ////MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //if (valeur)
-                //{
-                //    ((CaméraJeu) as CaméraSubjective).Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
-                //        * (Position.X - ((CaméraJeu) as CaméraSubjective).Position.X)), ((CaméraJeu) as CaméraSubjective).Position.Y,
-                //        (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
-                //        (Position.Z - ((CaméraJeu) as CaméraSubjective).Position.Z)));
+                //MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                //    //Position = MathHelper.
-                //    //Vector3.Transform(Position,
-                //    //Matrix.CreateFromAxisAngle(LeJoueur.UpPositionTrainer, DELTA_LACET * valYaw * VitesseRotation));
+                float rotation = DELTA_TANGAGE* VitesseRotation;
 
-                //    ((CaméraJeu) as CaméraSubjective).CréerPointDeVue(((CaméraJeu) as CaméraSubjective).Position, Position, Vector3.Up);
-                //    //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
-                //    //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
 
-                //    //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-                //}
-                //else
-                //{
-                    ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
-                //}
+                //((CaméraJeu) as CaméraSubjective).Position = new Vector3((float)(valYaw * Math.Cos(DELTA_TANGAGE * VitesseRotation)
+                //    * (Position.X - ((CaméraJeu) as CaméraSubjective).Position.X)), ((CaméraJeu) as CaméraSubjective).Position.Y,
+                //    (float)(valYaw * Math.Sin(DELTA_TANGAGE * VitesseRotation) *
+                //    (Position.Z - ((CaméraJeu) as CaméraSubjective).Position.Z)));
+
+                ((CaméraJeu) as CaméraSubjective).CréerPointDeVue(((CaméraJeu) as CaméraSubjective).Position, Position, Vector3.Up);
+                //LeJoueur.Position = Vector3.Transform(LeJoueur.Position, 
+                //Matrix.CreateFromAxisAngle(OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation));
+
+                //Direction = Vector3.Normalize(Vector3.Transform(Direction, Matrix.CreateFromAxisAngle(/*LeJoueur.Position*/OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
             }
+            //    ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+
             // déplacement vertical Angle # limite = 45'
             if (GestionInput.GetPositionSouris().Y != Souris.Y)
             {
@@ -131,7 +126,7 @@ namespace AtelierXNA
                     ((CaméraJeu) as CaméraSubjective).Direction = ancienneDirection;
                 }
             }
-    }
+        }
 
         protected void BougerTrainer()
         {
@@ -158,18 +153,18 @@ namespace AtelierXNA
 
             Vector2 vecteurPosition = new Vector2(Position.X + Terrain.NbColonnes / 2, Position.Z + Terrain.NbRangées / 2);
             float posY = (Terrain.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), Terrain.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
-            Position = new Vector3(Position.X, posY,Position.Z);
+            Position = new Vector3(Position.X, posY, Position.Z);
             (CaméraJeu as CaméraSubjective).Position = new Vector3(Position.X + 3, posY + HAUTEUR_CAMÉRA, Position.Z + 3);
 
             SphèreDeCollisionBalle = new BoundingSphere(Position, SphèreDeCollisionBalle.Radius);
-            
+
         }
         private void Limites()
         {
-            Position = new Vector3( MathHelper.Max(MathHelper.Min(Position.X, Terrain.NbColonnes / 2), -Terrain.NbColonnes / 2),Position.Y,
+            Position = new Vector3(MathHelper.Max(MathHelper.Min(Position.X, Terrain.NbColonnes / 2), -Terrain.NbColonnes / 2), Position.Y,
              MathHelper.Max(MathHelper.Min(Position.Z, Terrain.NbRangées / 2), -Terrain.NbRangées / 2));
         }
-       
+
         float GérerTouche(Keys touche)
         {
             return GestionInput.EstEnfoncée(touche) ? 1 : 0;

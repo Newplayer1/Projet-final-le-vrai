@@ -97,8 +97,6 @@ namespace AtelierXNA
                         Components.Insert(Components.Count - 1, new Jeu(this, Sauvegarde));
                         
                         Components.Add(new AfficheurFPS(this,"Arial20",Color.Green, INTERVALLE_CALCUL_FPS));
-                        
-                        //LoadSauvegarde(); dans l'Initialize
                     }
                     if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.PokemonDébut)
                     {

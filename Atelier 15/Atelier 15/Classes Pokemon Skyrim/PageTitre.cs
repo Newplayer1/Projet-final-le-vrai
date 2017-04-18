@@ -127,7 +127,7 @@ namespace AtelierXNA
                 case PageTitreState.MainMenu:
                     if (btnOptions.isclicked) CurrentPageTitreState = PageTitreState.Options;
                     if (btnNewGame.isclicked) CurrentPageTitreState = PageTitreState.PokemonDébut;
-                    if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.Playing;
+                    if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.LoadGame;
                     if (controls.isclicked) CurrentPageTitreState = PageTitreState.Controls;
 
                     btnLoadGame.Update(mouse, gameTime);
@@ -177,7 +177,7 @@ namespace AtelierXNA
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Green);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             switch (CurrentPageTitreState)
             {

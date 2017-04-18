@@ -45,7 +45,7 @@ namespace AtelierXNA
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
-            LeJoueur = new Trainer(Game, "70/70", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Trainer(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
             LeJoueur.PokemonsDansLesMains = new List<int>();
 
             LeJoueur.PokemonsDansLesMains.Add(choix);

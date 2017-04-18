@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using AtelierXNA.Classes_Pokemon_Skyrim;
 
 namespace AtelierXNA
 {
@@ -15,13 +16,18 @@ namespace AtelierXNA
     {
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
+        const int LEVEL_DÉPART = 5;
+
+        Button1 bulbusaur { get; set; }
+        Button1 charmander { get; set; }
+        Button1 squirtle { get; set; }
         GraphicsDeviceManager PériphériqueGraphique { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
         Caméra CaméraJeu { get; set; }
         public PageTitre PageTitre { get; private set; }
         public List<string> Sauvegarde { get; set; }
-
+        RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Model> GestionnaireDeModèles { get; set; }
 
 
@@ -46,11 +52,12 @@ namespace AtelierXNA
             //Components.Add(new ArrièrePlan(this, "CielWindowsXp"));
 
             GestionnaireDeModèles = new RessourcesManager<Model>(this, "Models");
+            GestionnaireDeTextures = new RessourcesManager<Texture2D>(this, "Textures");
 
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
             Services.AddService(typeof(RessourcesManager<Song>), new RessourcesManager<Song>(this, "Songs"));
-            Services.AddService(typeof(RessourcesManager<Texture2D>), new RessourcesManager<Texture2D>(this, "Textures"));
+            Services.AddService(typeof(RessourcesManager<Texture2D>),GestionnaireDeTextures);
             Services.AddService(typeof(RessourcesManager<Model>), GestionnaireDeModèles);
 
             Services.AddService(typeof(InputManager), GestionInput);
@@ -71,9 +78,10 @@ namespace AtelierXNA
         {
             GérerTransition();
             GérerÉtat();
-
             NettoyerListeComponents();
             GérerClavier();
+            //UpdateBoutons(gameTime);
+
             base.Update(gameTime);
         }
         private void GérerTransition()
@@ -92,11 +100,17 @@ namespace AtelierXNA
                         
                         //LoadSauvegarde(); dans l'Initialize
                     }
-                    if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.Playing)
+                    if (PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.PokemonDébut)
                     {
-                        InitializePlaying();
-                        Components.Insert(Components.Count - 1, new Jeu(this));
-                        Components.Add(new AfficheurFPS(this, "Arial20", Color.Green, INTERVALLE_CALCUL_FPS));
+                        if(PageTitre.Yachoisi)
+                        {
+                            Jeu test = new Jeu(this, PageTitre.choix);
+                            InitializePlaying();
+                            Components.Insert(Components.Count - 1, test);
+                            Components.Add(new AfficheurFPS(this, "Arial20", Color.Green, INTERVALLE_CALCUL_FPS));
+                        }
+                        
+                        
                     }
 
 
@@ -111,7 +125,7 @@ namespace AtelierXNA
 
         private void LoadSauvegarde()
         {
-            //on va cherche la sauvegarde dans acees
+            //on va cherche la sauvegarde dans access
 
         }
 
@@ -166,6 +180,7 @@ namespace AtelierXNA
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+
             base.Draw(gameTime);
         }
     }

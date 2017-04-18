@@ -15,8 +15,8 @@ namespace AtelierXNA
     public class PageTitre : Microsoft.Xna.Framework.DrawableGameComponent
     {
         const float INTERVALLEMAJ = 1 / 60f;
-        GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        GraphicsDeviceManager graphics;
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
         Texture2D Background { get; set; }
@@ -32,7 +32,8 @@ namespace AtelierXNA
             Options,
             Playing,
             Controls,
-            LoadGame
+            LoadGame,
+            PokemonDébut
         }
         
 
@@ -51,6 +52,12 @@ namespace AtelierXNA
         Button1 btnSoundOff;
         Button1 btnBack;
         Button1 controls;
+
+        Button1 charmander { get; set; }
+        Button1 bulbusaur { get; set; }
+        Button1 squirtle { get; set; }
+        public bool Yachoisi { get; set; }
+        public int choix { get; set; }
 
         public override void Initialize()
         {
@@ -93,6 +100,13 @@ namespace AtelierXNA
             btnBack = new Button1(Game,GestionnaireDeTextures.Find("btn_back"), graphics.GraphicsDevice, INTERVALLEMAJ);
             controls = new Button1(Game, GestionnaireDeTextures.Find("btn_Controles"), graphics.GraphicsDevice, INTERVALLEMAJ);
 
+            squirtle = new Button1(Game, GestionnaireDeTextures.Find("squirtle"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            squirtle.ResetPosition(new Vector2(600, 200));
+            bulbusaur = new Button1(Game, GestionnaireDeTextures.Find("bulbasaur"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            bulbusaur.ResetPosition(new Vector2(400, 200));
+            charmander = new Button1(Game, GestionnaireDeTextures.Find("Charmander"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            charmander.ResetPosition(new Vector2(200, 200));
+
             btnNewGame.ResetPosition(new Vector2(75, 315));
             btnOptions.ResetPosition(new Vector2(275, 320));
             btnLoadGame.ResetPosition(new Vector2(175, 320));
@@ -111,10 +125,9 @@ namespace AtelierXNA
             switch (CurrentPageTitreState)
             {
                 case PageTitreState.MainMenu:
-                    //MediaPlayer.Play(ChansonTitre);
                     if (btnOptions.isclicked) CurrentPageTitreState = PageTitreState.Options;
-                    if (btnNewGame.isclicked) CurrentPageTitreState = PageTitreState.Playing;
-                    if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.LoadGame;
+                    if (btnNewGame.isclicked) CurrentPageTitreState = PageTitreState.PokemonDébut;
+                    if (btnLoadGame.isclicked) CurrentPageTitreState = PageTitreState.Playing;
                     if (controls.isclicked) CurrentPageTitreState = PageTitreState.Controls;
 
                     btnLoadGame.Update(mouse, gameTime);
@@ -135,40 +148,36 @@ namespace AtelierXNA
                     if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
                     btnBack.Update(mouse, gameTime);
                     break;
+                case PageTitreState.PokemonDébut:
+                    if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
+                    btnBack.Update(mouse, gameTime);
+                    Yachoisi = false;
+                    if (squirtle.isclicked)
+                    {
+                        Yachoisi = true;
+                        choix = 6;
+                    }
+                    if (charmander.isclicked)
+                    {
+                        Yachoisi = true;
+                        choix = 3;
+                    }
+                    if (bulbusaur.isclicked)
+                    {
+                        Yachoisi = true;
+                        choix = 0;
+                    }
+                    bulbusaur.Update(mouse, gameTime);
+                    squirtle.Update(mouse, gameTime);
+                    charmander.Update(mouse, gameTime);
+                    break;
             }
             base.Update(gameTime);
         }
-        //private void NewStateReached(PageTitreState CurrentPageTitreState, bool NewGameReached)
-        //{
-        //    if (CurrentPageTitreState == PageTitreState.Playing)
-        //        NewGameReached = true;
-        //}
-        //private void LoadStateReached(PageTitreState CurrentPageTitreState, bool LoadGameReached)
-        //{
-        //    if (CurrentPageTitreState == PageTitreState.LoadGame)
-        //        LoadGameReached = true;
-        //}
-        //private void GestionMusique()
-        //{
-        //    if (MediaPlayer.State == MediaState.Paused)
-        //    {
-        //        MediaPlayer.Resume();
-        //    }
-        //    else
-        //    {
-        //        if (MediaPlayer.State == MediaState.Playing)
-        //        {
-        //            MediaPlayer.Pause();
-        //        }
-        //        //else
-        //        //{
-        //        //    MediaPlayer.Play(ChansonTitre);
-        //        //}
-        //    }
-        //}
+
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Green);
             spriteBatch.Begin();
             switch (CurrentPageTitreState)
             {
@@ -187,6 +196,13 @@ namespace AtelierXNA
                     spriteBatch.Draw(Background, RectangleAffichage, Color.White);
                     btnSoundOn.Draw(spriteBatch);
                     btnSoundOff.Draw(spriteBatch);
+                    btnBack.Draw(spriteBatch);
+                    break;
+                case PageTitreState.PokemonDébut:
+                    //spriteBatch.Draw(Background, RectangleAffichage, Color.White);
+                    charmander.Draw(spriteBatch);
+                    squirtle.Draw(spriteBatch);
+                    bulbusaur.Draw(spriteBatch);
                     btnBack.Draw(spriteBatch);
                     break;
             }

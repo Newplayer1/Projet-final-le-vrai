@@ -36,8 +36,8 @@ namespace AtelierXNA
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
         }
-        
-        
+
+
         public override void Initialize()
         {
             base.Initialize();

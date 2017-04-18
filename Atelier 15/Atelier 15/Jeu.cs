@@ -39,10 +39,21 @@ namespace AtelierXNA
             LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<Pokemon>();
         }
+        public Jeu(Game game, int choix)
+           : base(game)
+        {
+            DataBase = new AccessBaseDeDonnée();
+            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
+            Vector3 positionCPU = new Vector3(96, 18f, -30);
+            LeJoueur = new Trainer(Game, "70/70", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur.PokemonsDansLesMains = new List<int>();
+
+            LeJoueur.PokemonsDansLesMains.Add(choix);
+            PokemonSurLeTerrain = new List<Pokemon>();
+        }
         public Jeu(Game game,List<string> Sauvegarde)
             : base(game)
         {
-            
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
@@ -65,9 +76,6 @@ namespace AtelierXNA
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Trainer), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            test = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
-            Game.Components.Add(test);
-            PokemonSurLeTerrain.Add(test);
         }
         public override void Update(GameTime gameTime)
         {
@@ -151,11 +159,11 @@ namespace AtelierXNA
         }
         private Vector3 TrouverPositionRandom()
         {
-            float positionRandomX = générateurAléatoire.Next(1, TerrainDeJeu.NbColonnes);
-            float positionRandomY = générateurAléatoire.Next(1, TerrainDeJeu.NbRangées);
+            float positionRandomX = générateurAléatoire.Next(-TerrainDeJeu.NbColonnes / 2, TerrainDeJeu.NbColonnes/2);
+            float positionRandomY = générateurAléatoire.Next(-TerrainDeJeu.NbRangées / 2, TerrainDeJeu.NbRangées/ 2);
 
-            positionRandomX = MathHelper.Max(MathHelper.Min(positionRandomX, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
-            positionRandomY = MathHelper.Max(MathHelper.Min(positionRandomY, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
+            //positionRandomX = MathHelper.Max(MathHelper.Min(positionRandomX, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
+            //positionRandomY = MathHelper.Max(MathHelper.Min(positionRandomY, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
 
             Vector2 position = new Vector2(positionRandomX + TerrainDeJeu.NbColonnes / 2, positionRandomY + TerrainDeJeu.NbRangées / 2);
 

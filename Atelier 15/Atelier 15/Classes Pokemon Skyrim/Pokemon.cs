@@ -91,7 +91,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             CalculerStatsEtHP(Level);//AccessBaseDeDonnées pour remplir les valeurs de stats du pokémon selon son pokedex number et niveau
         }
 
-        void CalculerStatsEtHP(int level)//Refaire à chaque level up, a faire lorsque Access bien implémenté
+            void CalculerStatsEtHP(int level)//Refaire à chaque level up, a faire lorsque Access bien implémenté
         {
             MaxHp = (2 * (int.Parse(PokemonEnString[2]) + 2) * level) / 100 + level + 10;
             StatsFixes = new List<int>();
@@ -279,7 +279,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             BaseExp = int.Parse(PokemonEnString[12]);
             NiveauEvolution = int.Parse(PokemonEnString[13]);
 
-            SphèreDeCollision = new BoundingSphere(Position, 4);
+            SphèreDeCollision = new BoundingSphere(Position, 1);
             base.Initialize();
         }
 

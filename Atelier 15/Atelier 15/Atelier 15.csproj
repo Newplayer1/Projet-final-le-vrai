@@ -131,6 +131,7 @@
     <Compile Include="Classes Pokemon Skyrim\AccessBaseDeDonnée.cs" />
     <Compile Include="Classes Pokemon Skyrim\Attaque.cs" />
     <Compile Include="Classes Pokemon Skyrim\Button1.cs" />
+    <Compile Include="Classes Pokemon Skyrim\ChoixPokemonDébut.cs" />
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
     <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Composantes de base AS3D_XNA\RessourceDeBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturée.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />
+    <Compile Include="Composantes de base AS3D_XNA\Sprite.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TexteCentré.cs" />
     <Compile Include="Jeu.cs" />
     <Compile Include="ObjetDeBase.cs" />

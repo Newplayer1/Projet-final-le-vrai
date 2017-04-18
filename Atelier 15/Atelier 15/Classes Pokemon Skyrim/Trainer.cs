@@ -23,6 +23,7 @@ namespace AtelierXNA
         TerrainAvecBase Terrain { get; set; }
         const float VitesseRotation = 1.5f;
         public Vector2 Souris { get; private set; }
+        public List<int> PokemonsDansLesMains { get; set; }
 
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }

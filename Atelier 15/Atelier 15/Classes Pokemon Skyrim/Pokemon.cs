@@ -279,7 +279,7 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
             BaseExp = int.Parse(PokemonEnString[12]);
             NiveauEvolution = int.Parse(PokemonEnString[13]);
 
-            //SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
+            SphèreDeCollision = new BoundingSphere(Position, 4);
             base.Initialize();
         }
 

@@ -25,6 +25,7 @@ namespace AtelierXNA
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
+        Pokemon test { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         Random générateurAléatoire { get; set; }
         List<Pokemon> PokemonSurLeTerrain { get; set; }
@@ -49,6 +50,8 @@ namespace AtelierXNA
         }
         public override void Initialize()
         {
+            générateurAléatoire = new Random();
+
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
 
@@ -62,6 +65,9 @@ namespace AtelierXNA
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Trainer), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            test = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
+            Game.Components.Add(test);
+            PokemonSurLeTerrain.Add(test);
         }
         public override void Update(GameTime gameTime)
         {
@@ -119,7 +125,6 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            générateurAléatoire = new Random();
 
             PokemonRandom1 = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
@@ -188,11 +193,14 @@ namespace AtelierXNA
 
         private void GérerCollision()
         {
-            if (LeJoueur.EstEnCollision(PokemonSurLeTerrain.Where(x => x is Pokemon)))
+            foreach (Pokemon p in Game.Components.Where(r => r is Pokemon))
             {
-                Game.Exit();
+                if (LeJoueur.EstEnCollision(p))
+                {
+                    Game.Exit();
+                }
             }
-
+        
         }
     }
 }

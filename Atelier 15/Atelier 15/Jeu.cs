@@ -30,15 +30,6 @@ namespace AtelierXNA
         Random générateurAléatoire { get; set; }
         List<Pokemon> PokemonSurLeTerrain { get; set; }
 
-        public Jeu(Game game)
-            : base(game)
-        {
-            DataBase = new AccessBaseDeDonnée();
-            Vector3 rotationObjet = new Vector3(0, -(float)Math.PI/4, 0);
-            Vector3 positionCPU = new Vector3(96, 18f, -30);
-            LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
-            PokemonSurLeTerrain = new List<Pokemon>();
-        }
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -56,7 +47,7 @@ namespace AtelierXNA
         {
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
-            LeJoueur = new Trainer(Game, "03/03", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Trainer(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<Pokemon>();
         }
         public override void Initialize()
@@ -93,10 +84,10 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.Enter))
+            if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouvelleTouche(Keys.Escape))
             {
                 UploadSauvegarde();
-            }
+            }            
         }
 
         private void UploadSauvegarde()

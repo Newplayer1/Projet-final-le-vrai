@@ -154,8 +154,15 @@ namespace AtelierXNA
         }
         protected override void Draw(GameTime gameTime)
         {
+            int noDrawOrder = 0;
+            for (int i = 0; i < Components.Count; ++i)
+            {
+                if (Components[i] is DrawableGameComponent)
+                {
+                    ((DrawableGameComponent)Components[i]).DrawOrder = noDrawOrder++;
+                }
+            }
             GraphicsDevice.Clear(Color.Black);
-
             base.Draw(gameTime);
         }
     }

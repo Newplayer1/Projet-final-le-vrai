@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    public class Trainer : Vivant
+    public class Player : Vivant
     {
         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 2f;
@@ -38,7 +38,7 @@ namespace AtelierXNA
         Vector3 Latéral { get; set; }
 
         
-        public Trainer(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
+        public Player(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
             : base(jeu, nomModèle, échelle, rotation, position)
         {
             IntervalleMAJ = intervallleMAJ;
@@ -90,7 +90,6 @@ namespace AtelierXNA
             {
                 ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
                 Rotation = new Vector3(0, Rotation.Y + DELTA_LACET * valYaw * VitesseRotation, 0);
-                //Position = new Vector3(CaméraJeu.Position.X * ((CaméraJeu) as CaméraSubjective).Direction.X, CaméraJeu.Position.Y * ((CaméraJeu) as CaméraSubjective).Direction., CaméraJeu.Position.Z * ((CaméraJeu) as CaméraSubjective).Direction.Z);
             }
             // déplacement vertical Angle # limite = 45'
             if (GestionInput.GetPositionSouris().Y != Souris.Y)

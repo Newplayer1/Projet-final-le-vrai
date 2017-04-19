@@ -19,10 +19,10 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
-        Trainer LeJoueur { get; set; }
+        Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
-        //Combat LeCombat { get; set; }
+        Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
@@ -37,7 +37,7 @@ namespace AtelierXNA
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
-            LeJoueur = new Trainer(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
             LeJoueur.PokemonsDansLesMains = new List<int>();
 
             LeJoueur.PokemonsDansLesMains.Add(choix);
@@ -49,7 +49,7 @@ namespace AtelierXNA
         {
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
-            LeJoueur = new Trainer(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<Pokemon>();
         }
         public override void Initialize()
@@ -67,9 +67,9 @@ namespace AtelierXNA
             Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
             Game.Components.Add(LeJoueur);
-            Game.Services.AddService(typeof(Trainer), LeJoueur);
+            Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            //Game.Services.AddService(typeof(Combat), LeCombat);
+            Game.Services.AddService(typeof(Combat), LeCombat);
         }
         public override void Update(GameTime gameTime)
         {
@@ -175,7 +175,7 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
-                    //LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
+                    LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();

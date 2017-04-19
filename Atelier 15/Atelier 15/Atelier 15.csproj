@@ -129,15 +129,19 @@
   <ItemGroup>
     <Compile Include="Atelier.cs" />
     <Compile Include="Classes Pokemon Skyrim\AccessBaseDeDonnée.cs" />
+    <Compile Include="Classes Pokemon Skyrim\AfficheurChoix.cs" />
+    <Compile Include="Classes Pokemon Skyrim\AfficheurTexte.cs" />
     <Compile Include="Classes Pokemon Skyrim\Attaque.cs" />
+    <Compile Include="Classes Pokemon Skyrim\BattleMenu.cs" />
     <Compile Include="Classes Pokemon Skyrim\Button1.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Cadre.cs" />
     <Compile Include="Classes Pokemon Skyrim\ChoixPokemonDébut.cs" />
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
     <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
     <Compile Include="Classes Pokemon Skyrim\TerrainAvecBase.cs" />
-    <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Player.cs" />
     <Compile Include="Classes Pokemon Skyrim\Vivant.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Afficheur3D.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Caméra.cs" />

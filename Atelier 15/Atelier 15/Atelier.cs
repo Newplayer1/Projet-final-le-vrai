@@ -11,7 +11,7 @@ using AtelierXNA.Classes_Pokemon_Skyrim;
 
 namespace AtelierXNA
 {
-    enum ÉtatsDépart { PAGE_TITRE, JEU3D, FIN }
+    enum ÉtatsDépart { PAGE_TITRE, JEU3D }
     public class Atelier : Microsoft.Xna.Framework.Game
     {
         const float INTERVALLE_CALCUL_FPS = 1f;
@@ -21,6 +21,7 @@ namespace AtelierXNA
         Button1 bulbusaur { get; set; }
         Button1 charmander { get; set; }
         Button1 squirtle { get; set; }
+        Jeu LeJeu { get; set; }
         GraphicsDeviceManager PériphériqueGraphique { get; set; }
         InputManager GestionInput { get; set; }
         ÉtatsDépart ÉtatDépart { get; set; }
@@ -70,14 +71,11 @@ namespace AtelierXNA
             Components.Add(PageTitre);
 
             ÉtatDépart = ÉtatsDépart.PAGE_TITRE;
-
-            //LoadSauvegarde();
             base.Initialize();
         }
         protected override void Update(GameTime gameTime)
         {
             GérerTransition();
-            GérerÉtat();
             NettoyerListeComponents();
             GérerClavier();
             //UpdateBoutons(gameTime);
@@ -103,21 +101,17 @@ namespace AtelierXNA
                         if(PageTitre.Yachoisi)
                         {
                             
-                            Jeu test = new Jeu(this, PageTitre.choix);
+                            LeJeu = new Jeu(this, PageTitre.choix);
                             InitializePlaying();
-                            Components.Insert(Components.Count - 1, test);
+                            Components.Insert(Components.Count - 1, LeJeu);
                             Components.Add(new AfficheurFPS(this, "Arial20", Color.Green, INTERVALLE_CALCUL_FPS));
                         }
                         
                         
                     }
-
-
                     break;
                 case ÉtatsDépart.JEU3D:
-                    GérerTransitionJEU();
-                    //InitialiserParcours();
-                    //InitialiserCaméra();
+                    Components.Remove(PageTitre);
                     break;
             }
         }
@@ -140,24 +134,6 @@ namespace AtelierXNA
 
             Components.Insert(Components.Count - 1, new Afficheur3D(this));
         }
-
-        private void GérerÉtat()
-        {
-            switch (ÉtatDépart)
-            {
-                case ÉtatsDépart.JEU3D:
-                    //VérifierCollision();
-                    break;
-                default:
-                    break;
-            }
-        }
-        private void GérerTransitionJEU()
-        {
-            Components.Remove(PageTitre);
-
-        }
-
         void NettoyerListeComponents()
         {
             for (int i = Components.Count - 1; i >= 0; --i)

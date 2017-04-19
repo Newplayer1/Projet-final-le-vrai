@@ -155,17 +155,17 @@ namespace AtelierXNA
                     if (squirtle.isclicked)
                     {
                         Yachoisi = true;
-                        choix = 6;
+                        choix = 7;
                     }
                     if (charmander.isclicked)
                     {
                         Yachoisi = true;
-                        choix = 3;
+                        choix = 4;
                     }
                     if (bulbusaur.isclicked)
                     {
                         Yachoisi = true;
-                        choix = 0;
+                        choix = 1;
                     }
                     bulbusaur.Update(mouse, gameTime);
                     squirtle.Update(mouse, gameTime);

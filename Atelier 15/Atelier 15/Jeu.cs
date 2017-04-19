@@ -22,6 +22,7 @@ namespace AtelierXNA
         Trainer LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
+        //Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
@@ -41,6 +42,7 @@ namespace AtelierXNA
 
             LeJoueur.PokemonsDansLesMains.Add(choix);
             PokemonSurLeTerrain = new List<Pokemon>();
+            UploadSauvegarde();
         }
         public Jeu(Game game,List<string> Sauvegarde)
             : base(game)
@@ -67,6 +69,7 @@ namespace AtelierXNA
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Trainer), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            //Game.Services.AddService(typeof(Combat), LeCombat);
         }
         public override void Update(GameTime gameTime)
         {
@@ -84,13 +87,14 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouvelleTouche(Keys.Escape))
+            if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
                 UploadSauvegarde();
-            }            
+            } 
+                       
         }
 
-        private void UploadSauvegarde()
+        public void UploadSauvegarde()
         {
             List<string> Sauvegarde = new List<string>();
             Sauvegarde.Add(LeJoueur.Position.X.ToString());
@@ -170,9 +174,9 @@ namespace AtelierXNA
                 case ÉtatsJeu.JEU3D:
                     GérerCollision();
                     break;
-                    //case États.COMBAT:
-                    //    Combat();
-                    //    break;
+                case ÉtatsJeu.COMBAT:
+                    //LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
+                    break;
                     //case États.MAISON:
                     //    GérerCollision();
                     //    GérerVitesseDéplacement();
@@ -196,7 +200,7 @@ namespace AtelierXNA
             {
                 if (LeJoueur.EstEnCollision(p))
                 {
-                    Game.Exit();
+                    ÉtatJeu = ÉtatsJeu.COMBAT;
                 }
             }
         

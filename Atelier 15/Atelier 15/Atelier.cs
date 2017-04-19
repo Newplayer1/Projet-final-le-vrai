@@ -102,6 +102,7 @@ namespace AtelierXNA
                     {
                         if(PageTitre.Yachoisi)
                         {
+                            
                             Jeu test = new Jeu(this, PageTitre.choix);
                             InitializePlaying();
                             Components.Insert(Components.Count - 1, test);

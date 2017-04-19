@@ -45,7 +45,7 @@ namespace AtelierXNA
 
         public void Sauvegarder(List<string> ÉlémentsASauvegarder)
         {
-            commande.CommandText = "insert into Sauvegarde(PositionX,PositionY,PositionZ)Values('" + ÉlémentsASauvegarder[0] + "','" + ÉlémentsASauvegarder[1] + "','" + ÉlémentsASauvegarder[2] + "')";
+            commande.CommandText = "Update Sauvegarde set PositionX = '" +ÉlémentsASauvegarder[0] + "',PositionY = '" + ÉlémentsASauvegarder[1] + "',PositionZ = '" + ÉlémentsASauvegarder[2] + "'";
             commande.ExecuteNonQuery();
         }
         public List<string> LoadSauvegarde()

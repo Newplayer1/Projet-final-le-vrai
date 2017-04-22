@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
 
-    public class Player : Vivant
+    public class Player : Trainer
     {
         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
         const float HAUTEUR_CAMÉRA = 2f;
@@ -23,7 +23,6 @@ namespace AtelierXNA
         TerrainAvecBase Terrain { get; set; }
         const float VitesseRotation = 1.5f;
         public Vector2 Souris { get; private set; }
-        public List<int> PokemonsDansLesMains { get; set; }
 
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
@@ -39,7 +38,7 @@ namespace AtelierXNA
 
         
         public Player(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
-            : base(jeu, nomModèle, échelle, rotation, position)
+            : base(jeu, "PLAYER", nomModèle, échelle, rotation, position, intervallleMAJ)
         {
             IntervalleMAJ = intervallleMAJ;
             Rayon = rayon;

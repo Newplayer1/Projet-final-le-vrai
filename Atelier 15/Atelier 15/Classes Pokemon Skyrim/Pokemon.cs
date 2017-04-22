@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Data.OleDb;
 
-namespace AtelierXNA.Classes_Pokemon_Skyrim
+namespace AtelierXNA
 {
     public enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
     enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
@@ -19,7 +19,8 @@ namespace AtelierXNA.Classes_Pokemon_Skyrim
     {
         const int MAX_LEVEL = 100;
         const int NIVEAU_EVOLUTION_EEVEE = 25;
-        
+
+        public string Nom => PokemonEnString[1];//C'est le quel pour le nom? (mais surtout, où est passée la database??)
         AccessBaseDeDonnée Database { get; set; }
         Random Générateur { get; set; }
         List<string> PokemonEnString { get; set; }

@@ -11,6 +11,8 @@ namespace AtelierXNA
 {
     public class Cadre : Microsoft.Xna.Framework.DrawableGameComponent, IDestructible
     {
+        public const int LARGEUR_BOX_STANDARD = 32;
+        public const int HAUTEUR_BOX_STANDARD = 6;
         public const int TAILLE_TILE = 16;
         protected bool Clignotant { get; set; }
         string NomImage { get; set; }

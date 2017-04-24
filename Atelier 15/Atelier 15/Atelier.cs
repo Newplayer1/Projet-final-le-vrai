@@ -80,6 +80,7 @@ namespace AtelierXNA
             //UpdateBoutons(gameTime);
 
             base.Update(gameTime);
+            //Window.Title = this.
         }
         private void GérerTransition()
         {

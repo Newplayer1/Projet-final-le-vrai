@@ -111,7 +111,7 @@ namespace AtelierXNA
         
         public override void Initialize()
         {
-            //Party.Add(new Pokemon(Game, "Magikarp"));
+            Party.Add(new Pokemon(Game, 150,100,"150/150", 1f, Rotation, Position));
             Party.Add(new Pokemon(Game, 10,5,"10/10", 1f,Rotation,Position));
             base.Initialize();
         }

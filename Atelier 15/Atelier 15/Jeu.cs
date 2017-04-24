@@ -192,6 +192,7 @@ namespace AtelierXNA
                     //    Fin();
                     //    SauvegardeAuto();
                     //    break;
+                    //
             }
         }
 

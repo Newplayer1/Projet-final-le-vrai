@@ -22,7 +22,7 @@ namespace AtelierXNA
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
-        Combat LeCombat { get; set; }
+        //Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
@@ -62,14 +62,14 @@ namespace AtelierXNA
             ÉtatJeu = ÉtatsJeu.JEU3D;
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
-            Game.Components.Insert(Game.Components.Count - 1, new Afficheur3D(Game));
+            Game.Components.Add(new Afficheur3D(Game));
             TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
-            Game.Components.Insert(Game.Components.Count - 1, TerrainDeJeu);
+            Game.Components.Add(TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            Game.Services.AddService(typeof(Combat), LeCombat);
+            //Game.Services.AddService(typeof(Combat), LeCombat);
         }
         public override void Update(GameTime gameTime)
         {
@@ -79,7 +79,7 @@ namespace AtelierXNA
             if(Game.Components.Count < 20)
             {
                 if(Game.Components.Count(p=> p is Afficheur3D)==2)
-                Game.Components.Insert(Game.Components.Count - 1,new Afficheur3D(Game));
+                Game.Components.Add(new Afficheur3D(Game));
             AjoutPokemonsRandom();
             }
             base.Update(gameTime);
@@ -131,7 +131,7 @@ namespace AtelierXNA
 
             PokemonRandom1 = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
-            Game.Components.Insert(Game.Components.Count - 1, PokemonRandom1);
+            Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }
         private string TrouverAléatoire()
@@ -175,7 +175,7 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
-                    LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
+                    //LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();

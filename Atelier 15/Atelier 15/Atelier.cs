@@ -92,7 +92,7 @@ namespace AtelierXNA
                     {
                         InitializePlaying();
                         LoadSauvegarde();
-                        Components.Insert(Components.Count - 1, new Jeu(this, Sauvegarde));
+                        Components.Add(new Jeu(this, Sauvegarde));
                         
                         Components.Add(new AfficheurFPS(this,"Arial20",Color.Green, INTERVALLE_CALCUL_FPS));
                     }
@@ -103,7 +103,7 @@ namespace AtelierXNA
                             
                             LeJeu = new Jeu(this, PageTitre.choix);
                             InitializePlaying();
-                            Components.Insert(Components.Count - 1, LeJeu);
+                            Components.Add(LeJeu);
                             Components.Add(new AfficheurFPS(this, "Arial20", Color.Green, INTERVALLE_CALCUL_FPS));
                         }
                         
@@ -132,7 +132,7 @@ namespace AtelierXNA
             Components.Add(CaméraJeu);
             Services.AddService((typeof(Caméra)), CaméraJeu);
 
-            Components.Insert(Components.Count - 1, new Afficheur3D(this));
+            Components.Add(new Afficheur3D(this));
         }
         void NettoyerListeComponents()
         {
@@ -154,15 +154,15 @@ namespace AtelierXNA
         }
         protected override void Draw(GameTime gameTime)
         {
-            int noDrawOrder = 0;
-            for (int i = 0; i < Components.Count; ++i)
-            {
-                if (Components[i] is DrawableGameComponent)
-                {
-                    ((DrawableGameComponent)Components[i]).DrawOrder = noDrawOrder++;
-                }
-            }
-            GraphicsDevice.Clear(Color.Black);
+            //int noDrawOrder = 0;
+            //for (int i = 0; i < Components.Count; ++i)
+            //{
+            //    if (Components[i] is DrawableGameComponent)
+            //    {
+            //        ((DrawableGameComponent)Components[i]).DrawOrder = noDrawOrder++;
+            //    }
+            //}
+            //GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
     }

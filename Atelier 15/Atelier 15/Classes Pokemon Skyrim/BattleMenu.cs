@@ -1,426 +1,426 @@
 //Gabriel Paquette, 5 Avril 2017
 //Modifications 5 Avril 2017: créé, ajout des états et switch/case
 //État: En cours, non complet 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using Microsoft.Xna.Framework;
+//using Microsoft.Xna.Framework.Audio;
+//using Microsoft.Xna.Framework.Content;
+//using Microsoft.Xna.Framework.GamerServices;
+//using Microsoft.Xna.Framework.Graphics;
+//using Microsoft.Xna.Framework.Input;
+//using Microsoft.Xna.Framework.Media;
 
 
-namespace AtelierXNA
-{
-    public enum BattleMenuState { MAIN, FIGHT, POKEMON, BAG, RUN, READY }
-    public class BattleMenu : Microsoft.Xna.Framework.DrawableGameComponent, IDestructible
-    {
-        public BattleMenuState BattleMenuState { get; set; }
-        float IntervalMAJ { get; set; }
-        Vector2 Dimensions { get; set; }
-        Vector2 Position { get; set; }
+//namespace AtelierXNA
+//{
+//    public enum BattleMenuState { MAIN, FIGHT, POKEMON, BAG, RUN, READY }
+//    public class BattleMenu : Microsoft.Xna.Framework.DrawableGameComponent, IDestructible
+//    {
+//        public BattleMenuState BattleMenuState { get; set; }
+//        float IntervalMAJ { get; set; }
+//        Vector2 Dimensions { get; set; }
+//        Vector2 Position { get; set; }
 
-        InputManager GestionInput { get; set; }
+//        InputManager GestionInput { get; set; }
 
-        AfficheurChoix MainChoix { get; set; }
-        AfficheurChoix FightChoix { get; set; }
-        AfficheurChoix BagChoix { get; set; }
-        AfficheurChoix PokemonChoix { get; set; }
-        AfficheurTexte Message { get; set; }
-        List<string> ListeChoix { get; set; }
-        public List<DrawableGameComponent> ComposantesBattleMenu { get; set; }
-        public bool AttaqueUtilisée  { get; set; }
-        public bool ItemUtilisé { get; set; }
-        public bool PokémonChangé { get; set; }
-        public bool TentativeFuite { get; set; }
-        public int NuméroChoisi { get; private set; }
+//        AfficheurChoix MainChoix { get; set; }
+//        AfficheurChoix FightChoix { get; set; }
+//        AfficheurChoix BagChoix { get; set; }
+//        AfficheurChoix PokemonChoix { get; set; }
+//        AfficheurTexte Message { get; set; }
+//        List<string> ListeChoix { get; set; }
+//        public List<DrawableGameComponent> ComposantesBattleMenu { get; set; }
+//        public bool AttaqueUtilisée { get; set; }
+//        public bool ItemUtilisé { get; set; }
+//        public bool PokémonChangé { get; set; }
+//        public bool TentativeFuite { get; set; }
+//        public int NuméroChoisi { get; private set; }
 
-        /*
-         Pokemon UserPokemon { get; set; }
-         Trainer UserTrainer { get; set; }
-        */
+//        /*
+//         Pokemon UserPokemon { get; set; }
+//         Trainer UserTrainer { get; set; }
+//        */
 
-            public static bool Wait { get; set; }
-        public static bool EnCombat { get; set; }
+//        public static bool Wait { get; set; }
+//        public static bool EnCombat { get; set; }
 
-        bool àDétruire;
-        public bool ÀDétruire
-        {
-            get
-            {
-                return àDétruire;
-            }
-            set //Pas trop sûr du set
-            {
-                àDétruire = value;
-                foreach (IDestructible item in ComposantesBattleMenu)
-                {
-                    item.ÀDétruire = value;
-                }
-            }
-        }
+//        bool àDétruire;
+//        public bool ÀDétruire
+//        {
+//            get
+//            {
+//                return àDétruire;
+//            }
+//            set //Pas trop sûr du set
+//            {
+//                àDétruire = value;
+//                foreach (IDestructible item in ComposantesBattleMenu)
+//                {
+//                    item.ÀDétruire = value;
+//                }
+//            }
+//        }
 
-        static BattleMenu()
-        {
-            Wait = false;
-            EnCombat = false;
-        }
-        public BattleMenu(Game game, Vector2 position, Vector2 dimensions, float intervalMAJ/*, Pokemon userPokemon, Trainer userTrainer*/)//Tout d'abord on a un afficheur de choix pour le user, qui va en branches avec switch case
-            : base(game)
-        {
-            /*
-             UserPokemon = userPokemon;
-             UserTrainer = userTrainer;
-            */
-            Dimensions = dimensions;
-            Position = position;
-            IntervalMAJ = intervalMAJ;
-            EnCombat = true;
-        }
-        public override void Initialize()
-        {
-            NuméroChoisi = 0;
-            InitialiserMainChoix();
-            InitialiserFightChoix();
-            InitialiserBagChoix();
-            InitialiserPokemonChoix();
+//        static BattleMenu()
+//        {
+//            Wait = false;
+//            EnCombat = false;
+//        }
+//        public BattleMenu(Game game, Vector2 position, Vector2 dimensions, float intervalMAJ/*, Pokemon userPokemon, Trainer userTrainer*/)//Tout d'abord on a un afficheur de choix pour le user, qui va en branches avec switch case
+//            : base(game)
+//        {
+//            /*
+//             UserPokemon = userPokemon;
+//             UserTrainer = userTrainer;
+//            */
+//            Dimensions = dimensions;
+//            Position = position;
+//            IntervalMAJ = intervalMAJ;
+//            EnCombat = true;
+//        }
+//        public override void Initialize()
+//        {
+//            NuméroChoisi = 0;
+//            InitialiserMainChoix();
+//            InitialiserFightChoix();
+//            InitialiserBagChoix();
+//            InitialiserPokemonChoix();
 
-            Wait = AfficheurTexte.MessageEnCours;
-            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+//            Wait = AfficheurTexte.MessageEnCours;
+//            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
 
-            ComposantesBattleMenu = new List<DrawableGameComponent>();
-            ComposantesBattleMenu.Add(MainChoix);
-            ComposantesBattleMenu.Add(FightChoix);
-            ComposantesBattleMenu.Add(BagChoix);
-            ComposantesBattleMenu.Add(PokemonChoix);
-            DisableComponents();
-            foreach (DrawableGameComponent item in ComposantesBattleMenu)
-            {
-                Game.Components.Add(item);
-            }
-            //MainChoix.Enabled = true;
-            //MainChoix.Visible = true;
-            BattleMenuState = BattleMenuState.MAIN;
-            base.Initialize();
-        }
-        
-        private void InitialiserMainChoix()
-        {
-            ListeChoix = new List<string>();
-            ListeChoix.Add("FIGHT");
-            ListeChoix.Add("BAG");
-            ListeChoix.Add("POKEMON");
-            ListeChoix.Add("RUN");
-            MainChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
-        }
-        private void InitialiserFightChoix()
-        {
-            ListeChoix = new List<string>();
-            ListeChoix.Add("Attaque 1");//UserPokemon[0].toString()     //Mettre en boucle (on devra override attaque.tostring)
-            ListeChoix.Add("Attaque 2");//UserPokemon[1].toString()
-            ListeChoix.Add("Attaque 3");//UserPokemon[2].toString()
-            ListeChoix.Add("Attaque 4");//UserPokemon[3].toString()
-            FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
-        }
-        private void InitialiserPokemonChoix()
-        {
-            ListeChoix = new List<string>();
-            ListeChoix.Add("Pok<mon 1");//UserTrainer[0].toString()     //Mettre en boucle (on devra override pokemon.tostring)
-            ListeChoix.Add("Pok<mon 2");//UserTrainer[1].toString()     On va devoir pouvoir les modifier, pour le hp/level
-            ListeChoix.Add("Pok<mon 3");//UserTrainer[2].toString()
-            ListeChoix.Add("Pok<mon 4");//UserTrainer[3].toString()
-            ListeChoix.Add("Pok<mon 5");//UserTrainer[4].toString()
-            ListeChoix.Add("Pok<mon 6");//UserTrainer[5].toString()
-            PokemonChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
+//            ComposantesBattleMenu = new List<DrawableGameComponent>();
+//            ComposantesBattleMenu.Add(MainChoix);
+//            ComposantesBattleMenu.Add(FightChoix);
+//            ComposantesBattleMenu.Add(BagChoix);
+//            ComposantesBattleMenu.Add(PokemonChoix);
+//            DisableComponents();
+//            foreach (DrawableGameComponent item in ComposantesBattleMenu)
+//            {
+//                Game.Components.Add(item);
+//            }
+//            MainChoix.Enabled = true;
+//            MainChoix.Visible = true;
+//            BattleMenuState = BattleMenuState.MAIN;
+//            base.Initialize();
+//        }
 
-        }
+//        private void InitialiserMainChoix()
+//        {
+//            ListeChoix = new List<string>();
+//            ListeChoix.Add("FIGHT");
+//            ListeChoix.Add("BAG");
+//            ListeChoix.Add("POKEMON");
+//            ListeChoix.Add("RUN");
+//            MainChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
+//        }
+//        private void InitialiserFightChoix()
+//        {
+//            ListeChoix = new List<string>();
+//            ListeChoix.Add("Attaque 1");//UserPokemon[0].toString()     //Mettre en boucle (on devra override attaque.tostring)
+//            ListeChoix.Add("Attaque 2");//UserPokemon[1].toString()
+//            ListeChoix.Add("Attaque 3");//UserPokemon[2].toString()
+//            ListeChoix.Add("Attaque 4");//UserPokemon[3].toString()
+//            FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
+//        }
+//        private void InitialiserPokemonChoix()
+//        {
+//            ListeChoix = new List<string>();
+//            ListeChoix.Add("Pok<mon 1");//UserTrainer[0].toString()     //Mettre en boucle (on devra override pokemon.tostring)
+//            ListeChoix.Add("Pok<mon 2");//UserTrainer[1].toString()     On va devoir pouvoir les modifier, pour le hp/level
+//            ListeChoix.Add("Pok<mon 3");//UserTrainer[2].toString()
+//            ListeChoix.Add("Pok<mon 4");//UserTrainer[3].toString()
+//            ListeChoix.Add("Pok<mon 5");//UserTrainer[4].toString()
+//            ListeChoix.Add("Pok<mon 6");//UserTrainer[5].toString()
+//            PokemonChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
-        private void InitialiserBagChoix()//Un trainer peut pas avoir plus que 6 sortes d'items sur lui? (+ simple pour afficher)
-        {
-            ListeChoix = new List<string>();
-            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle (on devra override pokemon.tostring)
-            ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
-            ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
-            ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
-            ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
-            ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
-            BagChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
+//        }
 
-        }
+//        private void InitialiserBagChoix()//Un trainer peut pas avoir plus que 6 sortes d'items sur lui? (+ simple pour afficher)
+//        {
+//            ListeChoix = new List<string>();
+//            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle (on devra override pokemon.tostring)
+//            ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
+//            ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
+//            ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
+//            ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
+//            ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
+//            BagChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
-        public override void Update(GameTime gameTime)
-        {
-            //Wait = AfficheurTexte.MessageEnCours;
-            if (!Wait)
-                GérerTransitions();
-            //GérerÉtats();
-            Wait = AfficheurTexte.MessageEnCours;
-            base.Update(gameTime);
-        }
-        //void GérerÉtats() //ici on exécute ce que l'on fait à un tel état
-        //{
-        //    switch (BattleMenuState)
-        //    {
-        //        case BattleMenuState.MAIN:
-        //            GérerMAIN();
-        //            break;
-        //        case BattleMenuState.FIGHT:
-        //            GérerFIGHT();
-        //            break;
-        //        case BattleMenuState.POKEMON:
-        //            GérerPOKEMON();
-        //            break;
-        //        case BattleMenuState.BAG:
-        //            GérerBAG();
-        //            break;
-        //        case BattleMenuState.RUN:
-        //            GérerRUN();
-        //            break;
-        //        case BattleMenuState.READY:
-        //            GérerREADY();
-        //            break;
-        //    }
-        //}
-        //private void GérerMAIN()
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //private void GérerFIGHT()
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //private void GérerPOKEMON()
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //private void GérerBAG()
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //private void GérerRUN()
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //private void GérerREADY()
-        //{
-        //    throw new NotImplementedException();
-        //}
+//        }
 
-        void GérerTransitions() //ici on vérifie la condition qui change l'état (et on le change au besoin) (rendre visible et enabled)
-        {
-            switch (BattleMenuState)
-            {
-                case BattleMenuState.MAIN:
-                    GérerTransitionMAIN();
-                    break;
-                case BattleMenuState.FIGHT:
-                    GérerTransitionFIGHT();
-                    break;
-                case BattleMenuState.POKEMON:
-                    GérerTransitionPOKEMON();
-                    break;
-                case BattleMenuState.BAG:
-                    GérerTransitionBAG();
-                    break;
-                case BattleMenuState.RUN:
-                    GérerTransitionRUN();
-                    break;
-                case BattleMenuState.READY:
-                    GérerTransitionREADY();
-                    break;
-            }
-        }
+//        public override void Update(GameTime gameTime)
+//        {
+//            Wait = AfficheurTexte.MessageEnCours;
+//            if (!Wait)
+//                GérerTransitions();
+//            GérerÉtats();
+//            Wait = AfficheurTexte.MessageEnCours;
+//            base.Update(gameTime);
+//        }
+//        void GérerÉtats() //ici on exécute ce que l'on fait à un tel état
+//        {
+//            switch (BattleMenuState)
+//            {
+//                case BattleMenuState.MAIN:
+//                    GérerMAIN();
+//                    break;
+//                case BattleMenuState.FIGHT:
+//                    GérerFIGHT();
+//                    break;
+//                case BattleMenuState.POKEMON:
+//                    GérerPOKEMON();
+//                    break;
+//                case BattleMenuState.BAG:
+//                    GérerBAG();
+//                    break;
+//                case BattleMenuState.RUN:
+//                    GérerRUN();
+//                    break;
+//                case BattleMenuState.READY:
+//                    GérerREADY();
+//                    break;
+//            }
+//        }
+//        private void GérerMAIN()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        private void GérerFIGHT()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        private void GérerPOKEMON()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        private void GérerBAG()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        private void GérerRUN()
+//        {
+//            throw new NotImplementedException();
+//        }
+//        private void GérerREADY()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        private void GérerTransitionMAIN()
-        {
-            MainChoix.Visible = true;
-            MainChoix.Enabled = true;
+//        void GérerTransitions() //ici on vérifie la condition qui change l'état (et on le change au besoin) (rendre visible et enabled)
+//        {
+//            switch (BattleMenuState)
+//            {
+//                case BattleMenuState.MAIN:
+//                    GérerTransitionMAIN();
+//                    break;
+//                case BattleMenuState.FIGHT:
+//                    GérerTransitionFIGHT();
+//                    break;
+//                case BattleMenuState.POKEMON:
+//                    GérerTransitionPOKEMON();
+//                    break;
+//                case BattleMenuState.BAG:
+//                    GérerTransitionBAG();
+//                    break;
+//                case BattleMenuState.RUN:
+//                    GérerTransitionRUN();
+//                    break;
+//                case BattleMenuState.READY:
+//                    GérerTransitionREADY();
+//                    break;
+//            }
+//        }
 
-            if (ChoixEstEffectué()) //On a pesé sur A
-            {
-                DisableComponents(); //On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
-                
-                if (MainChoix.IndexSélectionné == 0)
-                {
-                    //MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)
-                    BattleMenuState = BattleMenuState.FIGHT;
-                }
-                if (MainChoix.IndexSélectionné == 1)
-                {
-                    //MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)
-                    BattleMenuState = BattleMenuState.BAG;
-                }
-                if (MainChoix.IndexSélectionné == 2)
-                {
-                    BattleMenuState = BattleMenuState.POKEMON;
-                }
-                if (MainChoix.IndexSélectionné == 3)
-                {
-                    BattleMenuState = BattleMenuState.RUN;
-                }
+//        private void GérerTransitionMAIN()
+//        {
+//            MainChoix.Visible = true;
+//            MainChoix.Enabled = true;
 
-            }
-        }
+//            if (ChoixEstEffectué()) //On a pesé sur A
+//            {
+//                DisableComponents(); //On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
 
-        private void GérerTransitionFIGHT()
-        {
-            MainChoix.Visible = true;
-            FightChoix.Visible = true;
-            FightChoix.Enabled = true;
+//                if (MainChoix.IndexSélectionné == 0)
+//                {
+//                    MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)
+//                    BattleMenuState = BattleMenuState.FIGHT;
+//                }
+//                if (MainChoix.IndexSélectionné == 1)
+//                {
+//                    MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)
+//                    BattleMenuState = BattleMenuState.BAG;
+//                }
+//                if (MainChoix.IndexSélectionné == 2)
+//                {
+//                    BattleMenuState = BattleMenuState.POKEMON;
+//                }
+//                if (MainChoix.IndexSélectionné == 3)
+//                {
+//                    BattleMenuState = BattleMenuState.RUN;
+//                }
 
-            if (ChoixEstEffectué()) //On a pesé sur A
-            {
-                DisableComponents();
-                AttaqueUtilisée = true;
-                NuméroChoisi = FightChoix.IndexSélectionné;
+//            }
+//        }
 
-                if (FightChoix.IndexSélectionné == 0)
-                {
-                    //AttaqueChoisie = UserPokemon[0]; (.ToInt?)
-                    //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 0!", IntervalMAJ);
-                    //Game.Components.Add(message); On doit pas faire ça ici. C'est au Combat de gérer les messages et tout, le menu principal c'est juste pour choisir
-                    
-                    BattleMenuState = BattleMenuState.READY;
-                    //BattleMenuState = BattleMenuState.MAIN;
-                }
-                if (FightChoix.IndexSélectionné == 1)
-                {
-                    //AttaqueChoisie = UserPokemon[1]; (.ToInt?)
+//        private void GérerTransitionFIGHT()
+//        {
+//            MainChoix.Visible = true;
+//            FightChoix.Visible = true;
+//            FightChoix.Enabled = true;
 
-                    //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 1!", IntervalMAJ);
-                    //Game.Components.Add(message);
-                    BattleMenuState = BattleMenuState.READY;
-                    //BattleMenuState = BattleMenuState.MAIN;
-                }
-                if (FightChoix.IndexSélectionné == 2)
-                {
-                    //AttaqueChoisie = UserPokemon[2]; (.ToInt?)
+//            if (ChoixEstEffectué()) //On a pesé sur A
+//            {
+//                DisableComponents();
+//                AttaqueUtilisée = true;
+//                NuméroChoisi = FightChoix.IndexSélectionné;
 
-                    //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 2!", IntervalMAJ);
-                    BattleMenuState = BattleMenuState.READY;
-                    //Game.Components.Add(message);
-                    //BattleMenuState = BattleMenuState.MAIN;
-                }
-                if (FightChoix.IndexSélectionné == 3)
-                {
-                    //AttaqueChoisie = UserPokemon[3]; (.ToInt?)
+//                if (FightChoix.IndexSélectionné == 0)
+//                {
+//                    AttaqueChoisie = UserPokemon[0]; (.ToInt ?)
+//                    AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 0!", IntervalMAJ);
+//                    Game.Components.Add(message); On doit pas faire ça ici. C'est au Combat de gérer les messages et tout, le menu principal c'est juste pour choisir
 
-                    //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 3!", IntervalMAJ);
-                    //Game.Components.Add(message);
-                    BattleMenuState = BattleMenuState.READY;
-                    //BattleMenuState = BattleMenuState.MAIN;
-                }
-            }
+//                    BattleMenuState = BattleMenuState.READY;
+//                    BattleMenuState = BattleMenuState.MAIN;
+//                }
+//                if (FightChoix.IndexSélectionné == 1)
+//                {
+//                    AttaqueChoisie = UserPokemon[1]; (.ToInt ?)
 
-            if (Back()) //On a pesé sur B
-            {
-                DisableComponents();
-                BattleMenuState = BattleMenuState.MAIN;
-            }
-        }
+//                    AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 1!", IntervalMAJ);
+//                    Game.Components.Add(message);
+//                    BattleMenuState = BattleMenuState.READY;
+//                    BattleMenuState = BattleMenuState.MAIN;
+//                }
+//                if (FightChoix.IndexSélectionné == 2)
+//                {
+//                    AttaqueChoisie = UserPokemon[2]; (.ToInt ?)
 
-        private void GérerTransitionPOKEMON()
-        {
-            MainChoix.Visible = true;
-            PokemonChoix.Visible = true;
-            PokemonChoix.Enabled = true;
-            if (ChoixEstEffectué()) //On a pesé sur A
-            {
-                DisableComponents();
-                PokémonChangé = true;
-                NuméroChoisi = FightChoix.IndexSélectionné;
-                //Combat.SwithPokemon(UserTrainer, PokemonChoix.IndexSélectionné);
+//                    AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 2!", IntervalMAJ);
+//                    BattleMenuState = BattleMenuState.READY;
+//                    Game.Components.Add(message);
+//                    BattleMenuState = BattleMenuState.MAIN;
+//                }
+//                if (FightChoix.IndexSélectionné == 3)
+//                {
+//                    AttaqueChoisie = UserPokemon[3]; (.ToInt ?)
 
-                //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User switched pokemon!", IntervalMAJ);
-                //Game.Components.Add(message);
-                BattleMenuState = BattleMenuState.READY;
-                //BattleMenuState = BattleMenuState.MAIN;
-            }
-            if (Back()) //On a pesé sur B
-            {
-                DisableComponents();
-                BattleMenuState = BattleMenuState.MAIN;
-            }
-        }
+//                    AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 3!", IntervalMAJ);
+//                    Game.Components.Add(message);
+//                    BattleMenuState = BattleMenuState.READY;
+//                    BattleMenuState = BattleMenuState.MAIN;
+//                }
+//            }
 
-        private void GérerTransitionBAG()
-        {
-            MainChoix.Visible = true;
-            BagChoix.Visible = true;
-            BagChoix.Enabled = true;
-            if (ChoixEstEffectué()) //On a pesé sur A
-            {
-                DisableComponents();
-                ItemUtilisé = true;
-                NuméroChoisi = FightChoix.IndexSélectionné;
-                //Combat.UseItem(); Pokémon sur lequel il y a un effet, Trainer qui a utilisé l'item, numéro de l'item
-                BattleMenuState = BattleMenuState.READY;
-                //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
-                //Game.Components.Add(message);
-                //BattleMenuState = BattleMenuState.MAIN;
-            }
-            if (Back()) //On a pesé sur B
-            {
-                DisableComponents();
-                BattleMenuState = BattleMenuState.MAIN;
-            }
-        }
+//            if (Back()) //On a pesé sur B
+//            {
+//                DisableComponents();
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//        }
 
-        private void GérerTransitionRUN()
-        {
-            DisableComponents();
-            //if (!Combat.EstOpponentSauvage)
-            //{
-            //    //There's no running from a trainer battle!!
-            //    AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "There's no running from a trainer battle!", IntervalMAJ);
-            //    BattleMenuState = BattleMenuState.MAIN;
-            //}
-            //else
-            //{
-            //    //Bool FailedRunning = true;?
-            //    Message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "Can't escape!", IntervalMAJ);
-            //    Game.Components.Add(Message);
+//        private void GérerTransitionPOKEMON()
+//        {
+//            MainChoix.Visible = true;
+//            PokemonChoix.Visible = true;
+//            PokemonChoix.Enabled = true;
+//            if (ChoixEstEffectué()) //On a pesé sur A
+//            {
+//                DisableComponents();
+//                PokémonChangé = true;
+//                NuméroChoisi = FightChoix.IndexSélectionné;
+//                Combat.SwithPokemon(UserTrainer, PokemonChoix.IndexSélectionné);
 
-            //    //BattleMenuState = BattleMenuState.READY;
-            //    ////BattleMenuState = BattleMenuState.MAIN;
-            //    EnCombat = false;
-            //    ÀDétruire = true;//changer pour state = end dans combat
-            //    //(dans les tours, on va géré selon si le BattleMenu dit qu'on a soit, changé pokemon, attaqué, utilisé item ou run)
-            //}
-            TentativeFuite = true; //le Combat va choisir de l'état du battle menu pour revenir au main ou a end
-        }
+//                AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User switched pokemon!", IntervalMAJ);
+//                Game.Components.Add(message);
+//                BattleMenuState = BattleMenuState.READY;
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//            if (Back()) //On a pesé sur B
+//            {
+//                DisableComponents();
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//        }
 
-        private void GérerTransitionREADY()
-        {
-        }
+//        private void GérerTransitionBAG()
+//        {
+//            MainChoix.Visible = true;
+//            BagChoix.Visible = true;
+//            BagChoix.Enabled = true;
+//            if (ChoixEstEffectué()) //On a pesé sur A
+//            {
+//                DisableComponents();
+//                ItemUtilisé = true;
+//                NuméroChoisi = FightChoix.IndexSélectionné;
+//                Combat.UseItem(); Pokémon sur lequel il y a un effet, Trainer qui a utilisé l'item, numéro de l'item
+//                BattleMenuState = BattleMenuState.READY;
+//                AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
+//                Game.Components.Add(message);
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//            if (Back()) //On a pesé sur B
+//            {
+//                DisableComponents();
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//        }
 
-        bool ChoixEstEffectué()
-        {
-            return GestionInput.EstNouvelleTouche(Keys.A) && (!Wait);
-        }
-        bool Back()
-        {
-            return GestionInput.EstNouvelleTouche(Keys.B) && (!Wait);
-        }
-        void DisableComponents()
-        {
-            foreach (DrawableGameComponent item in ComposantesBattleMenu)
-            {
-                item.Enabled = false;
-                item.Visible = false;
-            }
-            AttaqueUtilisée = false;
-            ItemUtilisé = false;
-            PokémonChangé = false;
-            TentativeFuite = false;
-        }
+//        private void GérerTransitionRUN()
+//        {
+//            DisableComponents();
+//            if (!Combat.EstOpponentSauvage)
+//            {
+//                //There's no running from a trainer battle!!
+//                AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "There's no running from a trainer battle!", IntervalMAJ);
+//                BattleMenuState = BattleMenuState.MAIN;
+//            }
+//            else
+//            {
+//                //Bool FailedRunning = true;?
+//                Message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "Can't escape!", IntervalMAJ);
+//                Game.Components.Add(Message);
 
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-        }
-    }
-}
+//                //BattleMenuState = BattleMenuState.READY;
+//                ////BattleMenuState = BattleMenuState.MAIN;
+//                EnCombat = false;
+//                ÀDétruire = true;//changer pour state = end dans combat
+//                //(dans les tours, on va géré selon si le BattleMenu dit qu'on a soit, changé pokemon, attaqué, utilisé item ou run)
+//            }
+//            TentativeFuite = true; //le Combat va choisir de l'état du battle menu pour revenir au main ou a end
+//        }
+
+//        private void GérerTransitionREADY()
+//        {
+//        }
+
+//        bool ChoixEstEffectué()
+//        {
+//            return GestionInput.EstNouvelleTouche(Keys.A) && (!Wait);
+//        }
+//        bool Back()
+//        {
+//            return GestionInput.EstNouvelleTouche(Keys.B) && (!Wait);
+//        }
+//        void DisableComponents()
+//        {
+//            foreach (DrawableGameComponent item in ComposantesBattleMenu)
+//            {
+//                item.Enabled = false;
+//                item.Visible = false;
+//            }
+//            AttaqueUtilisée = false;
+//            ItemUtilisé = false;
+//            PokémonChangé = false;
+//            TentativeFuite = false;
+//        }
+
+//        public override void Draw(GameTime gameTime)
+//        {
+//            base.Draw(gameTime);
+//        }
+//    }
+//}

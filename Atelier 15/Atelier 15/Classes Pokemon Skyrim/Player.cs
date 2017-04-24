@@ -59,6 +59,8 @@ namespace AtelierXNA
 
         public override void Update(GameTime gameTime)
         {
+            InventairePoks();
+
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
@@ -79,6 +81,22 @@ namespace AtelierXNA
 
         }
 
+        private void InventairePoks()
+        {
+            if (GestionInput.EstEnfoncée(Keys.P))
+            {
+                Game.Components.Add(new TexteFixe(Game, new Vector2(200, 400), AvoirLeBonMessage()));
+            }
+        }
+        private string AvoirLeBonMessage()
+        {
+            string InventaireParLigne = null;
+            for (int i = 0; i < GetNbPokemon + 1; i++)
+            {
+                InventaireParLigne = 2.ToString()/*GetNomPokemon()[i]/* + " Level : " + GetLVLPokemon()[i] + " Type1 : " + GetType1Pokemon()[i] + /*" Type2 : " + GetType2Pokemon()[i] +  +" HP : " + GetHPPokemon()[i]*/;
+            }
+            return InventaireParLigne;
+        }
         private void TournerTrainer()
         {
             int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;

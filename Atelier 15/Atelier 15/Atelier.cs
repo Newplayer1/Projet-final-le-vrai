@@ -7,7 +7,6 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using AtelierXNA.Classes_Pokemon_Skyrim;
 
 namespace AtelierXNA
 {

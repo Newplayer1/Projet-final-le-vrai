@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Data.OleDb;
 
-namespace AtelierXNA.Classes_Pokemon_Skyrim
+namespace AtelierXNA
 {
     enum PokemonTypes { Null, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
     public class Attaque : Microsoft.Xna.Framework.GameComponent

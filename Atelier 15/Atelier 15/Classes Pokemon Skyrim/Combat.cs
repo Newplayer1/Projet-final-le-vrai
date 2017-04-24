@@ -1,23 +1,22 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Audio;
-//using Microsoft.Xna.Framework.Content;
-//using Microsoft.Xna.Framework.GamerServices;
-//using Microsoft.Xna.Framework.Graphics;
-//using Microsoft.Xna.Framework.Input;
-//using Microsoft.Xna.Framework.Media;
-//using AtelierXNA.Classes_Pokemon_Skyrim;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
-//namespace AtelierXNA
-//{
-//    enum CombatState { INI, BATTLE_MENU, IN_BATTLE, VERIFY_OUTCOME, VICTORY, DEFEAT, END }
-//    public class Combat : Microsoft.Xna.Framework.GameComponent, IDestructible
-//    {
-//        float IntervalMAJ { get; set; }
-//        Player UserTrainer { get; set; }
-//        Player OpponentTrainer { get; set; }
+namespace AtelierXNA
+{
+    enum CombatState { INI, BATTLE_MENU, IN_BATTLE, VERIFY_OUTCOME, VICTORY, DEFEAT, END }
+    public class Combat : Microsoft.Xna.Framework.GameComponent, IDestructible
+    {
+        float IntervalMAJ { get; set; }
+        Player UserTrainer { get; set; }
+        Trainer OpponentTrainer { get; set; }
 
 //        Pokemon UserPokemon { get; set; }
 //        Pokemon OpponentPokemon { get; set; }
@@ -52,31 +51,31 @@
 //            }
 //        }
 
-//        public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
-//            : base(game)
-//        {
-//            PositionBox = positionBox;
-//            UserTrainer = user;
-//            OpponentTrainer = opponentTrainer;
-//            EstOpponentSauvage = false;
-//        }
-//        public Combat(Game game, Vector2 positionBox, Trainer user, Pokemon wildPokemon)
-//            : base(game)
-//        {
-//            PositionBox = positionBox;
-//            UserTrainer = user;
-//            //OpponentTrainer = null;
-//            OpponentPokemon = wildPokemon;
-//            EstOpponentSauvage = true;
-//        }
-//        public Combat(Game game, Vector2 positionBox, Player user, Player opponent, float intervalMAJ)
-//            : base(game)
-//        {
-//            PositionBox = positionBox;
-//            IntervalMAJ = intervalMAJ;
-//            UserTrainer = user;
-//            OpponentTrainer = opponent;
-//        }
+        //public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
+        //    : base(game)
+        //{
+        //    PositionBox = positionBox;
+        //    UserTrainer = user;
+        //    OpponentTrainer = opponentTrainer;
+        //    EstOpponentSauvage = false;
+        //}
+        //public Combat(Game game, Vector2 positionBox, Trainer user, Pokemon wildPokemon)
+        //    : base(game)
+        //{
+        //    PositionBox = positionBox;
+        //    UserTrainer = user;
+        //    //OpponentTrainer = null;
+        //    OpponentPokemon = wildPokemon;
+        //    EstOpponentSauvage = true;
+        //}
+        public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)//Ajouter un constructeur pour Wild
+            : base(game)
+        {
+            PositionBox = positionBox;
+            IntervalMAJ = intervalMAJ;
+            UserTrainer = user;
+            OpponentTrainer = opponent;
+        }
 
 //        public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
 //        {
@@ -95,20 +94,20 @@
 //            }//si est sauvage, on a déjà décidé du OpponentPokemon dans le constructeur
 //            UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
 
-//            si pas sauvage, message du trainer, ensuite message du pokemon opponent
-//            ajouter le pokemon opponent, OpponentPokemon = wildPokemon;
-//            OpponentPokemon = OpponentTrainer[0];
-//            UserPokemon = UserTrainer[0];
-//            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: Wild " + OpponentPokemon.Nom + " appeared!", IntervalMAJ);
-//            Game.Components.Add(message);//Message opponent
+            //si pas sauvage, message du trainer, ensuite message du pokemon opponent
+            //ajouter le pokemon opponent, OpponentPokemon = wildPokemon;
+            OpponentPokemon = OpponentTrainer[0];
+            UserPokemon = UserTrainer[0];
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" appeared!", IntervalMAJ);
+            Game.Components.Add(message);//Message opponent
 
 
-//            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
-//            Game.Components.Add(messageB);//Message pokemon user
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
+            Game.Components.Add(messageB);//Message pokemon user
 
 
-//            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD), IntervalMAJ);
-//            Game.Components.Add(MainMenu);
+            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD), IntervalMAJ);
+            Game.Components.Add(MainMenu);
 
 //            MainMenu.BattleMenuState = BattleMenuState.MAIN;
 //            CombatState = CombatState.BATTLE_MENU;
@@ -271,8 +270,24 @@
 //            Détruire le component?
 //            ÀDétruire = true;
 
-//        }
-//        #endregion
+        }
+        void GérerTransitionVICTORY()
+        {
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
+            Game.Components.Add(message);
+            CombatState = CombatState.END;
+        }
+        void GérerTransitionDEFEAT()
+        {
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
+            Game.Components.Add(message);
+            CombatState = CombatState.END;
+        }
+        void GérerTransitionEND()
+        {
+            //GameState = Jeu3D; ??
+            //Détruire le component?
+            ÀDétruire = true;
 
 //        void EffectuerTourUser()
 //        {
@@ -297,40 +312,47 @@
 //            EffectuerAttaque(OpponentPokemon, UserPokemon, 0);
 //        }
 
-//        void EffectuerAttaque(int numéroChoisi)
-//        {
-//            string messageTour = UserPokemon.Nom + " used attack " + numéroChoisi.ToString() + "!";
-//            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
-//            Game.Components.Add(message);
+        void EffectuerTourOpponent()
+        {
+            //choisir une attaque aléatoire
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" used attack 0!", IntervalMAJ);
+            Game.Components.Add(message);//Message opponent
+            EffectuerAttaque(OpponentPokemon, UserPokemon, 0);
+        }
 
-//            EffectuerAttaque(UserPokemon, OpponentPokemon, numéroChoisi);
-//        }
-//        void UtilierItem(int numéroChoisi)
-//        {
-//            string messageTour = "User used item " + numéroChoisi.ToString() + ".";
-//            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
-//            Game.Components.Add(message);
-//            Ensuite on fait l'effet de l'item
-//        }
-//        void ChangerPokémon(int numéroChoisi)
-//        {
-//            string messageTour = "User switched with pokemon " + numéroChoisi.ToString() + ".";
-//            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
-//            Game.Components.Add(message);
-//            faire le reste du code de switch pokemon
-//        }
-//            void EssayerFuir()
-//        {
-//                random selon des probabilités et level des deux pokemons.pour l'instant on doit qu'y réussi à tout coup
-//               AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: Got away safely!", IntervalMAJ);
-//                Game.Components.Add(message);
-//                CombatState = CombatState.END;//On met fin au combat
-//            }
-//            void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)//Maybe, je sais pas trop, reformuler?
+        void EffectuerAttaque(int numéroChoisi)
+        {
+            string messageTour = UserPokemon.Nom +" used attack " + numéroChoisi.ToString() + "!";
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            Game.Components.Add(message);
 
-//            {
-//                opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
-//            }
+            EffectuerAttaque(UserPokemon, OpponentPokemon, numéroChoisi);
+        }
+        void UtilierItem(int numéroChoisi)
+        {
+            string messageTour = "User used item " + numéroChoisi.ToString() + ".";
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            Game.Components.Add(message);
+            //Ensuite on fait l'effet de l'item
+        }
+        void ChangerPokémon(int numéroChoisi)
+        {
+            string messageTour = "User switched with pokemon " + numéroChoisi.ToString() + ".";
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            Game.Components.Add(message);
+            //faire le reste du code de switch pokemon
+        }
+        void EssayerFuir()
+        {
+            //random selon des probabilités et level des deux pokemons. pour l'instant on doit qu'y réussi à tout coup
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Got away safely!", IntervalMAJ);
+            Game.Components.Add(message);
+            CombatState = CombatState.END;//On met fin au combat
+        }
+        void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)//Maybe, je sais pas trop, reformuler?
+        {
+            opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
+        }
 
 //        private int CalculerPointsDamage(int attaqueChoisie, Pokemon attaquant, Pokemon opposant)
 //        {

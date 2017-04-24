@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using AtelierXNA.Classes_Pokemon_Skyrim;
 
 namespace AtelierXNA
 {
@@ -19,6 +18,7 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
+        Vector2 POSITION_BOX_STANDARD = new Vector2(2, 300);  
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
@@ -38,9 +38,10 @@ namespace AtelierXNA
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
             LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
-            LeJoueur.PokemonsDansLesMains = new List<int>();
+            //LeJoueur.PokemonsDansLesMains = new List<int>();
 
-            LeJoueur.PokemonsDansLesMains.Add(choix);
+            //LeJoueur.PokemonsDansLesMains.Add(choix);
+            LeJoueur.AddPokemon(choix); //tout les trainers ont une liste de pokémon, la liste va dans trainer (et faut jamais mettre une liste publique)
             PokemonSurLeTerrain = new List<Pokemon>();
             UploadSauvegarde();
         }
@@ -175,7 +176,7 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
-                    //LeCombat = new Combat(LeJoueur.PokemonsDansLesMains);
+                    LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, , INTERVALLE_MAJ_STANDARD);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();

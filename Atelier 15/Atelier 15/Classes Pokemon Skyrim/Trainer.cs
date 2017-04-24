@@ -15,8 +15,21 @@ namespace AtelierXNA
     public class Trainer : Vivant
     {
         List<Pokemon> Party { get; set; }
-        public new bool EstEnVie => VérifierAlive();
+        List<int> Inventaire { get; set; }
         public string Nom { get; private set; }
+        public int GetNbPokemon => Party.Count;
+         new public bool EstEnVie => VérifierAlive();
+        bool VérifierAlive()
+        {
+            bool valeur = false;
+            foreach (Pokemon item in Party)
+            {
+                if (item.EstEnVie)
+                    valeur = true;
+            }
+            return valeur;
+        }
+
 
         public Pokemon this[int index]
         {
@@ -25,49 +38,43 @@ namespace AtelierXNA
                 return Party[index]; //C'est correct, on veut pas faire de new, on veut changer directement ce pokémon (HP, etc)
             }
         }
+        
 
-        bool VérifierAlive()
+
+
+        public Pokemon NextPokemonEnVie()
         {
-            bool valeur = true;
-            foreach (Pokemon item in Party)
-            {
-                if (!item.EstEnVie)
-                    valeur = false;
-            }
-            return valeur;
+            return Party.Find(pkm => pkm.EstEnVie); //Retourne le premier pokémon trouvé qui est encore en vie.
         }
 
-        public Trainer(Game jeu, string nom, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ)
-            : base(jeu, nomModèle, échelle, rotation, position)
+        public void Heal()
+        {
+            foreach (Pokemon item in Party)
+            {
+                //item.AjouterHP(item.MaxHp);
+            }
+        }
+        public void AddPokemon(int choix)
+        {
+
+        }
+               public Trainer(Game jeu, string nom, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+            : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
             Nom = nom;
+            Party = new List<Pokemon>();
         }
         
         public override void Initialize()
         {
             //Party.Add(new Pokemon(Game, "Magikarp"));
-
-            Party = new List<Pokemon>();
+            //Party.Add(new Pokemon(Game, "Graveler"));
             base.Initialize();
         }
         
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-        }
-
-        public void AddPokemon(Pokemon newPokemon)
-        {
-            Party.Add(newPokemon);//Peut-être add new Pokemon(newPokemon);? (non, pas nécessairement. Inutile car on veut pas créer plein de copies inutiliement)
-        }
-        public void AddPokemon(int pokedexNumber)//on devra faire un constructeur de pokémon qui accepte juste un int
-        {
-            Party.Add(new Pokemon(Game, pokedexNumber, 5));
-        }
-
-        public void RemovePokemon(int index) //Donne juste le choix d'enlever un numéro. Et si on faisait aussi possible d'enlever en donnant le nom du pokémon?
-        {
-            Party.RemoveAt(index);
         }
     }
 }

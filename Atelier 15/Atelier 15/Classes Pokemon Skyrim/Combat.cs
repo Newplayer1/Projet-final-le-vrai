@@ -11,29 +11,40 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    enum CombatState { INI, BATTLE_MENU, IN_BATTLE, VERIFY_OUTCOME, VICTORY, DEFEAT, END }
+    enum CombatState { INI, BATTLE_MENU, IN_BATTLE, TOUR_USER, TOUR_OPPONENT, VERIFY_OUTCOME, VICTORY, DEFEAT, END }
     public class Combat : Microsoft.Xna.Framework.GameComponent, IDestructible
     {
         float IntervalMAJ { get; set; }
-        Player UserTrainer { get; set; }
+        Trainer UserTrainer { get; set; }
         Trainer OpponentTrainer { get; set; }
 
-        Pokemon UserPokemon { get; set; }
+        Pokemon UserPokemon { get; set; } //Le BattleMenu doit avoir accès aux attaques du pokémon... Garder en mémoire l'indice du pkm en jeu?
         Pokemon OpponentPokemon { get; set; }
 
-        AccessBaseDeDonnée Database { get; set; }
-        bool EnCombat { get; set; }
-        bool EstOpponentSauvage { get; set; }
+        //AccessBaseDeDonnée Database { get; set; }
+        //bool EnCombat { get; set; }
+        public bool EstOpponentSauvage { get; private set; }
         bool UserPkmPrioritaire { get; set; }
-        bool TourComplété { get; set; }
+        bool TourComplété => TourUserComplété && TourOpponentComplété;/*{ get; set; }*/
+        bool TourUserComplété { get; set; }
+        bool TourOpponentComplété { get; set; }
 
         CombatState CombatState { get; set; }
         Vector2 PositionBox { get; set; }
         BattleMenu MainMenu { get; set; }
+
+        TexteFixe NomUserPokemon { get; set; }
+        TexteFixe NomOpponentPokemon { get; set; }
+        TexteFixe VieUserPokemon { get; set; }
+        TexteFixe VieOpponentPokemon { get; set; }
+
         public static bool Wait { get; set; }
+
+        public static bool EnCombat { get; set; }
         static Combat()
         {
             Wait = false;
+            EnCombat = false;
         }
 
         bool àDétruire;
@@ -48,65 +59,90 @@ namespace AtelierXNA
             {
                 àDétruire = value;
                 MainMenu.ÀDétruire = value;
+                NomOpponentPokemon.ÀDétruire = value;
+                NomUserPokemon.ÀDétruire = value;
+                VieOpponentPokemon.ÀDétruire = value;
+                VieUserPokemon.ÀDétruire = value;
             }
         }
 
-        public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
-            : base(game)
-        {
-            PositionBox = positionBox;
-            UserTrainer = user;
-            OpponentTrainer = opponentTrainer;
-            EstOpponentSauvage = false;
-        }
-        public Combat(Game game, Vector2 positionBox, Trainer user, Pokemon wildPokemon)
-            : base(game)
-        {
-            PositionBox = positionBox;
-            UserTrainer = user;
-            //OpponentTrainer = null;
-            OpponentPokemon = wildPokemon;
-            EstOpponentSauvage = true;
-        }
-        public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)//Ajouter un constructeur pour Wild
+        //public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
+        //    : base(game)
+        //{
+        //    PositionBox = positionBox;
+        //    UserTrainer = user;
+        //    OpponentTrainer = opponentTrainer;
+        //    EstOpponentSauvage = false;
+        //}
+        //public Combat(Game game, Vector2 positionBox, Trainer user, Pokemon wildPokemon)
+        //    : base(game)
+        //{
+        //    PositionBox = positionBox;
+        //    UserTrainer = user;
+        //    //OpponentTrainer = null;
+        //    OpponentPokemon = wildPokemon;
+        //    EstOpponentSauvage = true;
+        //}
+        public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)
             : base(game)
         {
             PositionBox = positionBox;
             IntervalMAJ = intervalMAJ;
             UserTrainer = user;
             OpponentTrainer = opponent;
+            EstOpponentSauvage = false;
+        }
+        public Combat(Game game, Vector2 positionBox, Player user, Pokemon opponent, float intervalMAJ)
+            : base(game)
+        {
+            PositionBox = positionBox;
+            IntervalMAJ = intervalMAJ;
+            UserTrainer = user;
+            OpponentPokemon = opponent;
+            EstOpponentSauvage = true;
         }
 
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
-            CombatState = CombatState.INI;//changer la position de la caméra icitte
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             EnCombat = true;
-            //GameState = Combat
-            UserPkmPrioritaire = true;
-            //Créer le MainMenu mais le garder invisible?
-            MenuBattle = new BattleMenu(Game, new Vector2(2, 300), new Vector2(32, 6), Atelier.INTERVALLE_STANDARDS);
-            if (!EstOpponentSauvage)
-            {
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
-                Game.Components.Add(message);
-                OpponentPokemon = LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
-            }//si est sauvage, on a déjà décidé du OpponentPokemon dans le constructeur
-            UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
+            CombatState = CombatState.INI;//changer la position de la caméra icitte
+                                          //Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+                                          //EnCombat = true;
+                                          ////GameState = Combat
+                                          //UserPkmPrioritaire = true;
+                                          ////Créer le MainMenu mais le garder invisible?
+                                          //MenuBattle = new BattleMenu(Game, new Vector2(2, 300), new Vector2(32, 6), Atelier.INTERVALLE_STANDARDS);
+                                          //if (!EstOpponentSauvage)
+                                          //{
+                                          //    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
+                                          //    Game.Components.Add(message);
+                                          //    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
+                                          //}//si est sauvage, on a déjà décidé du OpponentPokemon dans le constructeur
+                                          //UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
 
             //si pas sauvage, message du trainer, ensuite message du pokemon opponent
             //ajouter le pokemon opponent, OpponentPokemon = wildPokemon;
-            OpponentPokemon = OpponentTrainer[0];
-            UserPokemon = UserTrainer[0];
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" appeared!", IntervalMAJ);
-            Game.Components.Add(message);//Message opponent
 
+            if (EstOpponentSauvage)
+            {
+                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild " + OpponentPokemon.Nom + " appeared!", IntervalMAJ);
+                Game.Components.Add(message);//Message opponent
+            }
+            else
+            {
+                OpponentPokemon = OpponentTrainer[0];
+                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Trainer "+ OpponentTrainer.Nom + " wants to battle! " + "Trainer " + OpponentTrainer.Nom + " send out "+ OpponentPokemon.Nom + "!", IntervalMAJ);
+                Game.Components.Add(message);//Message opponent
+            }
+            UserPokemon = UserTrainer.NextPokemonEnVie();
 
-            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, UserTrainer.Nom + ": Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
             Game.Components.Add(messageB);//Message pokemon user
 
 
-            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD), IntervalMAJ);
+            AjouterLesTextesFixes();
+            
+            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD),IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);
 
             MainMenu.BattleMenuState = BattleMenuState.MAIN;
@@ -114,71 +150,81 @@ namespace AtelierXNA
             base.Initialize();
         }
 
-        Pokemon LancerPokémon(int index, Trainer trainer)
+        private void AjouterLesTextesFixes()
         {
-            while (!trainer.PokemonsSurLui[index].EstEnVie)
-            {
-                index++;
-            }
-            trainer.Throw(index);
+            NomOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200), OpponentPokemon.ToString());
+            Game.Components.Add(NomOpponentPokemon);
 
-            return trainer.PokemonsSurLui[index];
+            NomUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64), UserPokemon.ToString());
+            Game.Components.Add(NomUserPokemon);
+
+            VieOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200 + Cadre.TAILLE_TILE), OpponentPokemon.HP.ToString());
+            Game.Components.Add(VieOpponentPokemon);
+
+            VieUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64 + Cadre.TAILLE_TILE), UserPokemon.HP.ToString());
+            Game.Components.Add(VieUserPokemon);
+            
+
+            NomOpponentPokemon.Visible = false;
+            NomUserPokemon.Visible = false;
+            VieOpponentPokemon.Visible = false;
+            VieUserPokemon.Visible = false;
         }
-
 
         public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie (both trainer et son pokémon)
         {
-            GérerÉtats(); //Passer gameTime si l'on doit animer qqch
+            //GérerÉtats(); //Passer gameTime si l'on doit animer qqch
             Wait = AfficheurTexte.MessageEnCours;
             if (!Wait)
-                GérerTransitions();
+                GérerTransitions();//si y a pas de message en cours on peut procéder
+
             base.Update(gameTime);//Utile?
         }
 
-        #region GérerÉtats
-        void GérerÉtats() //ici on exécute ce que l'on fait à un tel état
-        {
-            switch (CombatState)
-            {
-                case CombatState.BATTLE_MENU:
-                    GérerBATTLE_MENU();
-                    break;
-                case CombatState.IN_BATTLE:
-                    GérerIN_BATTLE();
-                    break;
-                //case CombatState.VERIFY_OUTCOME:
-                //    GérerVERIFY_ALIVE();
-                //    break;
-                case CombatState.VICTORY:
-                    GérerVICTORY();
-                    break;
-                case CombatState.DEFEAT:
-                    GérerDEFEAT();
-                    break;
-                case CombatState.END:
-                    GérerEND();
-                    break;
-            }
-        }
-        void GérerBATTLE_MENU()
-        {
-        }
-        void GérerIN_BATTLE()
-        {
-            EffectuerTourUser();
-            EffectuerTourOpponent();
-            TourComplété = true; // simple, pour que ça run
-        }
-        void GérerVICTORY()
-        {
-        }
-        void GérerDEFEAT()
-        {
-        }
-        void GérerEND()
-        {
-        }
-        #endregion
+        //#region GérerÉtats
+        //void GérerÉtats() //ici on exécute ce que l'on fait à un tel état
+        //{
+        //    switch (CombatState)
+        //    {
+        //        case CombatState.BATTLE_MENU:
+        //            GérerBATTLE_MENU();
+        //            break;
+        //        case CombatState.IN_BATTLE:
+        //            GérerIN_BATTLE();
+        //            break;
+        //        //case CombatState.VERIFY_OUTCOME:
+        //        //    GérerVERIFY_ALIVE();
+        //        //    break;
+        //        case CombatState.VICTORY:
+        //            GérerVICTORY();
+        //            break;
+        //        case CombatState.DEFEAT:
+        //            GérerDEFEAT();
+        //            break;
+        //        case CombatState.END:
+        //            GérerEND();
+        //            break;
+        //    }
+        //}
+        //void GérerBATTLE_MENU()
+        //{
+        //}
+        //void GérerIN_BATTLE()
+        //{
+        //    EffectuerTourUser();
+        //    EffectuerTourOpponent();
+        //    TourComplété = true; // simple, pour que ça run
+        //}
+        //void GérerVICTORY()
+        //{
+        //}
+        //void GérerDEFEAT()
+        //{
+        //}
+        //void GérerEND()
+        //{
+        //}
+        //#endregion
 
         #region GérerTransition
         void GérerTransitions() //ici on vérifie la condition qui change l'état (et on le change au besoin)
@@ -191,6 +237,12 @@ namespace AtelierXNA
                 case CombatState.IN_BATTLE:
                     GérerTransitionIN_BATTLE();
                     break;
+                case CombatState.TOUR_USER:
+                    GérerTransitionTOUR_USER();
+                    break;
+                case CombatState.TOUR_OPPONENT:
+                    GérerTransitionTOUR_OPPONENT();
+                    break;
                 case CombatState.VERIFY_OUTCOME:
                     GérerTransitionVERIFY_OUTCOME();
                     break;
@@ -200,26 +252,54 @@ namespace AtelierXNA
                 case CombatState.DEFEAT:
                     GérerTransitionDEFEAT();
                     break;
-                case CombatState.END: //default
+                case CombatState.END: //default?
                     GérerTransitionEND();
                     break;
             }
         }
         void GérerTransitionBATTLE_MENU()
         {
-            if (MainMenu.BattleMenuState == BattleMenuState.READY) //? //has reached READY state
-                CombatState = CombatState.IN_BATTLE;
-        }
-        void GérerTransitionIN_BATTLE()//MAIN_MENUSTATE.ÉtatDuMenu == MAIN_MENUSTATE.READY?
-        {
-            if (UserPokemon.EstEnVie)
-                EffectuerTourUser();
-            if (OpponentPokemon.EstEnVie)
-                EffectuerTourOpponent();
+            NomOpponentPokemon.Visible = true;
+            NomUserPokemon.Visible = true;
+            VieOpponentPokemon.Visible = true;
+            VieUserPokemon.Visible = true;
 
-            TourComplété = true; // simple, pour que ça run
-            if (TourComplété)
+            if (MainMenu.BattleMenuState == BattleMenuState.READY) //has reached READY state
+                CombatState = CombatState.IN_BATTLE;
+            if (MainMenu.TentativeFuite && !EstOpponentSauvage)//possible de gosser ici pour pas faire manquer de tour si c'est un trainer
             {
+                EssayerFuir();
+            }
+        }
+        void GérerTransitionIN_BATTLE()
+        {
+            if (UserPokemon.Speed >= OpponentPokemon.Speed)
+            {
+                if (!TourOpponentComplété && OpponentPokemon.EstEnVie) //ça attaque en sens inverse, user avant opponent. Très contre-intuitif, comment ça se fait?
+                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+
+                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
+                    CombatState = CombatState.VERIFY_OUTCOME;
+
+                if (!TourUserComplété && UserPokemon.EstEnVie) 
+                    CombatState = CombatState.TOUR_USER;//EffectuerTourUser();
+            }
+            else
+            {
+                if (!TourUserComplété && UserPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_USER;
+
+                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
+                    CombatState = CombatState.VERIFY_OUTCOME;
+
+                if (!TourOpponentComplété && OpponentPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+            }
+
+            if (TourOpponentComplété && TourUserComplété)
+            {
+                TourUserComplété = false;
+                TourOpponentComplété = false;
                 if (UserPokemon.EstEnVie && OpponentPokemon.EstEnVie) //si les deux sont en vie après s'être battus, retour au MainMenu
                 {
                     MainMenu.BattleMenuState = BattleMenuState.MAIN;
@@ -228,13 +308,37 @@ namespace AtelierXNA
 
                 else //si l'un des deux est mort
                     CombatState = CombatState.VERIFY_OUTCOME;
-
-                CombatState = CombatState.BATTLE_MENU;
-                MainMenu.BattleMenuState = BattleMenuState.MAIN;
-
-                //on va juste retourner au menu quand le tour est fait pour l'instant
-                CombatState = CombatState.VICTORY;//direct pour l'instant, je veux juste créer un combat, faire mon tour pis dire que j'ai gagné, pour pouvoir run le projet
             }
+        }
+
+        void GérerTransitionTOUR_USER()
+        {
+            if (UserPokemon.EstEnVie)
+            {
+                EffectuerTourUser();
+                VieOpponentPokemon.RemplacerMessage(OpponentPokemon.HP.ToString());
+                TourUserComplété = true;
+                if (CombatState != CombatState.END)
+                    CombatState = CombatState.IN_BATTLE;
+            }
+            else
+            {
+                if (MainMenu.PokémonChangé)
+                {
+                    TourOpponentComplété = false;
+                    TourUserComplété = false;
+                    ChangerPokémon(MainMenu.NuméroChoisi);
+                    MainMenu.BattleMenuState = BattleMenuState.MAIN;
+                    CombatState = CombatState.BATTLE_MENU;
+                }
+            }
+        }
+        void GérerTransitionTOUR_OPPONENT()
+        {
+            EffectuerTourOpponent();
+            VieUserPokemon.RemplacerMessage(UserPokemon.HP.ToString());
+            TourOpponentComplété = true;
+            CombatState = CombatState.IN_BATTLE;
         }
         void GérerTransitionVERIFY_OUTCOME()
         {
@@ -243,91 +347,103 @@ namespace AtelierXNA
             {
                 if (EstOpponentSauvage || !(OpponentTrainer.EstEnVie))
                     CombatState = CombatState.VICTORY;
+                else
+                {
+                    ChangerOpponentPokemon();
+                    MainMenu.BattleMenuState = BattleMenuState.MAIN;
+                    CombatState = CombatState.BATTLE_MENU;
+                }
+                    
             }
             else//userPokemon est dead
             {
                 if (!UserTrainer.EstEnVie)
                     CombatState = CombatState.DEFEAT;
+                else
+                {
+                    NomUserPokemon.Visible = false;
+                    VieUserPokemon.Visible = false;
+                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " fainted!", IntervalMAJ);
+                    Game.Components.Add(message);
+                    MainMenu.BackLock = true; //pour forcer à switch de pokemon
+                    MainMenu.BattleMenuState = BattleMenuState.POKEMON;
+                    CombatState = CombatState.TOUR_USER;
+                }
+            }
+        }
+
+
+        void GérerTransitionVICTORY()
+        {
+            if (!EstOpponentSauvage)
+            {
+                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
+                Game.Components.Add(messageA);
+            }
+            else
+            {
+                AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wild " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
+                Game.Components.Add(messageB);
+            }
+            CombatState = CombatState.END;
+        }
+        void GérerTransitionDEFEAT()
+        {
+            if (!EstOpponentSauvage)
+            {
+                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
+                Game.Components.Add(messageA);
             }
 
-
-        }
-        void GérerTransitionVICTORY()
-        {
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
-            Game.Components.Add(message);
-            CombatState = CombatState.END;
-        }
-        void GérerTransitionDEFEAT()
-        {
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
-            Game.Components.Add(message);
-            CombatState = CombatState.END;
-        }
-        void GérerTransitionEND()
-        {
-            GameState = Jeu3D; /*??*/
-            //Détruire le component?
-            ÀDétruire = true;
-
-        }
-        void GérerTransitionVICTORY()
-        {
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
-            Game.Components.Add(message);
-            CombatState = CombatState.END;
-        }
-        void GérerTransitionDEFEAT()
-        {
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
-            Game.Components.Add(message);
+            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Player is out of pokemon. Go to the Pokemon Center.", IntervalMAJ);
+            Game.Components.Add(messageB);
             CombatState = CombatState.END;
         }
         void GérerTransitionEND()
         {
             //GameState = Jeu3D; ??
             //Détruire le component?
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "CombatState End", IntervalMAJ);
+            Game.Components.Add(messageB);//Message pokemon user
+            EnCombat = false;
             ÀDétruire = true;
 
-            void EffectuerTourUser()
+        }
+        #endregion
+
+        void EffectuerTourUser()
         {
-                if (MainMenu.AttaqueUtilisée)
-                    EffectuerAttaque(UserPokemon, OpponentPokemon, numéroAttaqueChoisie
-    
-                    EffectuerAttaque(MainMenu.NuméroChoisi);
-                else if (MainMenu.ItemUtilisé)
-                    UtilierItem(MainMenu.NuméroChoisi);
-                else if (MainMenu.PokémonChangé)
-                    ChangerPokémon(MainMenu.NuméroChoisi);
-                else if (MainMenu.TentativeFuite)
-                    EssayerFuir();
-            }
+            if (MainMenu.AttaqueUtilisée)
+                //EffectuerAttaque(UserPokemon, OpponentPokemon, numéroAttaqueChoisie
+                EffectuerAttaque(MainMenu.NuméroChoisi);
+            else if (MainMenu.ItemUtilisé)
+                UtilierItem(MainMenu.NuméroChoisi);
+            else if (MainMenu.PokémonChangé)
+                ChangerPokémon(MainMenu.NuméroChoisi);
+            else if (MainMenu.TentativeFuite)
+                EssayerFuir();
+        }
 
 
 
-            void EffectuerTourOpponent()
-        {
-                choisir une attaque aléatoire
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Atelier.LARGEUR_BOX_STANDARD, Atelier.HAUTEUR_BOX_STANDARD, "temp: Wild " + OpponentPokemon.Nom + " used attack 0!", IntervalMAJ);
-                Game.Components.Add(message);//Message opponent
-                EffectuerAttaque(OpponentPokemon, UserPokemon, 0);
-            }
-
-            void EffectuerTourOpponent()
+        void EffectuerTourOpponent()
         {
             //choisir une attaque aléatoire
+            
             AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" used attack 0!", IntervalMAJ);
             Game.Components.Add(message);//Message opponent
             EffectuerAttaque(OpponentPokemon, UserPokemon, 0);
+            
         }
 
         void EffectuerAttaque(int numéroChoisi)
         {
+            
             string messageTour = UserPokemon.Nom +" used attack " + numéroChoisi.ToString() + "!";
             AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
             Game.Components.Add(message);
-
             EffectuerAttaque(UserPokemon, OpponentPokemon, numéroChoisi);
+            
         }
         void UtilierItem(int numéroChoisi)
         {
@@ -338,17 +454,51 @@ namespace AtelierXNA
         }
         void ChangerPokémon(int numéroChoisi)
         {
-            string messageTour = "User switched with pokemon " + numéroChoisi.ToString() + ".";
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            UserPokemon = UserTrainer[numéroChoisi];//ligne de code qui switch de pokémon
+            NomUserPokemon.RemplacerMessage(UserPokemon.ToString());
+            VieUserPokemon.RemplacerMessage(UserPokemon.HP.ToString());
+
+            string messageTour = UserTrainer.Nom + " send out " + UserPokemon.Nom + "!";
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
             Game.Components.Add(message);
+
             //faire le reste du code de switch pokemon
+        }
+
+        void ChangerOpponentPokemon()
+        {
+            TourOpponentComplété = false;
+            TourUserComplété = false;
+            AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, OpponentTrainer.Nom + "'s " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
+            Game.Components.Add(messageA);
+
+            OpponentPokemon = OpponentTrainer.NextPokemonEnVie();//ligne de code qui switch de pokémon
+            NomOpponentPokemon.RemplacerMessage(OpponentPokemon.ToString());
+            VieOpponentPokemon.RemplacerMessage(OpponentPokemon.HP.ToString());
+
+            string messageTour = OpponentTrainer.Nom + " send out " + OpponentPokemon.Nom + "!";
+            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            Game.Components.Add(messageB);
         }
         void EssayerFuir()
         {
+            MainMenu.TentativeFuite = false;
             //random selon des probabilités et level des deux pokemons. pour l'instant on doit qu'y réussi à tout coup
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Got away safely!", IntervalMAJ);
-            Game.Components.Add(message);
-            CombatState = CombatState.END;//On met fin au combat
+            if (!EstOpponentSauvage)
+            {
+                TourUserComplété = true;
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "There's no running from a trainer battle!", IntervalMAJ);
+                Game.Components.Add(message);
+                MainMenu.BattleMenuState = BattleMenuState.MAIN;
+                CombatState = CombatState.BATTLE_MENU;
+            }
+            else
+            {
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Got away safely!", IntervalMAJ);
+                Game.Components.Add(message);
+                CombatState = CombatState.END;//On met fin au combat
+            }
+
         }
         void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)//Maybe, je sais pas trop, reformuler?
         {
@@ -357,7 +507,7 @@ namespace AtelierXNA
 
         private int CalculerPointsDamage(int attaqueChoisie, Pokemon attaquant, Pokemon opposant)
         {
-            return ((2 * attaquant.Level / 5 + 2) * /*atk.Power*/20 * (attaquant.Attack / opposant.Defense) / 50 + 2) * /*multiplicateurType*/1;
+            return ((2 * attaquant.Level / 5 + 2) * /*atk.Power*/50 * (attaquant.Attack / opposant.Defense) / 50 + 2) * /*multiplicateurType*/1;
         }
     }
 }

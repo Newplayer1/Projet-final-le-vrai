@@ -22,7 +22,7 @@ namespace AtelierXNA
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
-        //Combat LeCombat { get; set; }
+        Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
         Pokemon PokemonRandom1 { get; set; }
@@ -176,7 +176,7 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
-                    LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, , INTERVALLE_MAJ_STANDARD);
+                    //LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, , INTERVALLE_MAJ_STANDARD);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();

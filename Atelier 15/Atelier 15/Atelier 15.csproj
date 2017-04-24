@@ -139,10 +139,11 @@
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
     <Compile Include="Classes Pokemon Skyrim\EncodeurFont.cs" />
     <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Player.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
     <Compile Include="Classes Pokemon Skyrim\TerrainAvecBase.cs" />
-    <Compile Include="Classes Pokemon Skyrim\Player.cs" />
+    <Compile Include="Classes Pokemon Skyrim\TexteFixe.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />
     <Compile Include="Classes Pokemon Skyrim\Vivant.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Afficheur3D.cs" />

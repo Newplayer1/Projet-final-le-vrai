@@ -36,7 +36,7 @@ namespace AtelierXNA
         private void InitialiserConnection()
         {
             connection = new OleDbConnection();
-            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Antoine\Desktop\Base-de-données-Pokemon.accdb;
+            connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Antoine\Source\Repos\Projet-final-le-vrai\Base-de-données-Pokemon.accdb;
                                             Persist Security Info=False;";
             connection.Open();
             commande = new OleDbCommand();

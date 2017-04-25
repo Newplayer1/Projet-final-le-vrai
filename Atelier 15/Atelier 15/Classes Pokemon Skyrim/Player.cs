@@ -43,7 +43,7 @@ namespace AtelierXNA
             IntervalleMAJ = intervallleMAJ;
             Rayon = rayon;
 
-            //SphèreDeCollision = new BoundingSphere(position, Rayon);
+            SphèreDeCollision = new BoundingSphere(position, Rayon);
             Hauteur = 2000 * Rayon * Échelle;
         }
 

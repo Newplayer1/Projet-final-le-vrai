@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public abstract class Vivant : ObjetDeBase, ICollisionable
+    public abstract class Vivant : ObjetDeBase
     {
 
         //Pour la position, dans ObjetDeBase et dans les PrimitiveDeBase-Animée, la position n'est jamais updatée... Alors comment fait-on pour avoir la position après déplacement? 
@@ -21,16 +21,7 @@ namespace AtelierXNA
         public bool EstEnVie { get; protected set; }
         string NomTexture { get; set; }
         Texture2D Texture { get; set; }
-        public BoundingSphere SphèreDeCollision { get; protected set; }
-
-        public bool EstEnCollision(object autreObjet)
-        {
-            if (!(autreObjet is ICollisionable))
-            {
-                return false;
-            }
-            return SphèreDeCollision.Intersects(((ICollisionable)autreObjet).SphèreDeCollision);
-        }
+        
 
         public Vivant(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)

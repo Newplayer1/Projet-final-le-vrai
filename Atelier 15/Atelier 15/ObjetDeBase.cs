@@ -6,36 +6,55 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtelierXNA
 {
-   public class ObjetDeBase : Microsoft.Xna.Framework.DrawableGameComponent
-   {
-      string NomModèle { get; set; }
-      RessourcesManager<Model> GestionnaireDeModèles { get; set; }
-      public Caméra CaméraJeu { get; set; }
-      public float Échelle { get; protected set; }
-      public Vector3 Rotation { get; protected set; }
-      public Vector3 Position { get;  set; }
+    public class ObjetDeBase : Microsoft.Xna.Framework.DrawableGameComponent, ICollisionable
+    {
+        string NomModèle { get; set; }
+        RessourcesManager<Model> GestionnaireDeModèles { get; set; }
+        public Caméra CaméraJeu { get; set; }
+        public float Échelle { get; protected set; }
+        public Pokemon UnPokemon { get; protected set; }
+        public Vector3 Rotation { get; protected set; }
+        public Vector3 Position { get; set; }
 
-      protected Model Modèle { get; private set; }
-      protected Matrix[] TransformationsModèle { get; private set; }
-      protected Matrix Monde { get; set; }
- 
-      public ObjetDeBase(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
-         : base(jeu)
-      {
-         NomModèle = nomModèle;
-         Position = positionInitiale;
-         Échelle = échelleInitiale;
-         Rotation = rotationInitiale;
-      }
+        protected Model Modèle { get; private set; }
+        protected Matrix[] TransformationsModèle { get; private set; }
+        protected Matrix Monde { get; set; }
+        public BoundingSphere SphèreDeCollision { get; protected set; }
 
-      public override void Initialize()
-      {
-         Monde = Matrix.Identity;
-         Monde *= Matrix.CreateScale(Échelle);
-         Monde *= Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
-         Monde *= Matrix.CreateTranslation(Position);
-         base.Initialize();
-      }
+        public bool EstEnCollision(object autreObjet)
+        {
+            if (!(autreObjet is ICollisionable))
+            {
+                return false;
+            }
+            return SphèreDeCollision.Intersects(((ICollisionable)autreObjet).SphèreDeCollision);
+        }
+        public ObjetDeBase(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+           : base(jeu)
+        {
+            NomModèle = nomModèle;
+            Position = positionInitiale;
+            Échelle = échelleInitiale;
+            Rotation = rotationInitiale;
+        }
+        public ObjetDeBase(Game jeu, Pokemon unPokemon, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+           : base(jeu)
+        {
+            UnPokemon = unPokemon;
+            NomModèle = nomModèle;
+            Position = positionInitiale;
+            Échelle = échelleInitiale;
+            Rotation = rotationInitiale;
+        }
+        public override void Initialize()
+        {
+            Monde = Matrix.Identity;
+            Monde *= Matrix.CreateScale(Échelle);
+            Monde *= Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
+            Monde *= Matrix.CreateTranslation(Position);
+            base.Initialize();
+            SphèreDeCollision = new BoundingSphere(Position, 4);
+        }
         protected void CalculerMonde()
         {
             Monde = Matrix.Identity;
@@ -43,34 +62,35 @@ namespace AtelierXNA
             Monde *= Matrix.CreateWorld(Position, -((CaméraJeu) as CaméraSubjective).Direction, Vector3.Up);
         }
         protected override void LoadContent()
-      {
-         CaméraJeu = Game.Services.GetService(typeof(Caméra)) as Caméra;
-         GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
-         Modèle = GestionnaireDeModèles.Find(NomModèle);
-         TransformationsModèle = new Matrix[Modèle.Bones.Count];
-         Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
-      }
+        {
+            CaméraJeu = Game.Services.GetService(typeof(Caméra)) as Caméra;
+            GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
+            Modèle = GestionnaireDeModèles.Find(NomModèle);
+            TransformationsModèle = new Matrix[Modèle.Bones.Count];
+            Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
+        }
 
-      public override void Draw(GameTime gameTime)
-      {
-         foreach (ModelMesh maille in Modèle.Meshes)
-         {
-            Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();
-            foreach (ModelMeshPart portionDeMaillage in maille.MeshParts)
+        public override void Draw(GameTime gameTime)
+        {
+            SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
+            foreach (ModelMesh maille in Modèle.Meshes)
             {
-               BasicEffect effet = (BasicEffect)portionDeMaillage.Effect;
-               effet.EnableDefaultLighting();
-               effet.Projection = CaméraJeu.Projection;
-               effet.View = CaméraJeu.Vue;
-               effet.World = mondeLocal;
+                Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();
+                foreach (ModelMeshPart portionDeMaillage in maille.MeshParts)
+                {
+                    BasicEffect effet = (BasicEffect)portionDeMaillage.Effect;
+                    effet.EnableDefaultLighting();
+                    effet.Projection = CaméraJeu.Projection;
+                    effet.View = CaméraJeu.Vue;
+                    effet.World = mondeLocal;
+                }
+                maille.Draw();
             }
-            maille.Draw();
-         }
-      }
+        }
 
-      public virtual Matrix GetMonde()
-      {
-         return Monde;
-      }
-   }
+        public virtual Matrix GetMonde()
+        {
+            return Monde;
+        }
+    }
 }

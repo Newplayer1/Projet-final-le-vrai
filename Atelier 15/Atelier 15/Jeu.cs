@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using AtelierXNA;
 
 namespace AtelierXNA
 {
@@ -25,11 +26,12 @@ namespace AtelierXNA
         Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
-        Pokemon PokemonRandom1 { get; set; }
-        Pokemon test { get; set; }
+        ObjetDeBase PokemonRandom1 { get; set; }
+        Pokemon PokemonRandom1String { get; set; }
+        Pokemon_B test { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         Random générateurAléatoire { get; set; }
-        List<Pokemon> PokemonSurLeTerrain { get; set; }
+        List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
 
         public Jeu(Game game, int choix)
            : base(game)
@@ -42,7 +44,7 @@ namespace AtelierXNA
 
             //LeJoueur.PokemonsDansLesMains.Add(choix);
             LeJoueur.AddPokemon(choix); //tout les trainers ont une liste de pokémon, la liste va dans trainer (et faut jamais mettre une liste publique)
-            PokemonSurLeTerrain = new List<Pokemon>();
+            PokemonSurLeTerrain = new List<ObjetDeBase>();
             UploadSauvegarde();
         }
         public Jeu(Game game,List<string> Sauvegarde)
@@ -51,7 +53,7 @@ namespace AtelierXNA
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
-            PokemonSurLeTerrain = new List<Pokemon>();
+            PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
         {
@@ -129,8 +131,9 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-
-            PokemonRandom1 = new Pokemon(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
+            PokemonRandom1String = new Pokemon(TrouverAléatoire());
+            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1String,TrouverAléatoire(), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
+            //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
@@ -176,13 +179,13 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
-                    //LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, , INTERVALLE_MAJ_STANDARD);
+                    LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();
                     //    GérerVitesseDéplacement();
-                    //    GérerComputer();
                     //    break;
+                    //    GérerComputer();
                     //case États.GYM:
                     //    GérerVitesseDéplacement();
                     //    GérerComputer();
@@ -198,7 +201,7 @@ namespace AtelierXNA
 
         private void GérerCollision()
         {
-            foreach (Pokemon p in Game.Components.Where(r => r is Pokemon))
+            foreach (ObjetDeBase p in Game.Components.Where(r => r is ObjetDeBase))
             {
                 if (LeJoueur.EstEnCollision(p))
                 {

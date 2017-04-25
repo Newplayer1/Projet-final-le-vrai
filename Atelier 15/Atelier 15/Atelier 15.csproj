@@ -142,6 +142,7 @@
     <Compile Include="Classes Pokemon Skyrim\Player.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
+    <Compile Include="Classes Pokemon Skyrim\Pokemon_B.cs" />
     <Compile Include="Classes Pokemon Skyrim\TerrainAvecBase.cs" />
     <Compile Include="Classes Pokemon Skyrim\TexteFixe.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />

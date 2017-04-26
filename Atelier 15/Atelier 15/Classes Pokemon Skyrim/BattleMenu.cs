@@ -428,7 +428,7 @@ namespace AtelierXNA
 
         bool ChoixEstEffectué()
         {
-            return GestionInput.EstNouvelleTouche(Keys.A);
+            return GestionInput.EstNouvelleTouche(Keys.Space);
         }
         bool Back()
         {

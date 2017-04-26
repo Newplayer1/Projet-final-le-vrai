@@ -162,6 +162,7 @@
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Sprite.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TexteCentré.cs" />
+    <Compile Include="Flags.cs" />
     <Compile Include="Jeu.cs" />
     <Compile Include="ObjetDeBase.cs" />
     <Compile Include="PrimitiveDeBase.cs" />

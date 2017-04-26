@@ -36,7 +36,7 @@ namespace AtelierXNA
         Vector3 OrientationVertical { get; } = Vector3.Up;
         Vector3 Latéral { get; set; }
 
-        
+
         public Player(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
             : base(jeu, "PLAYER", nomModèle, échelle, rotation, position)
         {
@@ -74,8 +74,11 @@ namespace AtelierXNA
 
         protected void EffectuerMiseÀJour()
         {
-            BougerTrainer();
-            TournerTrainer();
+            if (!(Combat.EnCombat && AfficheurTexte.MessageEnCours))
+            {
+                BougerTrainer();
+                TournerTrainer();
+            }
             CaméraJeu.Position = new Vector3(Position.X + 3, Position.Y + HAUTEUR_CAMÉRA, Position.Z - 3);
             CalculerMonde();
 
@@ -86,12 +89,12 @@ namespace AtelierXNA
             //bool InventaireOuvert = false;
             if (GestionInput.EstNouvelleTouche(Keys.P))
             {
-                
+
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
                     InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + /*" Type1 : " + GetType1Pokemon()[i] + " Type2 : " + GetType2Pokemon()[i] +*/ " HP : " + GetHPPokemon()[i];
-                    Game.Components.Add(new TexteFixe(Game, new Vector2(1 , 1+ i * 16), InventaireParLigne));
+                    Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
                 }//InventaireOuvert = true;
             }
             //if (InventaireOuvert)

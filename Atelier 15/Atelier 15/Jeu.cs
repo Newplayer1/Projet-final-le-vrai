@@ -178,12 +178,13 @@ namespace AtelierXNA
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
+                    if (!(Game.Components.Contains(Game.Components.Where(c => c is Combat) as Combat)) && !Flags.Combat)
+                    {
+                        Flags.Combat = true;
+                        LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
+                        Game.Components.Add(LeCombat);
+                    }
                     break;
-                    //case États.MAISON:
-                    //    GérerCollision();
-                    //    GérerVitesseDéplacement();
-                    //    break;
-                    //    GérerComputer();
                     //case États.GYM:
                     //    GérerVitesseDéplacement();
                     //    GérerComputer();
@@ -205,9 +206,9 @@ namespace AtelierXNA
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {
-                        LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
-                        Game.Components.Add(LeCombat);
-                        Game.Services.AddService(typeof(Combat), LeCombat);
+                        //LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
+                        //Game.Components.Add(LeCombat);
+                        //Game.Services.AddService(typeof(Combat), LeCombat);
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
                 }

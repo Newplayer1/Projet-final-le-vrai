@@ -86,7 +86,7 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
-            
+
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
@@ -149,7 +149,7 @@ namespace AtelierXNA
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }
-        
+
         private string TrouverAléatoire()
         {
             int unNombre = générateurAléatoire.Next(1, POKEDEX_MAX);
@@ -213,20 +213,21 @@ namespace AtelierXNA
                 case ÉtatsJeu.COMBAT:
                     if (!(Game.Components.Contains(Game.Components.Where(c => c is Combat) as Combat)) && !Flags.Combat)
                     {
-                        LeJoueur.Visible = false;
+                        if (PokemonEnCollision.UnPokemon.EstEnVie)
+                        {
+                            LeJoueur.Visible = false;
 
-                        //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
-                        PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
+                            //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
+                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
 
-                        Game.Components.Add(new Afficheur3D(Game));
-                        Game.Components.Add(PokemonJoueur);
-                        PokemonEnCollision.Position = new Vector3(PokemonJoueur.Position.X - 1, PokemonJoueur.Position.Y, PokemonJoueur.Position.Z - 1);
-                        PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
-                        Flags.Combat = true;
-                        LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, new Pokemon(Game, 1/*no de pokédex du pokémon wild que l'on veut combattre*/), INTERVALLE_MAJ_STANDARD);
-                        Game.Components.Add(LeCombat);
-
-
+                            Game.Components.Add(new Afficheur3D(Game));
+                            Game.Components.Add(PokemonJoueur);
+                            PokemonEnCollision.Position = new Vector3(PokemonJoueur.Position.X - 1, PokemonJoueur.Position.Y, PokemonJoueur.Position.Z - 1);
+                            PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
+                            Flags.Combat = true;
+                            LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, PokemonEnCollision.UnPokemon, INTERVALLE_MAJ_STANDARD);
+                            Game.Components.Add(LeCombat);
+                        }
 
                         //ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,(float)(16*Math.PI/10),0),new Vector3(LeJoueur.Position.X + 1,LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
                         //Game.Components.Add(new Afficheur3D(Game));
@@ -243,10 +244,11 @@ namespace AtelierXNA
                     if (!Combat.EnCombat)//Si le combat est terminé, on veut retourner à l'état Jeu3D avec le player et son modèle
                     {
                         //PokemonJoueur.Visible = false;
+                        PokemonEnCollision.ÀDétruire = true;
                         PokemonJoueur.ÀDétruire = true;
                         ÉtatJeu = ÉtatsJeu.JEU3D;
                     }
-                    if (Combat.EnCombat)
+                    if (Combat.EnCombat) //Ajouter si possible la condition que le pokémon est changé
                         PokemonJoueur.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexUserPokemon));
                     break;
                     //case États.GYM:

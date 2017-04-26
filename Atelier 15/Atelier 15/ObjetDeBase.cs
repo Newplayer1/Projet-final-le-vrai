@@ -13,7 +13,7 @@ namespace AtelierXNA
         public Caméra CaméraJeu { get; set; }
         public float Échelle { get; protected set; }
         public Pokemon UnPokemon { get; protected set; }
-        public Vector3 Rotation { get; protected set; }
+        public Vector3 Rotation { get; set; }
         public Vector3 Position { get; set; }
 
         protected Model Modèle { get; private set; }

@@ -55,13 +55,30 @@ namespace AtelierXNA
 
                     if (colour.A == COULEUR_MAX) down = false;
                     if (colour.A == 0) down = true;
-                    if (down == true) colour.A += 3; else colour.A -= 3; // sujet porté à modification!!!
+                    if (down == true)
+                    {
+                        colour.R += 3;
+                        colour.B += 3;
+                        colour.G += 3;
+                        colour.A += 3;
+                    }
+                    else
+                    {
+                        colour.R -= 3;
+                        colour.B -= 3;
+                        colour.G -= 3;
+                        colour.A -= 3;
+
+                    } // sujet porté à modification!!!
                 }
 
             else if (colour.A < COULEUR_MAX)
                     {
-                        colour.A += 3;
-                        isclicked = false;
+                    colour.R += 3;
+                    colour.B += 3;
+                    colour.G += 3;
+                    colour.A += 3;
+                    isclicked = false;
                     }
 
 

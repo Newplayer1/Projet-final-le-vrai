@@ -455,7 +455,7 @@ namespace AtelierXNA
         void EffectuerTourOpponent()
         {
             //choisir une attaque aléatoire
-            int nbAléatoire = Générateur.Next(0, 4);
+            int nbAléatoire = Générateur.Next(0, OpponentPokemon.NbAttaques);
             AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wild "+OpponentPokemon.Nom+" used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
             Game.Components.Add(message);//Message opponent
             EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);

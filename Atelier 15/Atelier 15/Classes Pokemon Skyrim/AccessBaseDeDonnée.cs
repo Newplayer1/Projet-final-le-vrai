@@ -169,7 +169,7 @@ namespace AtelierXNA
             reader.Close();
         }
         public string AccessDonnéesTypeLevelAttaque(int numéroDuType, int level)
-        //level 0 = 3 level 10 = 4 et level 25 = 5
+        //level 0 = 3 et 4; level 10 = 5; et level 25 = 6
         {
             return TypeLevelAttaque[numéroDuType - 1][level - 1].ToString();
         }

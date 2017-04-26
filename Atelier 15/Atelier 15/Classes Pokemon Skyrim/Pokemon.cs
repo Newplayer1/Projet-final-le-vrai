@@ -33,6 +33,7 @@ namespace AtelierXNA
         List<int> StatsFixes { get; set; }
 
         public int PokedexNumber { get; private set; }
+        public int NbAttaques => AttaquesList.Count;
         public int Level { get; private set; }
         ExpGrowthClass ExpGrowth { get; set; }
         int BaseExp => int.Parse(PokemonEnString[12]);
@@ -51,6 +52,7 @@ namespace AtelierXNA
         List<string> PokemonEnString { get; set; }
         public string Type1 => PokemonEnString[8];
         public string Type2 => PokemonEnString[9];
+        int Type1EnInt => (int)Enum.Parse(typeof(PokemonTypes), Type1);
 
         AccessBaseDeDonnée Database { get; set; }
 
@@ -127,10 +129,16 @@ namespace AtelierXNA
         void AttribuerAttaquesParDéfaut()
         {
             //Attribuer attaques selon level et type
-            AttaquesList.Add(new Attaque(Game, 1));
-            AttaquesList.Add(new Attaque(Game, 2));
-            AttaquesList.Add(new Attaque(Game, 3));
-            AttaquesList.Add(new Attaque(Game, 4));
+            AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 3))));
+            AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 4))));
+            if (Level >= 10)
+            {
+                AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 5))));
+                if (Level >= 25)
+                    AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 6))));
+            }
+                
+            
         }
 
         void CalculerStatsEtHP(int level)//Refaire à chaque level up, a faire lorsque Access bien implémenté

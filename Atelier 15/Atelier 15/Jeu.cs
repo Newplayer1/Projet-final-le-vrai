@@ -28,7 +28,7 @@ namespace AtelierXNA
         CaméraSubjective CaméraJeu { get; set; }
         TerrainAvecBase TerrainDeJeu { get; set; }
         ObjetDeBase PokemonRandom1 { get; set; }
-        Pokemon PokemonRandom1String { get; set; }
+        Pokemon PokemonRandom1Infos { get; set; }
         Pokemon_B test { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         TexteFixe ÉtatJeuTexte { get; set; }
@@ -142,8 +142,9 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            PokemonRandom1String = new Pokemon(Game, générateurAléatoire.Next(1, POKEDEX_MAX));
-            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1String, TrouverAléatoire(), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
+            int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire);
+            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
             //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);

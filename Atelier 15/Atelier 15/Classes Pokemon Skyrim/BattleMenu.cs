@@ -280,7 +280,7 @@ namespace AtelierXNA
         private void GérerTransitionFIGHT()
         {
             ListeChoix = new List<string>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < UserPokemon.NbAttaques; i++)
             {
                 if (UserPokemon[i].NuméroAttaque >= 0)
                     ListeChoix.Add(UserPokemon[i].ToString());
@@ -365,6 +365,7 @@ namespace AtelierXNA
                 PokémonChangé = true;
                 NuméroChoisi = PokemonChoix.IndexSélectionné;
                 NoDuPokemonEnJeu = NuméroChoisi;
+                UserPokemon = UserTrainer[NoDuPokemonEnJeu];
                 BattleMenuState = BattleMenuState.READY;
             }
             if (Back()) //On a pesé sur B et y a pas de lock

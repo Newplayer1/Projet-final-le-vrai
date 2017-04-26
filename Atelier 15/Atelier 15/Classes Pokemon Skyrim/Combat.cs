@@ -35,8 +35,10 @@ namespace AtelierXNA
 
         TexteFixe NomUserPokemon { get; set; }
         TexteFixe NomOpponentPokemon { get; set; }
+        Vector2 PositionInfoUserPokemon { get; set; }
         TexteFixe VieUserPokemon { get; set; }
         TexteFixe VieOpponentPokemon { get; set; }
+        Vector2 PositionInfoOpponentPokemon { get; set; }
 
         Random Générateur { get; set; }
 
@@ -67,6 +69,8 @@ namespace AtelierXNA
                 VieUserPokemon.ÀDétruire = value;
             }
         }
+
+        public int LargeurBox { get; private set; }
 
         //public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
         //    : base(game)
@@ -108,6 +112,11 @@ namespace AtelierXNA
         {
             EnCombat = true;
             Générateur = new Random();
+            LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
+            UserPokemon = UserTrainer.NextPokemonEnVie();
+
+            PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
+            PositionInfoOpponentPokemon = new Vector2(Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height/10);
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             CombatState = CombatState.INI;//changer la position de la caméra icitte
                                           //Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
@@ -118,7 +127,7 @@ namespace AtelierXNA
                                           //MenuBattle = new BattleMenu(Game, new Vector2(2, 300), new Vector2(32, 6), Atelier.INTERVALLE_STANDARDS);
                                           //if (!EstOpponentSauvage)
                                           //{
-                                          //    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
+                                          //    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, (int)Dimensions.X, (int)Dimensions.Y, "User threw an item!", IntervalMAJ);
                                           //    Game.Components.Add(message);
                                           //    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
                                           //}//si est sauvage, on a déjà décidé du OpponentPokemon dans le constructeur
@@ -129,24 +138,24 @@ namespace AtelierXNA
 
             if (EstOpponentSauvage)
             {
-                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild " + OpponentPokemon.Nom + " appeared!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wild " + OpponentPokemon.Nom + " appeared!", IntervalMAJ);
                 Game.Components.Add(message);//Message opponent
             }
             else
             {
                 OpponentPokemon = OpponentTrainer[0];
-                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Trainer "+ OpponentTrainer.Nom + " wants to battle! " + "Trainer " + OpponentTrainer.Nom + " send out "+ OpponentPokemon.Nom + "!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Trainer "+ OpponentTrainer.Nom + " wants to battle! " + "Trainer " + OpponentTrainer.Nom + " send out "+ OpponentPokemon.Nom + "!", IntervalMAJ);
                 Game.Components.Add(message);//Message opponent
             }
-            UserPokemon = UserTrainer.NextPokemonEnVie();
+            
 
-            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, UserTrainer.Nom + ": Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserTrainer.Nom + ": Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
             Game.Components.Add(messageB);//Message pokemon user
 
 
             AjouterLesTextesFixes();
             
-            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD),IntervalMAJ, UserPokemon, UserTrainer);
+            MainMenu = new BattleMenu(Game, PositionBox, new Vector2(LargeurBox, Cadre.HAUTEUR_BOX_STANDARD),IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);
 
             MainMenu.BattleMenuState = BattleMenuState.MAIN;
@@ -156,16 +165,16 @@ namespace AtelierXNA
 
         private void AjouterLesTextesFixes()
         {
-            NomOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200), OpponentPokemon.ToString());
+            NomOpponentPokemon = new TexteFixe(Game, PositionInfoOpponentPokemon, OpponentPokemon.ToString());
             Game.Components.Add(NomOpponentPokemon);
 
-            NomUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64), UserPokemon.ToString());
+            NomUserPokemon = new TexteFixe(Game, PositionInfoUserPokemon, UserPokemon.ToString());
             Game.Components.Add(NomUserPokemon);
 
-            VieOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200 + Cadre.TAILLE_TILE), OpponentPokemon.VieToString());
+            VieOpponentPokemon = new TexteFixe(Game, new Vector2(PositionInfoOpponentPokemon.X, PositionInfoOpponentPokemon.Y + Cadre.TAILLE_TILE), OpponentPokemon.VieToString());
             Game.Components.Add(VieOpponentPokemon);
 
-            VieUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64 + Cadre.TAILLE_TILE), UserPokemon.VieToString());
+            VieUserPokemon = new TexteFixe(Game, new Vector2(PositionInfoUserPokemon.X, PositionInfoUserPokemon.Y + Cadre.TAILLE_TILE), UserPokemon.VieToString());
             Game.Components.Add(VieUserPokemon);
             
 
@@ -367,7 +376,7 @@ namespace AtelierXNA
                 {
                     NomUserPokemon.Visible = false;
                     VieUserPokemon.Visible = false;
-                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " fainted!", IntervalMAJ);
+                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " fainted!", IntervalMAJ);
                     Game.Components.Add(message);
                     MainMenu.BackLock = true; //pour forcer à switch de pokemon
                     MainMenu.BattleMenuState = BattleMenuState.POKEMON;
@@ -381,12 +390,12 @@ namespace AtelierXNA
         {
             if (!EstOpponentSauvage)
             {
-                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
+                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
                 Game.Components.Add(messageA);
             }
             else
             {
-                AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wild " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
+                AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wild " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
                 Game.Components.Add(messageB);
             }
             CombatState = CombatState.END;
@@ -395,11 +404,11 @@ namespace AtelierXNA
         {
             if (!EstOpponentSauvage)
             {
-                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
+                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wow, what a weakling.", IntervalMAJ);
                 Game.Components.Add(messageA);
             }
 
-            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Player is out of pokemon. Go to the Pokemon Center.", IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Player is out of pokemon. Go to the Pokemon Center.", IntervalMAJ);
             Game.Components.Add(messageB);
             CombatState = CombatState.END;
         }
@@ -407,7 +416,7 @@ namespace AtelierXNA
         {
             //GameState = Jeu3D; ??
             //Détruire le component?
-            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "CombatState End", IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "CombatState End", IntervalMAJ);
             Game.Components.Add(messageB);//Message pokemon user
             EnCombat = false;
             ÀDétruire = true;
@@ -434,7 +443,7 @@ namespace AtelierXNA
         {
             //choisir une attaque aléatoire
             int nbAléatoire = Générateur.Next(0, 4);
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" used " + OpponentPokemon[nbAléatoire].ToString(), IntervalMAJ);
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wild "+OpponentPokemon.Nom+" used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
             Game.Components.Add(message);//Message opponent
             EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
             
@@ -444,7 +453,7 @@ namespace AtelierXNA
         {
             
             string messageTour = UserPokemon.Nom +" used " + UserPokemon[numéroChoisi].ToString() + "!";
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
             Game.Components.Add(message);
             EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[numéroChoisi]);
             
@@ -452,7 +461,7 @@ namespace AtelierXNA
         void UtilierItem(int numéroChoisi)
         {
             string messageTour = "User used item " + numéroChoisi.ToString() + ".";
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
             Game.Components.Add(message);
             //Ensuite on fait l'effet de l'item
         }
@@ -463,7 +472,7 @@ namespace AtelierXNA
             VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
 
             string messageTour = UserTrainer.Nom + " send out " + UserPokemon.Nom + "!";
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
             Game.Components.Add(message);
 
             //faire le reste du code de switch pokemon
@@ -473,7 +482,7 @@ namespace AtelierXNA
         {
             TourOpponentComplété = false;
             TourUserComplété = false;
-            AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, OpponentTrainer.Nom + "'s " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
+            AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, OpponentTrainer.Nom + "'s " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
             Game.Components.Add(messageA);
 
             OpponentPokemon = OpponentTrainer.NextPokemonEnVie();//ligne de code qui switch de pokémon
@@ -481,7 +490,7 @@ namespace AtelierXNA
             VieOpponentPokemon.RemplacerMessage(OpponentPokemon.VieToString());
 
             string messageTour = OpponentTrainer.Nom + " send out " + OpponentPokemon.Nom + "!";
-            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
             Game.Components.Add(messageB);
         }
         void EssayerFuir()
@@ -491,14 +500,14 @@ namespace AtelierXNA
             if (!EstOpponentSauvage)
             {
                 TourUserComplété = true;
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "There's no running from a trainer battle!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "There's no running from a trainer battle!", IntervalMAJ);
                 Game.Components.Add(message);
                 MainMenu.BattleMenuState = BattleMenuState.MAIN;
                 CombatState = CombatState.BATTLE_MENU;
             }
             else
             {
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Got away safely!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Got away safely!", IntervalMAJ);
                 Game.Components.Add(message);
                 CombatState = CombatState.END;//On met fin au combat
             }
@@ -543,7 +552,7 @@ namespace AtelierXNA
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
-            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.Attack / opposant.Defense) / 50 + 2) * multiplicateurType;
+            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50) * multiplicateurType;
 
             return (int)damage;
         }
@@ -554,7 +563,7 @@ namespace AtelierXNA
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
-            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / opposant.SpecialDefense) / 50 + 2) * multiplicateurType;
+            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
 
             return (int)damage;
         }

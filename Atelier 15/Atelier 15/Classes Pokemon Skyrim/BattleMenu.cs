@@ -138,7 +138,7 @@ namespace AtelierXNA
             string plusLongueLigne = "a";
             for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
             {
-                 ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].HP.ToString());
+                 ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
             }
             for (int i = 0; i < ListeChoix.Count; i++)
             {
@@ -351,7 +351,7 @@ namespace AtelierXNA
             ListeChoix = new List<string>();
             for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
             {
-                ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].HP.ToString());
+                ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
             }
             PokemonChoix.ModifierChoix(ListeChoix);
 

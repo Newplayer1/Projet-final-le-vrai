@@ -12,7 +12,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA
 {
-    enum PokemonTypes { Null, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
+    enum PokemonTypes { NULL, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
     public class Attaque : Microsoft.Xna.Framework.GameComponent
     {
         AccessBaseDeDonnée Database { get; set; }
@@ -21,7 +21,7 @@ namespace AtelierXNA
 
         public int NuméroAttaque { get; set; }
         public string Name => AttaqueEnString[1];
-        public int Power => int.Parse(AttaqueEnString[2]); //va crasher joyeusement si non numérique
+        public int Power { get; set; }//=> int.Parse(AttaqueEnString[2]); //va crasher joyeusement si non numérique
         public int Accuracy => int.Parse(AttaqueEnString[3]); //tjrs numérique, ok
         public int EffectAccuracy => int.Parse(AttaqueEnString[6]);
         public string DescriptionEffet => AttaqueEnString[7];
@@ -39,6 +39,8 @@ namespace AtelierXNA
 
             AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
             Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
+
+            Power = int.Parse(AttaqueEnString[2]);
         }
 
         public override void Initialize()
@@ -97,7 +99,7 @@ namespace AtelierXNA
         {
             bool value = false;
 
-            if (!(AttaqueEnString[2].ToUpper() == "null"))
+            if (!(AttaqueEnString[2].ToUpper() == "null") && Power != 0)
                 value = true;
 
             return value;
@@ -106,7 +108,7 @@ namespace AtelierXNA
         {
             bool value = false;
 
-            if (!(AttaqueEnString[6].ToUpper() == "null"))
+            if (!(AttaqueEnString[6].ToUpper() == "null") && Accuracy != 0)
                 value = true;
 
             return value;

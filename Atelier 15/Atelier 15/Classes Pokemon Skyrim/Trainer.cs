@@ -81,7 +81,7 @@ namespace AtelierXNA
             List<string> listeRetour = new List<string>();
             foreach (Pokemon item in Party)
             {
-                listeRetour.Add(item.HP.ToString());
+                listeRetour.Add(item.VieToString());
             }
             return listeRetour;
         }
@@ -112,8 +112,8 @@ namespace AtelierXNA
         
         public override void Initialize()
         {
-            Party.Add(new Pokemon(Game, 2));
             Party.Add(new Pokemon(Game, 3));
+            Party.Add(new Pokemon(Game, 2));
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

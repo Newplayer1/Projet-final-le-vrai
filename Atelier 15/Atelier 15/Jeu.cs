@@ -19,7 +19,7 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
-        Vector2 POSITION_BOX_STANDARD = new Vector2(2, 300);
+        Vector2 PositionBoxStandard { get; set; }
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée Database { get; set; }
@@ -33,7 +33,7 @@ namespace AtelierXNA
         Random générateurAléatoire { get; set; }
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
-        int indexPokemonEnCollission;
+        int indexPokemonEnCollision;
 
         public Jeu(Game game, int choix)
            : base(game)
@@ -77,6 +77,7 @@ namespace AtelierXNA
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
+            PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
         }
         public override void Update(GameTime gameTime)
         {
@@ -193,9 +194,9 @@ namespace AtelierXNA
                         Game.Components.Add(new Afficheur3D(Game));
                         Game.Components.Add(PokemonLancer);
                         PokemonEnCollision.Position = new Vector3(PokemonLancer.Position.X -1 , PokemonLancer.Position.Y, PokemonLancer.Position.Z- 1);
-                        PokemonSurLeTerrain[indexPokemonEnCollission - 1] = PokemonEnCollision;// CAUSE UNE EXCEPTION (quand l'index = 0, ça crash)
+                        PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
                         Flags.Combat = true;
-                        LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon(Game, 5), INTERVALLE_MAJ_STANDARD);
+                        LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, new Pokemon(Game, 1/*no de pokédex du pokémon wild que l'on veut combattre*/), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
                         //CaméraJeu.Cible = new Vector3(LeJoueur.Position.X + 3, LeJoueur.Position.Y + 3, LeJoueur.Position.Z);
                         //CaméraJeu.CréerPointDeVue(CaméraJeu.Position, CaméraJeu.Cible, CaméraJeu.OrientationVerticale);
@@ -222,8 +223,8 @@ namespace AtelierXNA
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {
-                        indexPokemonEnCollission = PokemonSurLeTerrain.IndexOf(p);
-                        PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollission];
+                        indexPokemonEnCollision = PokemonSurLeTerrain.IndexOf(p);
+                        PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollision];
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
                 }

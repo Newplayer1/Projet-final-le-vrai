@@ -17,11 +17,6 @@ namespace AtelierXNA
         public int MaxHp { get; private set; }
         public int HP { get; private set; }
         public bool EstEnVie => HP > 0;
-        //public int Attack => 20;
-        //public int Defense => 20;
-        //public int SpecialAttack => 20;
-        //public int SpecialDefense => 20;
-        //public int Speed => 20;
 
         public int Attack => Stats[0];
         public int Defense => Stats[1];
@@ -54,10 +49,10 @@ namespace AtelierXNA
             : base(jeu)
         {
             AttaquesList = new List<Attaque>();
-            AttaquesList.Add(new Attaque(Game, 10));
-            AttaquesList.Add(new Attaque(Game, 11));
-            AttaquesList.Add(new Attaque(Game, 12));
-            AttaquesList.Add(new Attaque(Game, 13));
+            AttaquesList.Add(new Attaque(Game, 1));
+            AttaquesList.Add(new Attaque(Game, 2));
+            AttaquesList.Add(new Attaque(Game, 3));
+            AttaquesList.Add(new Attaque(Game, 4));
 
             PokedexNumber = pokedexNumber;
             Level = 50;

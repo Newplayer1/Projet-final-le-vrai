@@ -6,8 +6,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtelierXNA
 {
-    public class ObjetDeBase : Microsoft.Xna.Framework.DrawableGameComponent, ICollisionable
+    public class ObjetDeBase : Microsoft.Xna.Framework.DrawableGameComponent, ICollisionable, IDestructible
     {
+        public bool ÀDétruire { get; set; }
         string NomModèle { get; set; }
         RessourcesManager<Model> GestionnaireDeModèles { get; set; }
         public Caméra CaméraJeu { get; set; }

@@ -19,7 +19,9 @@ namespace AtelierXNA
         Trainer OpponentTrainer { get; set; }
 
         Pokemon UserPokemon { get; set; } //Le BattleMenu doit avoir accès aux attaques du pokémon... Garder en mémoire l'indice du pkm en jeu?
+        public int NoPokédexUserPokemon => UserPokemon.PokedexNumber;//pour afficher un modèle de son numéro
         Pokemon OpponentPokemon { get; set; }
+        public int NoPokédexOpponentPokemon => UserPokemon.PokedexNumber;
         AccessBaseDeDonnée Database { get; set; }
         //AccessBaseDeDonnée Database { get; set; }
         //bool EnCombat { get; set; }
@@ -362,6 +364,7 @@ namespace AtelierXNA
                     CombatState = CombatState.VICTORY;
                 else
                 {
+                    DonnerExp();
                     ChangerOpponentPokemon();
                     MainMenu.BattleMenuState = BattleMenuState.MAIN;
                     CombatState = CombatState.BATTLE_MENU;
@@ -388,6 +391,7 @@ namespace AtelierXNA
 
         void GérerTransitionVICTORY()
         {
+
             if (!EstOpponentSauvage)
             {
                 AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Amazing, such strength!", IntervalMAJ);
@@ -398,8 +402,18 @@ namespace AtelierXNA
                 AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Wild " + OpponentPokemon.Nom + " fainted!", IntervalMAJ);
                 Game.Components.Add(messageB);
             }
+            DonnerExp();
             CombatState = CombatState.END;
         }
+
+        private void DonnerExp()
+        {
+            int exp = OpponentPokemon.GiveExp();
+            UserPokemon.GainExp(exp);
+            AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + exp.ToString() + " exp.", IntervalMAJ);
+            Game.Components.Add(messageC);
+        }
+
         void GérerTransitionDEFEAT()
         {
             if (!EstOpponentSauvage)
@@ -416,8 +430,7 @@ namespace AtelierXNA
         {
             //GameState = Jeu3D; ??
             //Détruire le component?
-            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "CombatState End", IntervalMAJ);
-            Game.Components.Add(messageB);//Message pokemon user
+            
             EnCombat = false;
             ÀDétruire = true;
 

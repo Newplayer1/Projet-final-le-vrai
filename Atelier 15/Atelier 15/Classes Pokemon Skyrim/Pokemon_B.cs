@@ -13,7 +13,7 @@ using System.Data.OleDb;
 namespace AtelierXNA
 {
     public enum Status { NULL, BRN, FRZ, SLP, PSN, PAR }
-    enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
+    //enum ExpGrowthClass { Fast = 800000, MediumFast = 1000000, MediumSlow = 1059860, Slow = 1250000 }
 
     public class Pokemon_B : Vivant
     {

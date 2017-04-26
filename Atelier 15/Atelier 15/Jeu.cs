@@ -20,6 +20,7 @@ namespace AtelierXNA
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
         Vector2 PositionBoxStandard { get; set; }
+        ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée Database { get; set; }
@@ -30,6 +31,7 @@ namespace AtelierXNA
         Pokemon PokemonRandom1String { get; set; }
         Pokemon_B test { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
+        TexteFixe ÉtatJeuTexte { get; set; }
         Random générateurAléatoire { get; set; }
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
@@ -62,11 +64,11 @@ namespace AtelierXNA
         public override void Initialize()
         {
             générateurAléatoire = new Random();
-
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
 
             ÉtatJeu = ÉtatsJeu.JEU3D;
+            ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Add(new Afficheur3D(Game));
@@ -78,9 +80,12 @@ namespace AtelierXNA
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
+
+            Game.Components.Add(ÉtatJeuTexte);
         }
         public override void Update(GameTime gameTime)
         {
+            ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
@@ -162,6 +167,23 @@ namespace AtelierXNA
             //    échelleObjTest = ÉCHELLE_OBJET * 10;
             //}
         }
+        private string TrouverDossierModèle(int pokedexNumber)
+        {
+            string local = pokedexNumber.ToString();
+            if (local.Count() == 1)
+            {
+                local = "0" + local;
+            }
+            string nomMod = local + '/' + local;
+            return nomMod;
+
+            //float échelleObjTest = 0.01f;
+
+            //if (local1 == 14.ToString())
+            //{
+            //    échelleObjTest = ÉCHELLE_OBJET * 10;
+            //}
+        }
 
 
         private Vector3 TrouverPositionRandom()
@@ -184,20 +206,41 @@ namespace AtelierXNA
             switch (ÉtatJeu)
             {
                 case ÉtatsJeu.JEU3D:
+                    LeJoueur.Visible = true;
                     GérerCollision();
                     break;
                 case ÉtatsJeu.COMBAT:
                     if (!(Game.Components.Contains(Game.Components.Where(c => c is Combat) as Combat)) && !Flags.Combat)
                     {
                         LeJoueur.Visible = false;
-                        ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,(float)(16*Math.PI/10),0),new Vector3(LeJoueur.Position.X + 1,LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
+
+                        //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
+                        PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
+
                         Game.Components.Add(new Afficheur3D(Game));
-                        Game.Components.Add(PokemonLancer);
-                        PokemonEnCollision.Position = new Vector3(PokemonLancer.Position.X -1 , PokemonLancer.Position.Y, PokemonLancer.Position.Z- 1);
+                        Game.Components.Add(PokemonJoueur);
+                        PokemonEnCollision.Position = new Vector3(PokemonJoueur.Position.X - 1, PokemonJoueur.Position.Y, PokemonJoueur.Position.Z - 1);
                         PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
                         Flags.Combat = true;
                         LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, new Pokemon(Game, 1/*no de pokédex du pokémon wild que l'on veut combattre*/), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
+
+                        if (!Combat.EnCombat)//Si le combat est terminé, on veut retourner à l'état Jeu3D avec le player et son modèle
+                        {
+                            //PokemonJoueur.Visible = false;
+                            PokemonJoueur.ÀDétruire = true; //Ne fonctionne pas
+                            ÉtatJeu = ÉtatsJeu.JEU3D;
+                        }
+
+                        //ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,(float)(16*Math.PI/10),0),new Vector3(LeJoueur.Position.X + 1,LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
+                        //Game.Components.Add(new Afficheur3D(Game));
+                        //Game.Components.Add(PokemonLancer);
+                        //PokemonEnCollision.Position = new Vector3(PokemonLancer.Position.X -1 , PokemonLancer.Position.Y, PokemonLancer.Position.Z- 1);
+                        //PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
+                        //Flags.Combat = true;
+                        //LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, new Pokemon(Game, 1/*no de pokédex du pokémon wild que l'on veut combattre*/), INTERVALLE_MAJ_STANDARD);
+                        //Game.Components.Add(LeCombat);
+
                         //CaméraJeu.Cible = new Vector3(LeJoueur.Position.X + 3, LeJoueur.Position.Y + 3, LeJoueur.Position.Z);
                         //CaméraJeu.CréerPointDeVue(CaméraJeu.Position, CaméraJeu.Cible, CaméraJeu.OrientationVerticale);
                     }
@@ -227,6 +270,8 @@ namespace AtelierXNA
                         PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollision];
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
+                    //else
+                    //    ÉtatJeu = ÉtatsJeu.JEU3D;
                 }
             }
 

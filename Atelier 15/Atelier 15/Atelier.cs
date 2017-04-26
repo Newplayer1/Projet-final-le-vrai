@@ -104,7 +104,7 @@ namespace AtelierXNA
                             LeJeu = new Jeu(this, PageTitre.choix);
                             InitializePlaying();
                             Components.Add(LeJeu);
-                            Components.Add(new AfficheurFPS(this, "Arial20", Color.Green, INTERVALLE_CALCUL_FPS));
+                            Components.Add(new AfficheurFPS(this, "Arial20", Color.CornflowerBlue, INTERVALLE_CALCUL_FPS));
                         }
                         
                         

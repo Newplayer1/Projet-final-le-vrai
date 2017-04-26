@@ -794,10 +794,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Songs\Pokemon.mp3">
-      <Name>Pokemon</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
+    <Compile Include="Textures\cadre48x64.png">
+      <Name>cadre48x64</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Police848X32.png">
+      <Name>Police848X32</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

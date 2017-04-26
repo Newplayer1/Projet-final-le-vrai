@@ -59,6 +59,8 @@ namespace AtelierXNA
 
         public override void Update(GameTime gameTime)
         {
+            InventairePoks();
+
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
@@ -77,6 +79,29 @@ namespace AtelierXNA
             CaméraJeu.Position = new Vector3(Position.X + 3, Position.Y + HAUTEUR_CAMÉRA, Position.Z - 3);
             CalculerMonde();
 
+        }
+
+        private void InventairePoks()
+        {
+            //bool InventaireOuvert = false;
+            if (GestionInput.EstNouvelleTouche(Keys.P))
+            {
+                
+                string InventaireParLigne = null;
+                for (int i = 0; i < GetNbPokemon; i++)
+                {
+                    InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + " Type1 : " + GetType1Pokemon()[i] + " Type2 : " + GetType2Pokemon()[i] + " HP : " + GetHPPokemon()[i];
+                    Game.Components.Add(new TexteFixe(Game, new Vector2(1 , 1+ i * 16), InventaireParLigne));
+                }//InventaireOuvert = true;
+            }
+            //if (InventaireOuvert)
+            //{
+            //    foreach(TexteFixe tf in Game.Components)
+            //    {
+            //        Game.Components.Remove(tf);
+            //    }
+            //    InventaireOuvert = false;
+            //}
         }
 
         private void TournerTrainer()

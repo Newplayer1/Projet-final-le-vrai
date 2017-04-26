@@ -32,6 +32,8 @@ namespace AtelierXNA
         ÉtatsJeu ÉtatJeu { get; set; }
         Random générateurAléatoire { get; set; }
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
+        ObjetDeBase PokemonEnCollision { get; set; }
+        int indexPokemonEnCollission;
 
         public Jeu(Game game, int choix)
            : base(game)
@@ -54,7 +56,7 @@ namespace AtelierXNA
             /*DataBase = new AccessBaseDeDonnée();*/
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
-            LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(Database.LoadSauvegarde()[0]), float.Parse(Database.LoadSauvegarde()[1]), float.Parse(Database.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
@@ -186,13 +188,15 @@ namespace AtelierXNA
                 case ÉtatsJeu.COMBAT:
                     if (!(Game.Components.Contains(Game.Components.Where(c => c is Combat) as Combat)) && !Flags.Combat)
                     {
+                        LeJoueur.Visible = false;
+                        ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,(float)(16*Math.PI/10),0),new Vector3(LeJoueur.Position.X + 1,LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
+                        Game.Components.Add(new Afficheur3D(Game));
+                        Game.Components.Add(PokemonLancer);
+                        PokemonEnCollision.Position = new Vector3(PokemonLancer.Position.X -1 , PokemonLancer.Position.Y, PokemonLancer.Position.Z- 1);
+                        PokemonSurLeTerrain[indexPokemonEnCollission - 1] = PokemonEnCollision;
                         Flags.Combat = true;
                         LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon(Game, 5), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
-                        LeJoueur.Visible = false;
-                        ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,0,0),new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
-                        Game.Components.Add(new Afficheur3D(Game));
-                        Game.Components.Add(PokemonLancer);
                         //CaméraJeu.Cible = new Vector3(LeJoueur.Position.X + 3, LeJoueur.Position.Y + 3, LeJoueur.Position.Z);
                         //CaméraJeu.CréerPointDeVue(CaméraJeu.Position, CaméraJeu.Cible, CaméraJeu.OrientationVerticale);
                     }
@@ -218,6 +222,8 @@ namespace AtelierXNA
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {
+                        indexPokemonEnCollission = PokemonSurLeTerrain.IndexOf(p);
+                        PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollission];
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
                 }

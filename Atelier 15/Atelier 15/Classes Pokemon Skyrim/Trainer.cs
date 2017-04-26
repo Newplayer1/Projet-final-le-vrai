@@ -62,16 +62,17 @@ namespace AtelierXNA
             List<string> listeRetour = new List<string>();
             foreach (Pokemon item in Party)
             {
-                listeRetour.Add(item.Type1);
+                //listeRetour.Add(item.Type1);
             }
             return listeRetour;
+            
         }
         public List<string> GetType2Pokemon()
         {
             List<string> listeRetour = new List<string>();
             foreach (Pokemon item in Party)
             {
-                listeRetour.Add(item.Type2);
+                //listeRetour.Add(item.Type2);
             }
             return listeRetour;
         }
@@ -111,8 +112,8 @@ namespace AtelierXNA
         
         public override void Initialize()
         {
-            Party.Add(new Pokemon(Game, 150,100,"150/150", 1f, Rotation, Position));
-            Party.Add(new Pokemon(Game, 10,5,"10/10", 1f,Rotation,Position));
+            Party.Add(new Pokemon("Mewtow"));
+            Party.Add(new Pokemon("Caterpie"));
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

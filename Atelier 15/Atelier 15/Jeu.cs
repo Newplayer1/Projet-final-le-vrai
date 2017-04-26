@@ -86,6 +86,7 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
+            
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
@@ -225,12 +226,7 @@ namespace AtelierXNA
                         LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, new Pokemon(Game, 1/*no de pokédex du pokémon wild que l'on veut combattre*/), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
 
-                        if (!Combat.EnCombat)//Si le combat est terminé, on veut retourner à l'état Jeu3D avec le player et son modèle
-                        {
-                            //PokemonJoueur.Visible = false;
-                            PokemonJoueur.ÀDétruire = true; //Ne fonctionne pas
-                            ÉtatJeu = ÉtatsJeu.JEU3D;
-                        }
+
 
                         //ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,(float)(16*Math.PI/10),0),new Vector3(LeJoueur.Position.X + 1,LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
                         //Game.Components.Add(new Afficheur3D(Game));
@@ -244,6 +240,14 @@ namespace AtelierXNA
                         //CaméraJeu.Cible = new Vector3(LeJoueur.Position.X + 3, LeJoueur.Position.Y + 3, LeJoueur.Position.Z);
                         //CaméraJeu.CréerPointDeVue(CaméraJeu.Position, CaméraJeu.Cible, CaméraJeu.OrientationVerticale);
                     }
+                    if (!Combat.EnCombat)//Si le combat est terminé, on veut retourner à l'état Jeu3D avec le player et son modèle
+                    {
+                        //PokemonJoueur.Visible = false;
+                        PokemonJoueur.ÀDétruire = true;
+                        ÉtatJeu = ÉtatsJeu.JEU3D;
+                    }
+                    if (Combat.EnCombat)
+                        PokemonJoueur.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexUserPokemon));
                     break;
                     //case États.GYM:
                     //    GérerVitesseDéplacement();
@@ -270,11 +274,13 @@ namespace AtelierXNA
                         PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollision];
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
-                    //else
-                    //    ÉtatJeu = ÉtatsJeu.JEU3D;
+                    if (!LeJoueur.EstEnCollision(p))
+                    {
+                        Flags.Combat = false;
+                        //ÉtatJeu = ÉtatsJeu.JEU3D;
+                    }
                 }
             }
-
         }
     }
 }

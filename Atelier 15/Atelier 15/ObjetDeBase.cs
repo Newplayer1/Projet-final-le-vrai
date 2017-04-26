@@ -70,6 +70,12 @@ namespace AtelierXNA
             TransformationsModèle = new Matrix[Modèle.Bones.Count];
             Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
         }
+        public void ChangerModèle(string dossier)
+        {
+            Modèle = GestionnaireDeModèles.Find(dossier);
+            TransformationsModèle = new Matrix[Modèle.Bones.Count];
+            Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
+        }
         public override void Update(GameTime gameTime)
         {
             SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);

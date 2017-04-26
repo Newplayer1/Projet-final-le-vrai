@@ -113,6 +113,7 @@ namespace AtelierXNA
         public override void Initialize()
         {
             Party.Add(new Pokemon(Game, 6, 20, this));
+            Party.Add(new Pokemon(Game, 5, 100, this));
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

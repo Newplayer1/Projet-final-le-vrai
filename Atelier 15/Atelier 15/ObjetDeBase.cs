@@ -53,7 +53,7 @@ namespace AtelierXNA
             Monde *= Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z);
             Monde *= Matrix.CreateTranslation(Position);
             base.Initialize();
-            SphèreDeCollision = new BoundingSphere(Position, 4);
+            SphèreDeCollision = new BoundingSphere(Position, 1);
         }
         protected void CalculerMonde()
         {
@@ -69,10 +69,13 @@ namespace AtelierXNA
             TransformationsModèle = new Matrix[Modèle.Bones.Count];
             Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
         }
-
-        public override void Draw(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
+            base.Update(gameTime);
+        }
+        public override void Draw(GameTime gameTime)
+        {
             foreach (ModelMesh maille in Modèle.Meshes)
             {
                 Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();

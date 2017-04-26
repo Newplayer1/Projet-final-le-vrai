@@ -12,14 +12,14 @@ using AtelierXNA;
 
 namespace AtelierXNA
 {
-        enum ÉtatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
+    enum ÉtatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
-        Vector2 POSITION_BOX_STANDARD = new Vector2(2, 300);  
+        Vector2 POSITION_BOX_STANDARD = new Vector2(2, 300);
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
@@ -47,7 +47,7 @@ namespace AtelierXNA
             PokemonSurLeTerrain = new List<ObjetDeBase>();
             UploadSauvegarde();
         }
-        public Jeu(Game game,List<string> Sauvegarde)
+        public Jeu(Game game, List<string> Sauvegarde)
             : base(game)
         {
             DataBase = new AccessBaseDeDonnée();
@@ -66,24 +66,23 @@ namespace AtelierXNA
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Add(new Afficheur3D(Game));
-            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5 ,INTERVALLE_MAJ_STANDARD);
+            TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD);
             Game.Components.Add(TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            //Game.Services.AddService(typeof(Combat), LeCombat);
         }
         public override void Update(GameTime gameTime)
         {
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
-            if(Game.Components.Count < 20)
+            if (Game.Components.Count < 20)
             {
-                if(Game.Components.Count(p=> p is Afficheur3D)==2)
-                Game.Components.Add(new Afficheur3D(Game));
-            AjoutPokemonsRandom();
+                if (Game.Components.Count(p => p is Afficheur3D) == 2)
+                    Game.Components.Add(new Afficheur3D(Game));
+                AjoutPokemonsRandom();
             }
             base.Update(gameTime);
         }
@@ -93,8 +92,8 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
                 UploadSauvegarde();
-            } 
-                       
+            }
+
         }
 
         public void UploadSauvegarde()
@@ -107,7 +106,7 @@ namespace AtelierXNA
             DataBase.Sauvegarder(Sauvegarde);
         }
 
-    private void GérerTransition()
+        private void GérerTransition()
         {
             switch (ÉtatJeu)
             {
@@ -132,7 +131,7 @@ namespace AtelierXNA
         private void AjoutPokemonsRandom()
         {
             PokemonRandom1String = new Pokemon(TrouverAléatoire());
-            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1String,TrouverAléatoire(), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
+            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1String, TrouverAléatoire(), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
             //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);
@@ -158,8 +157,8 @@ namespace AtelierXNA
         }
         private Vector3 TrouverPositionRandom()
         {
-            float positionRandomX = générateurAléatoire.Next(-TerrainDeJeu.NbColonnes / 2, TerrainDeJeu.NbColonnes/2);
-            float positionRandomY = générateurAléatoire.Next(-TerrainDeJeu.NbRangées / 2, TerrainDeJeu.NbRangées/ 2);
+            float positionRandomX = générateurAléatoire.Next(-TerrainDeJeu.NbColonnes / 2, TerrainDeJeu.NbColonnes / 2);
+            float positionRandomY = générateurAléatoire.Next(-TerrainDeJeu.NbRangées / 2, TerrainDeJeu.NbRangées / 2);
 
             //positionRandomX = MathHelper.Max(MathHelper.Min(positionRandomX, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
             //positionRandomY = MathHelper.Max(MathHelper.Min(positionRandomY, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
@@ -180,6 +179,8 @@ namespace AtelierXNA
                     break;
                 case ÉtatsJeu.COMBAT:
                     LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
+                    Game.Components.Add(LeCombat);
+                    Game.Services.AddService(typeof(Combat), LeCombat);
                     break;
                     //case États.MAISON:
                     //    GérerCollision();
@@ -203,12 +204,15 @@ namespace AtelierXNA
         {
             foreach (ObjetDeBase p in Game.Components.Where(r => r is ObjetDeBase))
             {
-                if (LeJoueur.EstEnCollision(p))
+                if (!(p is Player))
                 {
+                    if (LeJoueur.EstEnCollision(p))
+                    {
                     ÉtatJeu = ÉtatsJeu.COMBAT;
+                    }
                 }
             }
-        
+
         }
     }
 }

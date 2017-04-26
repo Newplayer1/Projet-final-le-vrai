@@ -77,7 +77,7 @@ namespace AtelierXNA
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Background = GestionnaireDeTextures.Find("BackGround");
             Controls = GestionnaireDeTextures.Find("controls");
-            Chanson = GestionnaireDeChansons.Find("hey");
+            Chanson = GestionnaireDeChansons.Find("Pokemon");
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
 
             //Audio Ajustments

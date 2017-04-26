@@ -24,7 +24,7 @@ namespace AtelierXNA
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée DataBase { get; set; }
         Combat LeCombat { get; set; }
-
+        CaméraSubjective CaméraJeu { get; set; }
         TerrainAvecBase TerrainDeJeu { get; set; }
         ObjetDeBase PokemonRandom1 { get; set; }
         Pokemon PokemonRandom1String { get; set; }
@@ -39,7 +39,7 @@ namespace AtelierXNA
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
-            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
             //LeJoueur.PokemonsDansLesMains = new List<int>();
 
             //LeJoueur.PokemonsDansLesMains.Add(choix);
@@ -52,7 +52,7 @@ namespace AtelierXNA
         {
             DataBase = new AccessBaseDeDonnée();
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
-            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
@@ -72,6 +72,7 @@ namespace AtelierXNA
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
         }
         public override void Update(GameTime gameTime)
         {
@@ -183,6 +184,12 @@ namespace AtelierXNA
                         Flags.Combat = true;
                         LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
+                        LeJoueur.Visible = false;
+                        ObjetDeBase PokemonLancer = new ObjetDeBase(Game,"09/09",ÉCHELLE_OBJET,new Vector3(0,0,0),new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z +1 ));
+                        Game.Components.Add(new Afficheur3D(Game));
+                        Game.Components.Add(PokemonLancer);
+                        //CaméraJeu.Cible = new Vector3(LeJoueur.Position.X + 3, LeJoueur.Position.Y + 3, LeJoueur.Position.Z);
+                        //CaméraJeu.CréerPointDeVue(CaméraJeu.Position, CaméraJeu.Cible, CaméraJeu.OrientationVerticale);
                     }
                     break;
                     //case États.GYM:
@@ -206,9 +213,6 @@ namespace AtelierXNA
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {
-                        //LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
-                        //Game.Components.Add(LeCombat);
-                        //Game.Services.AddService(typeof(Combat), LeCombat);
                         ÉtatJeu = ÉtatsJeu.COMBAT;
                     }
                 }

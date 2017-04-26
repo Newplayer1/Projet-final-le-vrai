@@ -74,7 +74,7 @@ namespace AtelierXNA
 
         protected void EffectuerMise¿Jour()
         {
-            if (!(Combat.EnCombat && AfficheurTexte.MessageEnCours))
+            if (!(Combat.EnCombat || AfficheurTexte.MessageEnCours))
             {
                 BougerTrainer();
                 TournerTrainer();

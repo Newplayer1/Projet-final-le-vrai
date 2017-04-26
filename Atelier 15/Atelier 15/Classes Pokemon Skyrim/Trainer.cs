@@ -114,6 +114,7 @@ namespace AtelierXNA
         {
             Party.Add(new Pokemon("Mewtow"));
             Party.Add(new Pokemon("Caterpie"));
+            Party.Add(new Pokemon("n'importe quoi"));
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

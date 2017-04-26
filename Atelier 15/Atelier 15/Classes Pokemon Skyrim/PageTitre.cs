@@ -17,14 +17,31 @@ namespace AtelierXNA
         const float INTERVALLEMAJ = 1 / 60f;
         SpriteBatch spriteBatch;
         GraphicsDeviceManager graphics;
+        RessourcesManager<SpriteFont> ArialFont { get; set; }
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Song> GestionnaireDeChansons { get; set; }
         Texture2D Background { get; set; }
         Texture2D Controls { get; set; }
+        SpriteFont Arial { get; set; }
         Rectangle RectangleAffichage { get; set; }
         Song Chanson { get; set; }
         public PageTitreState CurrentPageTitreState { get; private set; }
         Vector2 screenSize;
+        
+        Button1 btnOptions { get; set; }
+        Button1 btnNewGame { get; set; }
+        Button1 btnLoadGame { get; set; }
+        Button1 btnSoundOn { get; set; }
+        Button1 btnSoundOff { get; set; }
+        Button1 btnBack { get; set; }
+        Button1 controls { get; set; }
+
+        Button1 charmander { get; set; }
+        Button1 bulbusaur { get; set; }
+        Button1 squirtle { get; set; }
+        public bool Yachoisi { get; set; }
+        public int choix { get; set; }
+
 
         public enum PageTitreState
         {
@@ -45,26 +62,15 @@ namespace AtelierXNA
         }
 
 
-        Button1 btnOptions;
-        Button1 btnNewGame;
-        Button1 btnLoadGame;
-        Button1 btnSoundOn;
-        Button1 btnSoundOff;
-        Button1 btnBack;
-        Button1 controls;
 
-        Button1 charmander { get; set; }
-        Button1 bulbusaur { get; set; }
-        Button1 squirtle { get; set; }
-        public bool Yachoisi { get; set; }
-        public int choix { get; set; }
 
         public override void Initialize()
         {
             CurrentPageTitreState = PageTitreState.MainMenu;
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
-            
+            ArialFont = new RessourcesManager<SpriteFont>(Game, "Fonts");
+
 
             screenSize = new Vector2(800, 400);
             base.Initialize();
@@ -78,6 +84,7 @@ namespace AtelierXNA
             Background = GestionnaireDeTextures.Find("BackGround");
             Controls = GestionnaireDeTextures.Find("controls");
             Chanson = GestionnaireDeChansons.Find("Pokemon");
+            Arial = ArialFont.Find("Arial20"); 
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
 
             //Audio Ajustments
@@ -99,14 +106,13 @@ namespace AtelierXNA
             btnSoundOff = new Button1(Game,GestionnaireDeTextures.Find("SoundOff"), graphics.GraphicsDevice, INTERVALLEMAJ);
             btnBack = new Button1(Game,GestionnaireDeTextures.Find("btn_back"), graphics.GraphicsDevice, INTERVALLEMAJ);
             controls = new Button1(Game, GestionnaireDeTextures.Find("btn_Controles"), graphics.GraphicsDevice, INTERVALLEMAJ);
-
             squirtle = new Button1(Game, GestionnaireDeTextures.Find("squirtle"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            squirtle.ResetPosition(new Vector2(600, 200));
             bulbusaur = new Button1(Game, GestionnaireDeTextures.Find("bulbasaur"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            bulbusaur.ResetPosition(new Vector2(400, 200));
             charmander = new Button1(Game, GestionnaireDeTextures.Find("Charmander"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            charmander.ResetPosition(new Vector2(200, 200));
 
+            squirtle.ResetPosition(new Vector2(600, 200));
+            bulbusaur.ResetPosition(new Vector2(400, 200));
+            charmander.ResetPosition(new Vector2(200, 200));
             btnNewGame.ResetPosition(new Vector2(75, 315));
             btnOptions.ResetPosition(new Vector2(275, 320));
             btnLoadGame.ResetPosition(new Vector2(175, 320));
@@ -151,6 +157,9 @@ namespace AtelierXNA
                 case PageTitreState.PokemonDébut:
                     if (btnBack.isclicked) CurrentPageTitreState = PageTitreState.MainMenu;
                     btnBack.Update(mouse, gameTime);
+                    bulbusaur.Update(mouse, gameTime);
+                    squirtle.Update(mouse, gameTime);
+                    charmander.Update(mouse, gameTime);
                     Yachoisi = false;
                     if (squirtle.isclicked)
                     {
@@ -167,9 +176,7 @@ namespace AtelierXNA
                         Yachoisi = true;
                         choix = 1;
                     }
-                    bulbusaur.Update(mouse, gameTime);
-                    squirtle.Update(mouse, gameTime);
-                    charmander.Update(mouse, gameTime);
+
                     break;
             }
             base.Update(gameTime);
@@ -199,7 +206,8 @@ namespace AtelierXNA
                     btnBack.Draw(spriteBatch);
                     break;
                 case PageTitreState.PokemonDébut:
-                    //spriteBatch.Draw(Background, RectangleAffichage, Color.White);
+                    spriteBatch.DrawString(Arial, "Choose your Starter Pokemon : ", new Vector2(260,100), Color.WhiteSmoke, 0,
+                                   Vector2.Zero, 1f, SpriteEffects.None, 0);
                     charmander.Draw(spriteBatch);
                     squirtle.Draw(spriteBatch);
                     bulbusaur.Draw(spriteBatch);
@@ -209,31 +217,5 @@ namespace AtelierXNA
             spriteBatch.End();
             base.Draw(gameTime);
         }
-
-
-
-
-
-
-
-
-
-
-
-        //protected float WeaknessOrStrenght(int TypeAttack, int FoeOrFriendType1, int FoeOrFriendType2)
-        //{
-        //    float[,] WeaknessOrStrenghtTableau = new float[18, 18];
-        //    //Remplir Tableau avec DataBase
-
-        //    float Coefficient = WeaknessOrStrenghtTableau[TypeAttack, FoeOrFriendType1];
-
-        //    if (FoeOrFriendType2 != 0)
-        //    {
-        //        Coefficient *= WeaknessOrStrenghtTableau[TypeAttack, FoeOrFriendType2];
-        //    }
-
-        //    Coefficient /= 100;
-        //    return Coefficient;
-        //}
     }
 }

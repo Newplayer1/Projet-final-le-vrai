@@ -193,7 +193,7 @@ namespace AtelierXNA
                         Game.Components.Add(new Afficheur3D(Game));
                         Game.Components.Add(PokemonLancer);
                         PokemonEnCollision.Position = new Vector3(PokemonLancer.Position.X -1 , PokemonLancer.Position.Y, PokemonLancer.Position.Z- 1);
-                        PokemonSurLeTerrain[indexPokemonEnCollission - 1] = PokemonEnCollision;
+                        PokemonSurLeTerrain[indexPokemonEnCollission - 1] = PokemonEnCollision;// CAUSE UNE EXCEPTION (quand l'index = 0, ça crash)
                         Flags.Combat = true;
                         LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon(Game, 5), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);

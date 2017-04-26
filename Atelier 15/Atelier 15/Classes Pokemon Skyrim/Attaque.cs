@@ -36,6 +36,9 @@ namespace AtelierXNA
             NuméroAttaque = attaqueNumber;
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque + 1);
+
+            AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
+            Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
         }
 
         public override void Initialize()
@@ -43,8 +46,6 @@ namespace AtelierXNA
             //Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             //AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque);
 
-            AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
-            Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
 
             base.Initialize();
         }
@@ -65,7 +66,7 @@ namespace AtelierXNA
         {
             bool value = false;
 
-            if (AttaqueEnString[5].ToUpper() == "special")
+            if (AttaqueEnString[5].ToUpper() == "SPECIAL")
                 value = true;
 
             return value;
@@ -74,7 +75,7 @@ namespace AtelierXNA
         {
             bool value = false;
 
-            if (AttaqueEnString[5].ToUpper() == "physic")
+            if (AttaqueEnString[5].ToUpper() == "PHYSIC")
                 value = true;
 
             return value;

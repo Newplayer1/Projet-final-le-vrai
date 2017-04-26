@@ -12,21 +12,30 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public class Pokemon
+    public class Pokemon : Microsoft.Xna.Framework.GameComponent
     {
-        public int MaxHp => 20;
+        public int MaxHp { get; private set; }
         public int HP { get; private set; }
         public bool EstEnVie => HP > 0;
-        public int Attack => 20;
-        public int Defense => 20;
-        public int SpecialAttack => 20;
-        public int SpecialDefense => 20;
-        public int Speed => 20;
+        //public int Attack => 20;
+        //public int Defense => 20;
+        //public int SpecialAttack => 20;
+        //public int SpecialDefense => 20;
+        //public int Speed => 20;
 
+        public int Attack => Stats[0];
+        public int Defense => Stats[1];
+        public int SpecialAttack => Stats[2];
+        public int SpecialDefense => Stats[3];
+        public int Speed => Stats[4];
 
+        List<int> Stats { get; set; }
+        List<int> StatsFixes { get; set; }
+
+        int PokedexNumber { get; set; }
         public int Level { get; private set; }
-        List<int> AttaquesList { get; set; }
-        public int this[int index]
+        List<Attaque> AttaquesList { get; set; }
+        public Attaque this[int index]
         {
             get
             {
@@ -34,17 +43,48 @@ namespace AtelierXNA
             }
         }
 
-        public string Nom { get; private set; }
-        public Pokemon(string nom)
+        public string Nom => PokemonEnString[1];
+        List<string> PokemonEnString { get; set; }
+        public string Type1 => PokemonEnString[8];
+        public string Type2 => PokemonEnString[9];
+
+        AccessBaseDeDonnée Database { get; set; }
+
+        public Pokemon(Game jeu, int pokedexNumber)
+            : base(jeu)
         {
-            AttaquesList = new List<int>();
-            AttaquesList.Add(0);
-            AttaquesList.Add(1);
-            AttaquesList.Add(2);
-            AttaquesList.Add(-1);
-            Nom = nom;
-            HP = 20;
-            Level = 10;
+            AttaquesList = new List<Attaque>();
+            AttaquesList.Add(new Attaque(Game, 10));
+            AttaquesList.Add(new Attaque(Game, 11));
+            AttaquesList.Add(new Attaque(Game, 12));
+            AttaquesList.Add(new Attaque(Game, 13));
+
+            PokedexNumber = pokedexNumber;
+            Level = 50;
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
+            CalculerStatsEtHP(Level);
+            HP = MaxHp;
+
+        }
+        void CalculerStatsEtHP(int level)//Refaire à chaque level up, a faire lorsque Access bien implémenté
+        {
+            MaxHp = (2 * (int.Parse(PokemonEnString[2]) + 2) * level) / 100 + level + 10;
+            StatsFixes = new List<int>();
+            float stat = 0;
+            int baseStat = 0;
+            for (int i = 1; i <= 5; i++)
+            {
+                baseStat = int.Parse(PokemonEnString[2 + i]);
+
+                stat = (2 * (baseStat + 2) * level) / 100 + 5;
+                StatsFixes.Add((int)stat);
+            }
+            RétablirStats();
+        }
+        public void RétablirStats()//Après chaque combat (et level up) TRÈS IMPORTANT
+        {
+            Stats = new List<int>(StatsFixes);
         }
 
         public void AjouterHP(int value)//Effet d'un item ou d'une attaque

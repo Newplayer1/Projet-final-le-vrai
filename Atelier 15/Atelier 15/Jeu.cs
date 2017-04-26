@@ -22,7 +22,7 @@ namespace AtelierXNA
         Vector2 POSITION_BOX_STANDARD = new Vector2(2, 300);
         Player LeJoueur { get; set; }
         InputManager GestionInput { get; set; }
-        AccessBaseDeDonnée DataBase { get; set; }
+        AccessBaseDeDonnée Database { get; set; }
         Combat LeCombat { get; set; }
 
         TerrainAvecBase TerrainDeJeu { get; set; }
@@ -36,7 +36,8 @@ namespace AtelierXNA
         public Jeu(Game game, int choix)
            : base(game)
         {
-            DataBase = new AccessBaseDeDonnée();
+            /*DataBase = new AccessBaseDeDonnée();*/
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             Vector3 positionCPU = new Vector3(96, 18f, -30);
             LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, positionCPU, INTERVALLE_MAJ_STANDARD, 1f);
@@ -50,9 +51,10 @@ namespace AtelierXNA
         public Jeu(Game game, List<string> Sauvegarde)
             : base(game)
         {
-            DataBase = new AccessBaseDeDonnée();
+            /*DataBase = new AccessBaseDeDonnée();*/
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
-            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(DataBase.LoadSauvegarde()[0]), float.Parse(DataBase.LoadSauvegarde()[1]), float.Parse(DataBase.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            LeJoueur = new Player(Game, "09/09", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(Database.LoadSauvegarde()[0]), float.Parse(Database.LoadSauvegarde()[1]), float.Parse(Database.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
@@ -103,7 +105,7 @@ namespace AtelierXNA
             Sauvegarde.Add(LeJoueur.Position.Y.ToString());
             Sauvegarde.Add(LeJoueur.Position.Z.ToString());
 
-            DataBase.Sauvegarder(Sauvegarde);
+            Database.Sauvegarder(Sauvegarde);
         }
 
         private void GérerTransition()
@@ -130,13 +132,14 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            PokemonRandom1String = new Pokemon(TrouverAléatoire());
+            PokemonRandom1String = new Pokemon(Game, générateurAléatoire.Next(1, POKEDEX_MAX));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1String, TrouverAléatoire(), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
             //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }
+        
         private string TrouverAléatoire()
         {
             int unNombre = générateurAléatoire.Next(1, POKEDEX_MAX);
@@ -155,6 +158,8 @@ namespace AtelierXNA
             //    échelleObjTest = ÉCHELLE_OBJET * 10;
             //}
         }
+
+
         private Vector3 TrouverPositionRandom()
         {
             float positionRandomX = générateurAléatoire.Next(-TerrainDeJeu.NbColonnes / 2, TerrainDeJeu.NbColonnes / 2);
@@ -181,7 +186,7 @@ namespace AtelierXNA
                     if (!(Game.Components.Contains(Game.Components.Where(c => c is Combat) as Combat)) && !Flags.Combat)
                     {
                         Flags.Combat = true;
-                        LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon("Mew"), INTERVALLE_MAJ_STANDARD);
+                        LeCombat = new Combat(Game, POSITION_BOX_STANDARD, LeJoueur, new Pokemon(Game, 5), INTERVALLE_MAJ_STANDARD);
                         Game.Components.Add(LeCombat);
                     }
                     break;

@@ -29,6 +29,7 @@ namespace AtelierXNA
         public List<string> Sauvegarde { get; set; }
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
         RessourcesManager<Model> GestionnaireDeModèles { get; set; }
+        AccessBaseDeDonnée DataBase { get; set; }
 
 
         public Atelier()
@@ -53,12 +54,15 @@ namespace AtelierXNA
 
             GestionnaireDeModèles = new RessourcesManager<Model>(this, "Models");
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(this, "Textures");
+            DataBase = new AccessBaseDeDonnée();
 
             Services.AddService(typeof(RessourcesManager<SpriteFont>), new RessourcesManager<SpriteFont>(this, "Fonts"));
             //Services.AddService(typeof(RessourcesManager<SoundEffect>), new RessourcesManager<SoundEffect>(this, "Sounds"));
             Services.AddService(typeof(RessourcesManager<Song>), new RessourcesManager<Song>(this, "Songs"));
             Services.AddService(typeof(RessourcesManager<Texture2D>),GestionnaireDeTextures);
             Services.AddService(typeof(RessourcesManager<Model>), GestionnaireDeModèles);
+
+            Services.AddService(typeof(AccessBaseDeDonnée), DataBase);
 
             Services.AddService(typeof(InputManager), GestionInput);
 

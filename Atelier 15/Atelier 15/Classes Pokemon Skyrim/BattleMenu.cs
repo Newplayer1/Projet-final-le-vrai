@@ -125,7 +125,7 @@ namespace AtelierXNA
             ListeChoix = new List<string>();
             for (int i = 0; i < 4; i++)
             {
-                if (UserPokemon[i] >= 0)
+                if (UserPokemon[i].NuméroAttaque >= 0)
                     ListeChoix.Add(UserPokemon[i].ToString());//(on devra override attaque.tostring)
                 else
                     ListeChoix.Add("-");
@@ -282,7 +282,7 @@ namespace AtelierXNA
             ListeChoix = new List<string>();
             for (int i = 0; i < 4; i++)
             {
-                if (UserPokemon[i] >= 0)
+                if (UserPokemon[i].NuméroAttaque >= 0)
                     ListeChoix.Add(UserPokemon[i].ToString());
                 else
                     ListeChoix.Add("-");

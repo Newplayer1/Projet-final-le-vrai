@@ -20,7 +20,7 @@ namespace AtelierXNA
 
         Pokemon UserPokemon { get; set; } //Le BattleMenu doit avoir accès aux attaques du pokémon... Garder en mémoire l'indice du pkm en jeu?
         Pokemon OpponentPokemon { get; set; }
-
+        AccessBaseDeDonnée Database { get; set; }
         //AccessBaseDeDonnée Database { get; set; }
         //bool EnCombat { get; set; }
         public bool EstOpponentSauvage { get; private set; }
@@ -37,6 +37,8 @@ namespace AtelierXNA
         TexteFixe NomOpponentPokemon { get; set; }
         TexteFixe VieUserPokemon { get; set; }
         TexteFixe VieOpponentPokemon { get; set; }
+
+        Random Générateur { get; set; }
 
         public static bool Wait { get; set; }
 
@@ -105,6 +107,8 @@ namespace AtelierXNA
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
             EnCombat = true;
+            Générateur = new Random();
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             CombatState = CombatState.INI;//changer la position de la caméra icitte
                                           //Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
                                           //EnCombat = true;
@@ -158,10 +162,10 @@ namespace AtelierXNA
             NomUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64), UserPokemon.ToString());
             Game.Components.Add(NomUserPokemon);
 
-            VieOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200 + Cadre.TAILLE_TILE), OpponentPokemon.HP.ToString());
+            VieOpponentPokemon = new TexteFixe(Game, new Vector2(PositionBox.X, PositionBox.Y - 200 + Cadre.TAILLE_TILE), OpponentPokemon.VieToString());
             Game.Components.Add(VieOpponentPokemon);
 
-            VieUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64 + Cadre.TAILLE_TILE), UserPokemon.HP.ToString());
+            VieUserPokemon = new TexteFixe(Game, new Vector2(PositionBox.X + 200, PositionBox.Y - 64 + Cadre.TAILLE_TILE), UserPokemon.VieToString());
             Game.Components.Add(VieUserPokemon);
             
 
@@ -316,7 +320,7 @@ namespace AtelierXNA
             if (UserPokemon.EstEnVie)
             {
                 EffectuerTourUser();
-                VieOpponentPokemon.RemplacerMessage(OpponentPokemon.HP.ToString());
+                VieOpponentPokemon.RemplacerMessage(OpponentPokemon.VieToString());
                 TourUserComplété = true;
                 if (CombatState != CombatState.END)
                     CombatState = CombatState.IN_BATTLE;
@@ -336,7 +340,7 @@ namespace AtelierXNA
         void GérerTransitionTOUR_OPPONENT()
         {
             EffectuerTourOpponent();
-            VieUserPokemon.RemplacerMessage(UserPokemon.HP.ToString());
+            VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
             TourOpponentComplété = true;
             CombatState = CombatState.IN_BATTLE;
         }
@@ -429,20 +433,20 @@ namespace AtelierXNA
         void EffectuerTourOpponent()
         {
             //choisir une attaque aléatoire
-            
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" used attack 0!", IntervalMAJ);
+            int nbAléatoire = Générateur.Next(0, 4);
+            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: Wild "+OpponentPokemon.Nom+" used " + OpponentPokemon[nbAléatoire].ToString(), IntervalMAJ);
             Game.Components.Add(message);//Message opponent
-            EffectuerAttaque(OpponentPokemon, UserPokemon, 0);
+            EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
             
         }
 
         void EffectuerAttaque(int numéroChoisi)
         {
             
-            string messageTour = UserPokemon.Nom +" used attack " + numéroChoisi.ToString() + "!";
+            string messageTour = UserPokemon.Nom +" used " + UserPokemon[numéroChoisi].ToString() + "!";
             AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
             Game.Components.Add(message);
-            EffectuerAttaque(UserPokemon, OpponentPokemon, numéroChoisi);
+            EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[numéroChoisi]);
             
         }
         void UtilierItem(int numéroChoisi)
@@ -456,7 +460,7 @@ namespace AtelierXNA
         {
             UserPokemon = UserTrainer[numéroChoisi];//ligne de code qui switch de pokémon
             NomUserPokemon.RemplacerMessage(UserPokemon.ToString());
-            VieUserPokemon.RemplacerMessage(UserPokemon.HP.ToString());
+            VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
 
             string messageTour = UserTrainer.Nom + " send out " + UserPokemon.Nom + "!";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
@@ -474,7 +478,7 @@ namespace AtelierXNA
 
             OpponentPokemon = OpponentTrainer.NextPokemonEnVie();//ligne de code qui switch de pokémon
             NomOpponentPokemon.RemplacerMessage(OpponentPokemon.ToString());
-            VieOpponentPokemon.RemplacerMessage(OpponentPokemon.HP.ToString());
+            VieOpponentPokemon.RemplacerMessage(OpponentPokemon.VieToString());
 
             string messageTour = OpponentTrainer.Nom + " send out " + OpponentPokemon.Nom + "!";
             AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "temp: " + messageTour, IntervalMAJ);
@@ -502,9 +506,58 @@ namespace AtelierXNA
         }
         void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, int attaqueChoisie)//Maybe, je sais pas trop, reformuler?
         {
-            opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
+            Attaque atk = new Attaque(Game, attaqueChoisie);
+            int nombreAléatoire = Générateur.Next(0, 101);
+            if (nombreAléatoire <= atk.Accuracy)//attaque!
+            {
+                //on va faire une attaque classique, ensuite on applique pardessus l'effet plus complexe peu importe l'attaque
+                if (atk.EstUneAttaqueSpéciale() && atk.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamageSpécial(attaquant, opposant, atk));
+
+                else if (atk.EstUneAttaquePhysique() && atk.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamagePhysique(attaquant, opposant, atk));
+
+                //ExécuterEffet(attaquant, opposant, atk);
+            }
+            //opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
+        }
+        void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)//Maybe, je sais pas trop, reformuler?
+        {
+            int nombreAléatoire = Générateur.Next(0, 101);
+            //if (nombreAléatoire <= attaqueChoisie.Accuracy)//attaque!
+            //{
+                //on va faire une attaque classique, ensuite on applique pardessus l'effet plus complexe peu importe l'attaque
+                if (attaqueChoisie.EstUneAttaqueSpéciale() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamageSpécial(attaquant, opposant, attaqueChoisie));
+
+                else if (attaqueChoisie.EstUneAttaquePhysique() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamagePhysique(attaquant, opposant, attaqueChoisie));
+
+                //ExécuterEffet(attaquant, opposant, atk);
+            //}
+            //opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
+        }
+        int CalculPointsDamagePhysique(Pokemon attaquant, Pokemon opposant, Attaque atk)// s'il y a un base power
+        {
+            float damage;
+
+            float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
+            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.Attack / opposant.Defense) / 50 + 2) * multiplicateurType;
+
+            return (int)damage;
         }
 
+        int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
+        {
+            float damage;
+
+            float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
+            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / opposant.SpecialDefense) / 50 + 2) * multiplicateurType;
+
+            return (int)damage;
+        }
         private int CalculerPointsDamage(int attaqueChoisie, Pokemon attaquant, Pokemon opposant)
         {
             return ((2 * attaquant.Level / 5 + 2) * /*atk.Power*/50 * (attaquant.Attack / opposant.Defense) / 50 + 2) * /*multiplicateurType*/1;

@@ -130,6 +130,10 @@ namespace AtelierXNA
                 else
                     ListeChoix.Add("-");
             }
+            for (int i = UserPokemon.NbAttaques; i < 4; i++)
+            {
+                ListeChoix.Add("-");
+            }
             FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
         }
         private void InitialiserPokemonChoix()
@@ -286,6 +290,10 @@ namespace AtelierXNA
                     ListeChoix.Add(UserPokemon[i].ToString());
                 else
                     ListeChoix.Add("-");
+            }
+            for (int i = UserPokemon.NbAttaques; i < 4; i++)
+            {
+                ListeChoix.Add("-");
             }
             FightChoix.ModifierChoix(ListeChoix);//On update les attaques, si on change de pokémon on veut les attaques du pokémon qu'on a switch
 

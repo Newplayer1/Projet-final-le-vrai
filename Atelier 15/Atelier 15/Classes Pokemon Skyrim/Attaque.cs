@@ -35,7 +35,7 @@ namespace AtelierXNA
             Weaknesses = new List<int>();
             NuméroAttaque = attaqueNumber;
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque + 1);
+            AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque);
 
             AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
             Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
@@ -60,7 +60,7 @@ namespace AtelierXNA
             int multiplierPremierType = Weaknesses[indexPremierType + 2];//+2 parce qu'on skip la colonne du numéro de type et du nom de type
             int multiplierSecondType = Weaknesses[indexSecondType + 2];
 
-            return (multiplierPremierType / 100) * (multiplierSecondType / 100);
+            return (multiplierPremierType / 100f) * (multiplierSecondType / 100f);
         }
 
         //category

@@ -99,11 +99,15 @@ namespace AtelierXNA
                 //item.AjouterHP(item.MaxHp);
             }
         }
-        public void AddPokemon(int choix)
+        public void AddPokemon(int pokedexNumber)
         {
-
+            Party.Add(new Pokemon(Game, pokedexNumber, this));
         }
-               public Trainer(Game jeu, string nom, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
+        public void AddPokemon(int pokedexNumber, int level)
+        {
+            Party.Add(new Pokemon(Game, pokedexNumber, level, this));
+        }
+        public Trainer(Game jeu, string nom, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale)
             : base(jeu, nomModèle, échelleInitiale, rotationInitiale, positionInitiale)
         {
             Nom = nom;
@@ -112,8 +116,9 @@ namespace AtelierXNA
         
         public override void Initialize()
         {
-            Party.Add(new Pokemon(Game, 6, 20, this));
-            Party.Add(new Pokemon(Game, 5, 100, this));
+            //Party.Add(new Pokemon(Game, 6, 50, this));
+            //Party.Add(new Pokemon(Game, 3, 50, this));
+            //Party.Add(new Pokemon(Game, 9, 50, this));
             base.Initialize();
         }
         public override void Update(GameTime gameTime)

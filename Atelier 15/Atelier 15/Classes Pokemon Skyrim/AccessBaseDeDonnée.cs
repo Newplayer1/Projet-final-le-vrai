@@ -134,9 +134,10 @@ namespace AtelierXNA
 
                 Tempo.Add(reader.GetInt16(0).ToString());
                 Tempo.Add(reader.GetString(1));
-                Tempo.Add(reader.GetString(2));
+                Tempo.Add(reader.GetInt16(2).ToString());
                 Tempo.Add(reader.GetInt16(3).ToString());
                 Tempo.Add(reader.GetInt16(4).ToString());
+                Tempo.Add(reader.GetInt16(5).ToString());
 
                 TypeLevelAttaque.Add(Tempo);
             }
@@ -151,7 +152,7 @@ namespace AtelierXNA
             {
                 List<string> Tempo = new List<string>();
 
-                Tempo.Add(reader.GetString(0));
+                Tempo.Add(reader.GetInt16(0).ToString());
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetString(2));
                 Tempo.Add(reader.GetString(3));
@@ -172,6 +173,10 @@ namespace AtelierXNA
         //level 0 = 3 et 4; level 10 = 5; et level 25 = 6
         {
             return TypeLevelAttaque[numéroDuType - 1][level - 1].ToString();
+        }
+        public List<string> AccessDonnéesTypeLevelAttaque(int numéroDuType)
+        {
+            return TypeLevelAttaque[numéroDuType - 1];//[level - 1].ToString();
         }
         public List<int> AccessDonnéesArrayWeaknessStrengh(int row)
         {

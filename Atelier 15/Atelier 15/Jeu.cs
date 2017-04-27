@@ -37,6 +37,7 @@ namespace AtelierXNA
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
 
+        TexteFixe DebugTexte { get; set; }
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -69,6 +70,8 @@ namespace AtelierXNA
 
             ÉtatJeu = ÉtatsJeu.JEU3D;
             ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
+            Attaque test = new Attaque(Game, 28);// attaque test
+            DebugTexte = new TexteFixe(Game, new Vector2(5, 21), test.Name);
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Add(new Afficheur3D(Game));
@@ -82,6 +85,7 @@ namespace AtelierXNA
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
 
             Game.Components.Add(ÉtatJeuTexte);
+            Game.Components.Add(DebugTexte);
         }
         public override void Update(GameTime gameTime)
         {
@@ -143,7 +147,7 @@ namespace AtelierXNA
         private void AjoutPokemonsRandom()
         {
             int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire);
+            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(20, 40));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
             //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
             //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);

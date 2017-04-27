@@ -49,7 +49,8 @@ namespace AtelierXNA
         }
 
         public string Nom => PokemonEnString[1];
-        List<string> PokemonEnString { get; set; }
+        List<string> PokemonEnString { get; set; } 
+        List<string> LearnsetEnString { get; set; }
         public string Type1 => PokemonEnString[8];
         public string Type2 => PokemonEnString[9];
         int Type1EnInt => (int)Enum.Parse(typeof(PokemonTypes), Type1);
@@ -61,8 +62,7 @@ namespace AtelierXNA
         {
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-
-            AttaquesList = new List<Attaque>();
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
 
             PokedexNumber = pokedexNumber;
             Level = 5;
@@ -77,8 +77,7 @@ namespace AtelierXNA
         {
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-
-            AttaquesList = new List<Attaque>();
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
 
             PokedexNumber = pokedexNumber;
             Level = 5;
@@ -93,7 +92,7 @@ namespace AtelierXNA
         {
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            AttaquesList = new List<Attaque>();
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
 
 
             PokedexNumber = pokedexNumber;
@@ -109,9 +108,8 @@ namespace AtelierXNA
         {
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            AttaquesList = new List<Attaque>();
-
-
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
+            
             PokedexNumber = pokedexNumber;
             Level = level;
 
@@ -129,16 +127,20 @@ namespace AtelierXNA
         void AttribuerAttaquesParDéfaut()
         {
             //Attribuer attaques selon level et type
-            AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 3))));
-            AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 4))));
+            AttaquesList = new List<Attaque>();
+            int atkBase = int.Parse(LearnsetEnString[2]);
+            int premièreAttaqueType = int.Parse(LearnsetEnString[4]);
+            int secondeAttaqueType = int.Parse(LearnsetEnString[5]);
+
+            AttaquesList.Add(new Attaque(Game, atkBase));
+            AttaquesList.Add(new Attaque(Game, atkBase + 1));
+
             if (Level >= 10)
             {
-                AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 5))));
+                AttaquesList.Add(new Attaque(Game, premièreAttaqueType));
                 if (Level >= 25)
-                    AttaquesList.Add(new Attaque(Game, int.Parse(Database.AccessDonnéesTypeLevelAttaque(Type1EnInt, 6))));
+                    AttaquesList.Add(new Attaque(Game, secondeAttaqueType));
             }
-                
-            
         }
 
         void CalculerStatsEtHP(int level)//Refaire à chaque level up, a faire lorsque Access bien implémenté

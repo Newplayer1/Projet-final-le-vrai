@@ -565,7 +565,7 @@ namespace AtelierXNA
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
-            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50) * multiplicateurType;
+            damage = ((2 * attaquant.Level / 5f + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50f) * multiplicateurType;
 
             return (int)damage;
         }

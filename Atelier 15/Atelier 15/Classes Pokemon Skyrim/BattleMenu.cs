@@ -123,7 +123,7 @@ namespace AtelierXNA
         private void InitialiserFightChoix()
         {
             ListeChoix = new List<string>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < UserPokemon.NbAttaques; i++)
             {
                 if (UserPokemon[i].NuméroAttaque >= 0)
                     ListeChoix.Add(UserPokemon[i].ToString());//(on devra override attaque.tostring)

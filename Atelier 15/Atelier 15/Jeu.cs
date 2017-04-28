@@ -109,6 +109,11 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
                 UploadSauvegarde();
+                foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                {
+                    t.ÀDétruire = true;
+                }
+                Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Upload Sauvergarde"));
             }
 
         }

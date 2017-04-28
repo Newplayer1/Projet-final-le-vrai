@@ -30,6 +30,7 @@ namespace AtelierXNA
         public Vector3 UpPositionTrainer { get; set; }
 
         protected InputManager GestionInput { get; private set; }
+        bool inventaireOuvert;
 
         BasicEffect EffetDeBase { get; set; }
         Vector3 Direction { get; set; }
@@ -49,6 +50,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
+            inventaireOuvert = false;
             UpPositionTrainer = Vector3.Up + Position;
             TempsÉcouléDepuisMAJ = 0;
             base.Initialize();
@@ -86,25 +88,28 @@ namespace AtelierXNA
 
         private void InventairePoks()
         {
-            //bool InventaireOuvert = false;
-            if (GestionInput.EstNouvelleTouche(Keys.P))
+            if (GestionInput.EstNouvelleTouche(Keys.P) && !inventaireOuvert)
             {
-
+                foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                {
+                    t.ÀDétruire = true;
+                }
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
                     InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + /*" Type1 : " + GetType1Pokemon()[i] + " Type2 : " + GetType2Pokemon()[i] +*/ " HP : " + GetHPPokemon()[i];
                     Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
-                }//InventaireOuvert = true;
+                }
+            inventaireOuvert = !inventaireOuvert;
             }
-            //if (InventaireOuvert)
-            //{
-            //    foreach(TexteFixe tf in Game.Components)
-            //    {
-            //        Game.Components.Remove(tf);
-            //    }
-            //    InventaireOuvert = false;
-            //}
+            else if  (GestionInput.EstNouvelleTouche(Keys.P) && inventaireOuvert)
+            {
+                foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                {
+                    t.ÀDétruire = true;
+                }
+                inventaireOuvert = !inventaireOuvert;
+            }
         }
 
         private void TournerTrainer()

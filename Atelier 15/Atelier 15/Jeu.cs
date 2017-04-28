@@ -224,12 +224,13 @@ namespace AtelierXNA
                             LeJoueur.Visible = false;
 
                             //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
-                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
+                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 2, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
 
                             Game.Components.Add(new Afficheur3D(Game));
                             Game.Components.Add(PokemonJoueur);
-                            PokemonEnCollision.Position = new Vector3(PokemonJoueur.Position.X - 1, PokemonJoueur.Position.Y, PokemonJoueur.Position.Z - 1);
+                            PokemonEnCollision.Position = new Vector3(PokemonJoueur.Position.X - 2, PokemonJoueur.Position.Y, PokemonJoueur.Position.Z + 2);
                             PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
+                            (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).CalculerMonde();
                             Flags.Combat = true;
                             LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, PokemonEnCollision.UnPokemon, INTERVALLE_MAJ_STANDARD);
                             Game.Components.Add(LeCombat);

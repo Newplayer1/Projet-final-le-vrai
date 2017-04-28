@@ -56,7 +56,7 @@ namespace AtelierXNA
             base.Initialize();
             SphèreDeCollision = new BoundingSphere(Position, 1);
         }
-        protected void CalculerMonde()
+        public void CalculerMonde()
         {
             Monde = Matrix.Identity;
             Monde *= Matrix.CreateScale(Échelle);

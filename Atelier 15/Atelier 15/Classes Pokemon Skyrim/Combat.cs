@@ -120,23 +120,7 @@ namespace AtelierXNA
             PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
             PositionInfoOpponentPokemon = new Vector2(Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height / 10);
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            CombatState = CombatState.INI;//changer la position de la caméra icitte
-                                          //Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-                                          //EnCombat = true;
-                                          ////GameState = Combat
-                                          //UserPkmPrioritaire = true;
-                                          ////Créer le MainMenu mais le garder invisible?
-                                          //MenuBattle = new BattleMenu(Game, new Vector2(2, 300), new Vector2(32, 6), Atelier.INTERVALLE_STANDARDS);
-                                          //if (!EstOpponentSauvage)
-                                          //{
-                                          //    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, (int)Dimensions.X, (int)Dimensions.Y, "User threw an item!", IntervalMAJ);
-                                          //    Game.Components.Add(message);
-                                          //    OpponentPokemon = LancerPokémon(0, OpponentTrainer); //lance son premier pokémon
-                                          //}//si est sauvage, on a déjà décidé du OpponentPokemon dans le constructeur
-                                          //UserPokemon = LancerPokémon(0, UserTrainer);//envoie le premier pokémon de l'inventaire.
-
-            //si pas sauvage, message du trainer, ensuite message du pokemon opponent
-            //ajouter le pokemon opponent, OpponentPokemon = wildPokemon;
+            CombatState = CombatState.INI;
 
             if (EstOpponentSauvage)
             {
@@ -145,7 +129,7 @@ namespace AtelierXNA
             }
             else
             {
-                OpponentPokemon = OpponentTrainer[0];
+                OpponentPokemon = OpponentTrainer.NextPokemonEnVie();
                 AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Trainer " + OpponentTrainer.Nom + " wants to battle! " + "Trainer " + OpponentTrainer.Nom + " send out " + OpponentPokemon.Nom + "!", IntervalMAJ);
                 Game.Components.Add(message);//Message opponent
             }

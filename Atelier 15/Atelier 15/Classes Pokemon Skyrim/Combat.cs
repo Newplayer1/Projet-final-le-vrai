@@ -74,6 +74,8 @@ namespace AtelierXNA
 
         public int LargeurBox { get; private set; }
 
+        public bool GetPokemonEstChangé => MainMenu.PokémonChangé;
+
         //public Combat(Game game, Vector2 positionBox, Trainer user, Trainer opponentTrainer)
         //    : base(game)
         //{

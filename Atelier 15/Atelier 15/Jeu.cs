@@ -238,7 +238,7 @@ namespace AtelierXNA
                             Vector2 vecteurPositionopponent = new Vector2(LeJoueur.Position.X + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + TerrainDeJeu.NbRangées / 2);
                             float posYopponent = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
                             //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
-                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET *3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
+                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur.NextPokemonEnVie().PokedexNumber), ÉCHELLE_OBJET *3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
 
                             Game.Components.Add(new Afficheur3D(Game));
                             Game.Components.Add(PokemonJoueur);
@@ -271,9 +271,9 @@ namespace AtelierXNA
                         PokemonJoueur.ÀDétruire = true;
                         ÉtatJeu = ÉtatsJeu.JEU3D;
                     }
-                    //if (Combat.EnCombat) //Ajouter si possible la condition que le pokémon est changé
-                        //PokemonJoueur.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexUserPokemon));
-                        //PokemonEnCollision.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexOpponentPokemon));
+                    if (Combat.EnCombat && LeCombat.GetPokemonEstChangé) //Ajouter si possible la condition que le pokémon est changé
+                        PokemonJoueur.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexUserPokemon));
+                    //PokemonEnCollision.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexOpponentPokemon));
                     break;
                     //case États.GYM:
                     //    GérerVitesseDéplacement();

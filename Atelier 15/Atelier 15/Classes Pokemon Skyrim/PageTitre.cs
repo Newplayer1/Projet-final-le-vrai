@@ -208,6 +208,8 @@ namespace AtelierXNA
                 case PageTitreState.PokemonDébut:
                     spriteBatch.DrawString(Arial, "Choose your Starter Pokemon : ", new Vector2(260,100), Color.WhiteSmoke, 0,
                                    Vector2.Zero, 1f, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(Arial, "Please don't.", new Vector2(400, 280), Color.WhiteSmoke, 0,
+                                   Vector2.Zero, 0.6f, SpriteEffects.None, 0);
                     charmander.Draw(spriteBatch);
                     squirtle.Draw(spriteBatch);
                     bulbusaur.Draw(spriteBatch);

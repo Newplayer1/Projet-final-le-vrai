@@ -97,7 +97,13 @@ namespace AtelierXNA
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
-                    InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + /*" Type1 : " + GetType1Pokemon()[i] + " Type2 : " + GetType2Pokemon()[i] +*/ " HP : " + GetHPPokemon()[i];
+                    InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + " Type1 : " + GetType1Pokemon()[i];  
+                    if(GetType2Pokemon()[i] != "NULL")
+                    {
+                        InventaireParLigne += " Type2 : " + GetType2Pokemon()[i];
+                    }
+                    InventaireParLigne += " HP : " + GetHPPokemon()[i];
+
                     Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
                 }
             inventaireOuvert = !inventaireOuvert;

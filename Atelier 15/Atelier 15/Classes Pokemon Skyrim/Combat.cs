@@ -151,7 +151,7 @@ namespace AtelierXNA
             }
 
 
-            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserTrainer.Nom + ": Go, " + UserTrainer[0].Nom + "!", IntervalMAJ);
+            AfficheurTexte messageB = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserTrainer.Nom + ": Go, " + UserPokemon.Nom + "!", IntervalMAJ);
             Game.Components.Add(messageB);//Message pokemon user
 
 

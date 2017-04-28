@@ -37,6 +37,7 @@ namespace AtelierXNA
         public bool ItemUtilisé { get; set; }
         public bool PokémonChangé { get; set; }
         public bool TentativeFuite { get; set; }
+        public bool ItemPokeball { get; set; }
         public int NuméroChoisi { get; private set; }
 
 
@@ -156,12 +157,13 @@ namespace AtelierXNA
         private void InitialiserBagChoix()//Un trainer peut pas avoir plus que 6 sortes d'items sur lui? (+ simple pour afficher)
         {
             ListeChoix = new List<string>();
+            ListeChoix.Add("Pokeball");
             ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle (on devra override item.tostring?)
             ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
             ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
             ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
             ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
-            ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
+            //ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
             BagChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
         }
@@ -393,6 +395,10 @@ namespace AtelierXNA
                 DisableComponents();
                 ItemUtilisé = true;
                 NuméroChoisi = BagChoix.IndexSélectionné;
+                if (BagChoix[BagChoix.IndexSélectionné] == "Pokeball")
+                {
+                    ItemPokeball = true;
+                }
                 //Combat.UseItem(); Pokémon sur lequel il y a un effet, Trainer qui a utilisé l'item, numéro de l'item
                 BattleMenuState = BattleMenuState.READY;
                 //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);

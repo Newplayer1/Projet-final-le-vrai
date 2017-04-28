@@ -17,7 +17,7 @@ namespace AtelierXNA
     {
 
         const int MAX_LEVEL = 100;
-        bool EstSauvage { get; set; }
+        public bool EstSauvage { get; set; }
 
         public int MaxHp { get; private set; }
         public int HP { get; private set; }
@@ -34,6 +34,7 @@ namespace AtelierXNA
 
         public int PokedexNumber { get; private set; }
         public int NbAttaques => AttaquesList.Count;
+        public int CatchRate => int.Parse(PokemonEnString[10]);
         public int Level { get; private set; }
         ExpGrowthClass ExpGrowth { get; set; }
         int BaseExp => int.Parse(PokemonEnString[12]);

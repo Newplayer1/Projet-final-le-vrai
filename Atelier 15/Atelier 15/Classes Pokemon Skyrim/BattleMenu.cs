@@ -19,6 +19,7 @@ namespace AtelierXNA
     public enum BattleMenuState { MAIN, FIGHT, POKEMON, BAG, RUN, READY }
     public class BattleMenu : Microsoft.Xna.Framework.GameComponent, IDestructible
     {
+        const int MAX_NB_LETTRES_PAR_LIGNE = 29;
         public BattleMenuState BattleMenuState { get; set; }
         float IntervalMAJ { get; set; }
         Vector2 Dimensions { get; set; }
@@ -31,8 +32,10 @@ namespace AtelierXNA
         AfficheurChoix BagChoix { get; set; }
         AfficheurChoix PokemonChoix { get; set; }
         AfficheurTexte Message { get; set; }
+
         List<string> ListeChoix { get; set; }
         List<DrawableGameComponent> ComposantesBattleMenu { get; set; }
+
         public bool AttaqueUtilisée  { get; set; }
         public bool ItemUtilisé { get; set; }
         public bool PokémonChangé { get; set; }
@@ -89,9 +92,14 @@ namespace AtelierXNA
             NuméroChoisi = 0;
             NoDuPokemonEnJeu = 0;
             InitialiserMainChoix();
-            InitialiserFightChoix();
+
+            InitialiserListeChoixFight();
+            FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
+
             InitialiserBagChoix();
-            InitialiserPokemonChoix();
+
+            InitialiserListeChoixPokemon();
+            PokemonChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), MAX_NB_LETTRES_PAR_LIGNE + 4, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
             Wait = AfficheurTexte.MessageEnCours;
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
@@ -121,7 +129,7 @@ namespace AtelierXNA
             ListeChoix.Add("RUN");
             MainChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
         }
-        private void InitialiserFightChoix()
+        private void InitialiserListeChoixFight()
         {
             ListeChoix = new List<string>();
             for (int i = 0; i < UserPokemon.NbAttaques; i++)
@@ -135,23 +143,20 @@ namespace AtelierXNA
             {
                 ListeChoix.Add("-");
             }
-            FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
         }
-        private void InitialiserPokemonChoix()
+        private void InitialiserListeChoixPokemon()
         {
             ListeChoix = new List<string>();
-            string plusLongueLigne = "a";
+            //string plusLongueLigne = "a"; //La plus longue string serai "aaaaaaaaaa Lvl.100 255/255 HP" soit 29 caractères
             for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
             {
                  ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
             }
-            for (int i = 0; i < ListeChoix.Count; i++)
-            {
-                if (ListeChoix[i].Count() >= plusLongueLigne.Count())
-                    plusLongueLigne = ListeChoix[i];
-            }
-            PokemonChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), plusLongueLigne.Count() + 4, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
-
+            //for (int i = 0; i < ListeChoix.Count; i++)
+            //{
+            //    if (ListeChoix[i].Count() >= plusLongueLigne.Count())
+            //        plusLongueLigne = ListeChoix[i];
+            //}
         }
 
         private void InitialiserBagChoix()//Un trainer peut pas avoir plus que 6 sortes d'items sur lui? (+ simple pour afficher)
@@ -285,18 +290,7 @@ namespace AtelierXNA
 
         private void GérerTransitionFIGHT()
         {
-            ListeChoix = new List<string>();
-            for (int i = 0; i < UserPokemon.NbAttaques; i++)
-            {
-                if (UserPokemon[i].NuméroAttaque >= 0)
-                    ListeChoix.Add(UserPokemon[i].ToString());
-                else
-                    ListeChoix.Add("-");
-            }
-            for (int i = UserPokemon.NbAttaques; i < 4; i++)
-            {
-                ListeChoix.Add("-");
-            }
+            InitialiserListeChoixFight();
             FightChoix.ModifierChoix(ListeChoix);//On update les attaques, si on change de pokémon on veut les attaques du pokémon qu'on a switch
 
             MainChoix.Visible = true;
@@ -358,11 +352,12 @@ namespace AtelierXNA
         {
             //InitialiserPokemonChoix();//On réinitialise chaque fois comme ça si la vie a changée, on le voit
 
-            ListeChoix = new List<string>();
-            for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
-            {
-                ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
-            }
+            //ListeChoix = new List<string>();
+            //for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
+            //{
+            //    ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
+            //}
+            InitialiserListeChoixPokemon();
             PokemonChoix.ModifierChoix(ListeChoix);
 
             MainChoix.Visible = true;

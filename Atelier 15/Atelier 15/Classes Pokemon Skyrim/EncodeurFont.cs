@@ -28,7 +28,7 @@ namespace AtelierXNA
         public static int EncoderASCIIEnFont(byte b)
         {
             int noDeTile = b;
-            //Première ligne de la texture de la police
+            //Première ligne de la police
             if (b >= 97 && b <= 122) //Les minuscules
                 noDeTile = b - 97;
             if (b == 32)
@@ -36,7 +36,7 @@ namespace AtelierXNA
             if (b >= 65 && b <= 90) //Les majuscules
                 noDeTile = b - 38;
 
-            //Deuxième ligne
+            //Deuxième ligne de la police
             if (b >= 49 && b <= 57)//de 1 à 9
                 noDeTile = b + 4;
             else if (b == 48)//0
@@ -66,7 +66,7 @@ namespace AtelierXNA
             else if (b == 60 || b == 62)// é, mais qu'on écrit < ou à mais qu'on écrit >
                 noDeTile = b + 20;
 
-            //(apparamment les accents sont pas pris en compte par l'encodeur ascii de visual studio...)
+            //(apparamment les accents sont pas pris en compte par l'encodeur ASCII de visual studio...? Ils existent dans ASCII, mais quand j'utilise l'encodeur ça retourne "?")
 
             return noDeTile;
         }
@@ -74,6 +74,7 @@ namespace AtelierXNA
         public static List<Rectangle> CréerListeRectangleSources(Texture2D image, int tailleTile)
         {
             List<Rectangle> listeRetour = new List<Rectangle>();
+
             for (int j = 0; j < (image.Height / tailleTile); j++)
             {
                 for (int i = 0; i < (image.Width / tailleTile); i++)
@@ -81,7 +82,6 @@ namespace AtelierXNA
                     listeRetour.Add(new Rectangle(tailleTile * i, tailleTile * j, tailleTile, tailleTile)); // A = 0; i = 0; j = 0 // A² = 1; i = 1; j = 0 // A³ = 2
                 }
             }
-
             return listeRetour;
         }
     }

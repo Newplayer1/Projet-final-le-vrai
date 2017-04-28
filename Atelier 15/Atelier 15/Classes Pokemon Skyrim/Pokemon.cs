@@ -17,6 +17,7 @@ namespace AtelierXNA
     {
 
         const int MAX_LEVEL = 100;
+        public const int MAX_LETTRES_NOM_POKEMON = 10;
         public bool EstSauvage { get; set; }
 
         public int MaxHp { get; private set; }

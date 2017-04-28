@@ -62,7 +62,7 @@ namespace AtelierXNA
             List<string> listeRetour = new List<string>();
             foreach (Pokemon item in Party)
             {
-                //listeRetour.Add(item.Type1);
+                listeRetour.Add(item.Type1);
             }
             return listeRetour;
             
@@ -72,7 +72,7 @@ namespace AtelierXNA
             List<string> listeRetour = new List<string>();
             foreach (Pokemon item in Party)
             {
-                //listeRetour.Add(item.Type2);
+                listeRetour.Add(item.Type2);
             }
             return listeRetour;
         }
@@ -85,8 +85,6 @@ namespace AtelierXNA
             }
             return listeRetour;
         }
-
-
         public Pokemon NextPokemonEnVie()
         {
             return Party.Find(pkm => pkm.EstEnVie); //Retourne le premier pokémon trouvé qui est encore en vie.

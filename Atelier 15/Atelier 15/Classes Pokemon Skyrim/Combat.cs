@@ -378,14 +378,14 @@ namespace AtelierXNA
              
              */
             bool estAttrapé = false; //attrape pas, à moins que l'on le dit.
-            //int n = Générateur.Next(0, 256); //on ne fera que les pokéballs pour l'instant, et ici ça dépend de 
+            //int n = Générateur.Next(0, 256); //on ne fera que les pokéballs pour l'instant, et ici ça dépend si y a un status uniquement 
             //if (n <= OpponentPokemon.CatchRate)
             //    estAttrapé = true;
 
             if (!estAttrapé)
             {
                 int m = Générateur.Next(0, 256);
-                int f = (OpponentPokemon.MaxHp * 255 * 4) / (OpponentPokemon.HP * 12); //Laisser la division entière d'après le site de la formule
+                int f = (OpponentPokemon.MaxHp * /*255 * */OpponentPokemon.CatchRate * 4) / (OpponentPokemon.HP * 12); //Laisser la division entière d'après le site de la formule
 
                 if (f >= m)
                     estAttrapé = true;

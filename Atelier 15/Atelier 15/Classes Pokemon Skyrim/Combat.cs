@@ -356,6 +356,7 @@ namespace AtelierXNA
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + OpponentPokemon.Nom + " broke free!", IntervalMAJ);
                 Game.Components.Add(message);
+                MainMenu.ItemPokeball = false;
                 CombatState = CombatState.TOUR_OPPONENT;
             }
         }
@@ -377,9 +378,9 @@ namespace AtelierXNA
              
              */
             bool estAttrapé = false; //attrape pas, à moins que l'on le dit.
-            int n = Générateur.Next(0, 256); //on ne fera que les pokéballs pour l'instant
-            if (n <= OpponentPokemon.CatchRate)
-                estAttrapé = true;
+            //int n = Générateur.Next(0, 256); //on ne fera que les pokéballs pour l'instant, et ici ça dépend de 
+            //if (n <= OpponentPokemon.CatchRate)
+            //    estAttrapé = true;
 
             if (!estAttrapé)
             {

@@ -349,13 +349,17 @@ namespace AtelierXNA
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + OpponentPokemon.Nom + " was caught!", IntervalMAJ);
                 Game.Components.Add(message);
-                UserTrainer.AddPokemon(OpponentPokemon);
+
+                UserTrainer.AddPokemon(OpponentPokemon);//on ajoute directement la référence dans la liste du joueur sans copies
+
+                MainMenu.ItemPokeball = false;
                 CombatState = CombatState.END;
             }
             else
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + OpponentPokemon.Nom + " broke free!", IntervalMAJ);
                 Game.Components.Add(message);
+
                 MainMenu.ItemPokeball = false;
                 CombatState = CombatState.TOUR_OPPONENT;
             }

@@ -60,21 +60,7 @@ namespace AtelierXNA
 
         private void CréerListeTiles()
         {
-            //Faudrait faire une boucle selon le nb de tiles de la texture(important, le code live est laid pis c'est pas toff)
-            RectangleSourcesCadre.Add(new Rectangle(0, 0, TAILLE_TILE, TAILLE_TILE)); // A = 0; i = 0; j = 0
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE, 0, TAILLE_TILE, TAILLE_TILE)); // A² = 1; i = 1; j = 0
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE * 2, 0, TAILLE_TILE, TAILLE_TILE)); // A³ = 2
-
-            RectangleSourcesCadre.Add(new Rectangle(0, TAILLE_TILE, TAILLE_TILE, TAILLE_TILE)); //Ligne B = 3
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE, TAILLE_TILE, TAILLE_TILE, TAILLE_TILE)); // B² = 4 BLANC
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE * 2, TAILLE_TILE, TAILLE_TILE, TAILLE_TILE)); // B³ = 5
-
-            RectangleSourcesCadre.Add(new Rectangle(0, TAILLE_TILE * 2, TAILLE_TILE, TAILLE_TILE)); //Ligne C = 6
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE, TAILLE_TILE * 2, TAILLE_TILE, TAILLE_TILE)); // C² = 7
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE * 2, TAILLE_TILE * 2, TAILLE_TILE, TAILLE_TILE)); // C³ = 8
-                                                                                                                 //On a une liste des tiles qu'on va utiliser pour former un affichage
-            RectangleSourcesCadre.Add(new Rectangle(0, TAILLE_TILE * 3, TAILLE_TILE, TAILLE_TILE)); //Ligne D = 9
-            RectangleSourcesCadre.Add(new Rectangle(TAILLE_TILE, TAILLE_TILE * 3, TAILLE_TILE, TAILLE_TILE));
+            RectangleSourcesCadre = EncodeurFont.CréerListeRectangleSources(TextureCadre, TAILLE_TILE);
         }
 
         private void CréerTableauPositions()
@@ -91,16 +77,17 @@ namespace AtelierXNA
 
         private void CréerTableauTextures()
         {
-
-            for (int j = 1; j < NBLignes - 1; j++)//intérieur blanc
+            //intérieur (tout blanc)
+            for (int j = 1; j < NBLignes - 1; j++)
             {
                 for (int i = 1; i < NBColonnes - 1; i++)
                 {
                     PtsTile[i, j] = RectangleSourcesCadre[4];
                 }
             }
-            //Si on change l'ordre des tiles, on pourrait trouver un moyen de simplifier plus le code? (parce qu'au moins les numéros de tile sont arbitraires)
-            PtsTile[0, 0] = RectangleSourcesCadre[0];//Coins
+
+            //Coins
+            PtsTile[0, 0] = RectangleSourcesCadre[0];
             PtsTile[NBColonnes - 1, 0] = RectangleSourcesCadre[2];
             PtsTile[0, NBLignes - 1] = RectangleSourcesCadre[6];
             PtsTile[NBColonnes - 1, NBLignes - 1] = RectangleSourcesCadre[8];

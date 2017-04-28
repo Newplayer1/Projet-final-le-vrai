@@ -92,14 +92,7 @@ namespace AtelierXNA
         }
         void CréerListeTiles()
         {
-            for (int i = 0; i < (TexturePolice.Width / Cadre.TAILLE_TILE) - 1; i++)//Ligne A
-            {
-                RectangleSourcesPolice.Add(new Rectangle(Cadre.TAILLE_TILE * i, 0, Cadre.TAILLE_TILE, Cadre.TAILLE_TILE)); // A = 0; i = 0; j = 0
-            }
-            for (int i = 0; i < (TexturePolice.Width / Cadre.TAILLE_TILE) - 1; i++)//Ligne B
-            {
-                RectangleSourcesPolice.Add(new Rectangle(Cadre.TAILLE_TILE * i, Cadre.TAILLE_TILE, Cadre.TAILLE_TILE, Cadre.TAILLE_TILE)); // A = 0; i = 0; j = 0
-            }
+            RectangleSourcesPolice = EncodeurFont.CréerListeRectangleSources(TexturePolice, Cadre.TAILLE_TILE);
         }
         void CréerListesMessagesInt()
         {

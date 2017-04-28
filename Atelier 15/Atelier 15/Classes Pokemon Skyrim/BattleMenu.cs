@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Media;
 namespace AtelierXNA
 {
     public enum BattleMenuState { MAIN, FIGHT, POKEMON, BAG, RUN, READY }
-    public class BattleMenu : Microsoft.Xna.Framework.DrawableGameComponent, IDestructible
+    public class BattleMenu : Microsoft.Xna.Framework.GameComponent, IDestructible
     {
         public BattleMenuState BattleMenuState { get; set; }
         float IntervalMAJ { get; set; }
@@ -158,7 +158,7 @@ namespace AtelierXNA
         {
             ListeChoix = new List<string>();
             ListeChoix.Add("Pokeball");
-            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle (on devra override item.tostring?)
+            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
             ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
             ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
             ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
@@ -256,7 +256,7 @@ namespace AtelierXNA
         {
             MainChoix.Visible = true;
             MainChoix.Enabled = true;
-            BackLock = false;
+            
             if (ChoixEstEffectué()) //On a pesé sur A
             {
                 DisableComponents(); //On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
@@ -460,11 +460,8 @@ namespace AtelierXNA
             ItemUtilisé = false;
             PokémonChangé = false;
             TentativeFuite = false;
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
+            ItemPokeball = false;
+            BackLock = false;
         }
     }
 }

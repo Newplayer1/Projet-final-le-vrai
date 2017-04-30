@@ -115,7 +115,7 @@ namespace AtelierXNA
                 {
                     t.ÀDétruire = true;
                 }
-                Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Upload Sauvergarde"));
+                Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
                 }
                 
             }
@@ -175,13 +175,6 @@ namespace AtelierXNA
             }
             string nomMod = local + '/' + local;
             return nomMod;
-
-            //float échelleObjTest = 0.01f;
-
-            //if (local1 == 14.ToString())
-            //{
-            //    échelleObjTest = ÉCHELLE_OBJET * 10;
-            //}
         }
         private string TrouverDossierModèle(int pokedexNumber)
         {

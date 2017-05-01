@@ -152,7 +152,7 @@ namespace AtelierXNA
             {
                 List<string> Tempo = new List<string>();
 
-                Tempo.Add(reader.GetInt16(0).ToString());
+                Tempo.Add(reader.GetString(0));
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetString(2));
                 Tempo.Add(reader.GetString(3));

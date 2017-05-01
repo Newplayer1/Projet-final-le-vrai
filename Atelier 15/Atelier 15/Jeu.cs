@@ -87,7 +87,7 @@ namespace AtelierXNA
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
 
-            LeJoueur.AddPokemon(7, 50);
+            LeJoueur.AddPokemon(81, 50);
             Game.Components.Add(ÉtatJeuTexte);
             Game.Components.Add(DebugTexte);
         }

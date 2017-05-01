@@ -278,7 +278,6 @@
     <Folder Include="Models\149\images\" />
     <Folder Include="Models\14\Images\" />
     <Folder Include="Models\150\images\" />
-    <Folder Include="Models\151\images\" />
     <Folder Include="Models\15\Images\" />
     <Folder Include="Models\16\Images\" />
     <Folder Include="Models\17\Images\" />
@@ -774,9 +773,6 @@
     <Compile Include="Models\150\150.FBX" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\151\151.FBX" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\bulbasaur.png">
       <Name>bulbasaur</Name>
       <Importer>TextureImporter</Importer>
@@ -834,6 +830,105 @@
       <Name>bt0004_00_body</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\151\images\pm0151_00_Body1.png">
+      <Name>pm0151_00_Body1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Body1Id.png">
+      <Name>pm0151_00_Body1Id</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Body2.png">
+      <Name>pm0151_00_Body2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_BodyNor.png">
+      <Name>pm0151_00_BodyNor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_BodyNor_Alpha.png">
+      <Name>pm0151_00_BodyNor_Alpha</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Eye1.png">
+      <Name>pm0151_00_Eye1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Eye1Id.png">
+      <Name>pm0151_00_Eye1Id</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Eye1_Merged.png">
+      <Name>pm0151_00_Eye1_Merged</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Eye2.png">
+      <Name>pm0151_00_Eye2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_EyeNor.png">
+      <Name>pm0151_00_EyeNor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_EyeNor_Alpha.png">
+      <Name>pm0151_00_EyeNor_Alpha</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Iris1.png">
+      <Name>pm0151_00_Iris1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Iris1Id.png">
+      <Name>pm0151_00_Iris1Id</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Iris2.png">
+      <Name>pm0151_00_Iris2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Mouth1.png">
+      <Name>pm0151_00_Mouth1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Mouth1Id.png">
+      <Name>pm0151_00_Mouth1Id</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_Mouth2.png">
+      <Name>pm0151_00_Mouth2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\151\images\pm0151_00_MouthNor.png">
+      <Name>pm0151_00_MouthNor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\151\151.FBX">
+      <Name>151</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

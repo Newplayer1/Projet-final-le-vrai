@@ -73,8 +73,6 @@ namespace AtelierXNA
 
             ÉtatJeu = ÉtatsJeu.JEU3D;
             ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
-            Attaque test = new Attaque(Game, 28);// attaque test
-            DebugTexte = new TexteFixe(Game, new Vector2(5, 21), test.Name);
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Add(new Afficheur3D(Game));
@@ -87,9 +85,8 @@ namespace AtelierXNA
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
 
-            LeJoueur.AddPokemon(7, 50);
+            LeJoueur.AddPokemon(151, 50);
             Game.Components.Add(ÉtatJeuTexte);
-            Game.Components.Add(DebugTexte);
         }
         public override void Update(GameTime gameTime)
         {

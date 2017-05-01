@@ -20,9 +20,11 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
+        const int RAYON_POKÉBALL = 1;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
+        Pokeball Projectile { get; set; }
         InputManager GestionInput { get; set; }
         AccessBaseDeDonnée Database { get; set; }
         Combat LeCombat { get; set; }
@@ -102,12 +104,20 @@ namespace AtelierXNA
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-            if (GestionInput.EstNouvelleTouche(Keys.N))
-            {
-                AjoutPokemonsRandom();
 
+            Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
+            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
+            AjouterProjectile(positionPokéball, rotationObjet);
+            base.Update(gameTime);
+        }
+
+        void AjouterProjectile(Vector3 positionPokéball, Vector3 rotationObjet)
+        {
+            if (GestionInput.EstNouveauClicGauche())
+            {
+                Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
+                Game.Components.Add(Projectile);
             }
-                base.Update(gameTime);
         }
 
         private void GérerClavier()

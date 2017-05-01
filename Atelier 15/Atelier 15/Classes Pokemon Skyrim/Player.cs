@@ -36,7 +36,8 @@ namespace AtelierXNA
         Vector3 Direction { get; set; }
         Vector3 OrientationVertical { get; } = Vector3.Up;
         Vector3 Latéral { get; set; }
-
+        float AngleDirection { get; set; }
+        public Vector3 DirectionCaméra { get; private set; }
 
         public Player(Game jeu, string nomModèle, float échelle, Vector3 rotation, Vector3 position, float intervallleMAJ, float rayon)
             : base(jeu, "PLAYER", nomModèle, échelle, rotation, position)
@@ -127,6 +128,7 @@ namespace AtelierXNA
             if (GestionInput.GetPositionSouris().X != Souris.X)
             {
                 ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, DELTA_LACET * valYaw * VitesseRotation)));
+                DirectionCaméra = ((CaméraJeu) as CaméraSubjective).Direction; // Pour qu'on puisse avoir accès à la direction de la caméra dans la classe pokéball 
                 Rotation = new Vector3(0, Rotation.Y + DELTA_LACET * valYaw * VitesseRotation, 0);
             }
             // déplacement vertical Angle # limite = 45'
@@ -134,9 +136,9 @@ namespace AtelierXNA
             {
                 ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
                 Vector3 ancienneDirection = ((CaméraJeu) as CaméraSubjective).Direction;
-                float angleDirection = (float)Math.Asin(((CaméraJeu) as CaméraSubjective).Direction.Y);
+                AngleDirection = (float)Math.Asin(((CaméraJeu) as CaméraSubjective).Direction.Y);
 
-                if (angleDirection > 45 || angleDirection < -45)
+                if (AngleDirection > 45 || AngleDirection < -45)
                 {
                     ((CaméraJeu) as CaméraSubjective).Direction = ancienneDirection;
                 }
@@ -147,7 +149,7 @@ namespace AtelierXNA
         {
             if (GestionInput.EstClavierActivé)
             {
-                float déplacementHorizontal = GérerTouche(Keys.D) - GérerTouche(Keys.A); // touche d = ajoute des pixels à mon image. touche a = enlève des pixels
+                float déplacementHorizontal = GérerTouche(Keys.D) - GérerTouche(Keys.A);
                 float déplacementProfondeur = GérerTouche(Keys.W) - GérerTouche(Keys.S);
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {

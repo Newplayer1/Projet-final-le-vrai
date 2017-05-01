@@ -46,7 +46,7 @@ namespace AtelierXNA
 
         public void Sauvegarder(List<string> ÉlémentsASauvegarder)
         {
-            commande.CommandText = "Update Sauvegarde set PositionX = '" +ÉlémentsASauvegarder[0] + "',PositionY = '" + ÉlémentsASauvegarder[1] + "',PositionZ = '" + ÉlémentsASauvegarder[2] + "'";
+            commande.CommandText = "Update Sauvegarde set PositionX = '" +ÉlémentsASauvegarder[0] + "',PositionY = '" + ÉlémentsASauvegarder[1] + "',PositionZ = '" + ÉlémentsASauvegarder[2] + "',Pokemon1 = '" + ÉlémentsASauvegarder[3]  + "'";
             commande.ExecuteNonQuery();
         }
         public List<string> LoadSauvegarde()
@@ -56,10 +56,10 @@ namespace AtelierXNA
             List<string> Tempo = new List<string>();
             while (reader.Read())
             {
-
                 Tempo.Add(reader.GetString(0));
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetString(2));
+                Tempo.Add(reader.GetString(3));
             }
             reader.Close();
             return Tempo;

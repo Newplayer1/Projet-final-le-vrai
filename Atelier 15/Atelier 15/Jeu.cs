@@ -104,7 +104,10 @@ namespace AtelierXNA
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-
+            if (GestionInput.EstNouvelleTouche(Keys.N))
+            {
+                AjoutPokemonsRandom();
+            }
             Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);

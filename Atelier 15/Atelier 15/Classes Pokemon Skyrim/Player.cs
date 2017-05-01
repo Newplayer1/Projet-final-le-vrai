@@ -189,7 +189,7 @@ namespace AtelierXNA
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            //Game.Window.Title = (CaméraJeu as CaméraSubjective).Souris.ToString() + "............." + Position.ToString();
+            Game.Window.Title = Game.Components.Count.ToString();
         }
     }
 }

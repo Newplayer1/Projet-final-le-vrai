@@ -4,142 +4,143 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtelierXNA
 {
-   public abstract class PrimitiveDeBaseAnimÈe : PrimitiveDeBase
-   {
-      float HomothÈtie { get; set; }
-      protected Vector3 Position { get; set; }
-      float IntervalleMAJ { get; set; }
-      protected InputManager GestionInput { get; private set; }
-      float Temps…coulÈDepuisMAJ { get; set; }
-      float IncrÈmentAngleRotation { get; set; }
-      bool Lacet { get; set; }
-      bool Tangage { get; set; }
-      bool Roulis { get; set; }
-      protected bool Monde¿Recalculer { get; set; }
+    public abstract class PrimitiveDeBaseAnimÈe : PrimitiveDeBase
+    {
+        float HomothÈtie { get; set; }
+        protected Vector3 Position { get; set; }
+        float IntervalleMAJ { get; set; }
+        protected InputManager GestionInput { get; private set; }
+        protected float Temps…coulÈDepuisMAJ { get; set; }
+        float IncrÈmentAngleRotation { get; set; }
+        bool Lacet { get; set; }
+        bool Tangage { get; set; }
+        bool Roulis { get; set; }
+        protected bool Monde¿Recalculer { get; set; }
+        protected float Temps…coulÈ { get; set; }
 
-      float angleLacet;
-      protected float AngleLacet
-      {
-         get
-         {
-            if (Lacet)
+        float angleLacet;
+        protected float AngleLacet
+        {
+            get
             {
-               angleLacet += IncrÈmentAngleRotation;
-               MathHelper.WrapAngle(angleLacet);
+                if (Lacet)
+                {
+                    angleLacet += IncrÈmentAngleRotation;
+                    MathHelper.WrapAngle(angleLacet);
+                }
+                return angleLacet;
             }
-            return angleLacet;
-         }
-         set { angleLacet = value; }
-      }
+            set { angleLacet = value; }
+        }
 
-      float angleTangage;
-      protected float AngleTangage
-      {
-         get
-         {
-            if (Tangage)
+        float angleTangage;
+        protected float AngleTangage
+        {
+            get
             {
-               angleTangage += IncrÈmentAngleRotation;
-               MathHelper.WrapAngle(angleTangage);
+                if (Tangage)
+                {
+                    angleTangage += IncrÈmentAngleRotation;
+                    MathHelper.WrapAngle(angleTangage);
+                }
+                return angleTangage;
             }
-            return angleTangage;
-         }
-         set { angleTangage = value; }
-      }
+            set { angleTangage = value; }
+        }
 
-      float angleRoulis;
-      protected float AngleRoulis
-      {
-         get
-         {
-            if (Roulis)
+        float angleRoulis;
+        protected float AngleRoulis
+        {
+            get
             {
-               angleRoulis += IncrÈmentAngleRotation;
-               MathHelper.WrapAngle(angleRoulis);
+                if (Roulis)
+                {
+                    angleRoulis += IncrÈmentAngleRotation;
+                    MathHelper.WrapAngle(angleRoulis);
+                }
+                return angleRoulis;
             }
-            return angleRoulis;
-         }
-         set { angleRoulis = value; }
-      }
+            set { angleRoulis = value; }
+        }
 
 
-      protected PrimitiveDeBaseAnimÈe(Game jeu, float homothÈtieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
-         : base(jeu, homothÈtieInitiale, rotationInitiale, positionInitiale)
-      {
-         IntervalleMAJ = intervalleMAJ;
-      }
+        protected PrimitiveDeBaseAnimÈe(Game jeu, float homothÈtieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
+           : base(jeu, homothÈtieInitiale, rotationInitiale, positionInitiale)
+        {
+            IntervalleMAJ = intervalleMAJ;
+        }
 
-      public override void Initialize()
-      {
-         HomothÈtie = HomothÈtieInitiale;
-         InitialiserRotations();
-         Position = PositionInitiale;
-         GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-         IncrÈmentAngleRotation = MathHelper.Pi * IntervalleMAJ / 2;
-         Temps…coulÈDepuisMAJ = 0;
-         base.Initialize();
-      }
+        public override void Initialize()
+        {
+            HomothÈtie = HomothÈtieInitiale;
+            InitialiserRotations();
+            Position = PositionInitiale;
+            GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            IncrÈmentAngleRotation = MathHelper.Pi * IntervalleMAJ / 2;
+            Temps…coulÈDepuisMAJ = 0;
+            base.Initialize();
+        }
 
-      protected override void CalculerMatriceMonde()
-      {
-         Monde = Matrix.Identity *
-                 Matrix.CreateScale(HomothÈtie) *
-                 Matrix.CreateFromYawPitchRoll(AngleLacet, AngleTangage, AngleRoulis) *
-                 Matrix.CreateTranslation(Position);
-      }
+        protected override void CalculerMatriceMonde()
+        {
+            Monde = Matrix.Identity *
+                    Matrix.CreateScale(HomothÈtie) *
+                    Matrix.CreateFromYawPitchRoll(AngleLacet, AngleTangage, AngleRoulis) *
+                    Matrix.CreateTranslation(Position);
+        }
 
-      public override void Update(GameTime gameTime)
-      {
-         GÈrerClavier();
-         float Temps…coulÈ = (float)gameTime.ElapsedGameTime.TotalSeconds;
-         Temps…coulÈDepuisMAJ += Temps…coulÈ;
-         if (Temps…coulÈDepuisMAJ >= IntervalleMAJ)
-         {
-            EffectuerMise¿Jour();
-            Temps…coulÈDepuisMAJ -= IntervalleMAJ;
-         }
-         base.Update(gameTime);
-      }
-
-      protected virtual void EffectuerMise¿Jour()
-      {
-         if (Monde¿Recalculer)
-         {
-            CalculerMatriceMonde();
-            Monde¿Recalculer = false;
-         }
-      }
-
-      private void InitialiserRotations()
-      {
-         AngleLacet = RotationInitiale.Y;
-         AngleTangage = RotationInitiale.X;
-         AngleRoulis = RotationInitiale.Z;
-      }
-
-      protected virtual void GÈrerClavier()
-      {
-         if (GestionInput.EstEnfoncÈe(Keys.LeftControl) || GestionInput.EstEnfoncÈe(Keys.RightControl))
-         {
-            if (GestionInput.EstNouvelleTouche(Keys.Space))
+        public override void Update(GameTime gameTime)
+        {
+            GÈrerClavier();
+            float Temps…coulÈ = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Temps…coulÈDepuisMAJ += Temps…coulÈ;
+            if (Temps…coulÈDepuisMAJ >= IntervalleMAJ)
             {
-               InitialiserRotations();
-               Monde¿Recalculer = true;
+                EffectuerMise¿Jour();
+                Temps…coulÈDepuisMAJ -= IntervalleMAJ;
             }
-            if (GestionInput.EstNouvelleTouche(Keys.D1) || GestionInput.EstNouvelleTouche(Keys.NumPad1))
+            base.Update(gameTime);
+        }
+
+        protected virtual void EffectuerMise¿Jour()
+        {
+            if (Monde¿Recalculer)
             {
-               Lacet = !Lacet;
+                CalculerMatriceMonde();
+                Monde¿Recalculer = false;
             }
-            if (GestionInput.EstNouvelleTouche(Keys.D2) || GestionInput.EstNouvelleTouche(Keys.NumPad2))
+        }
+
+        private void InitialiserRotations()
+        {
+            AngleLacet = RotationInitiale.Y;
+            AngleTangage = RotationInitiale.X;
+            AngleRoulis = RotationInitiale.Z;
+        }
+
+        protected virtual void GÈrerClavier()
+        {
+            if (GestionInput.EstEnfoncÈe(Keys.LeftControl) || GestionInput.EstEnfoncÈe(Keys.RightControl))
             {
-               Tangage = !Tangage;
+                if (GestionInput.EstNouvelleTouche(Keys.Space))
+                {
+                    InitialiserRotations();
+                    Monde¿Recalculer = true;
+                }
+                if (GestionInput.EstNouvelleTouche(Keys.D1) || GestionInput.EstNouvelleTouche(Keys.NumPad1))
+                {
+                    Lacet = !Lacet;
+                }
+                if (GestionInput.EstNouvelleTouche(Keys.D2) || GestionInput.EstNouvelleTouche(Keys.NumPad2))
+                {
+                    Tangage = !Tangage;
+                }
+                if (GestionInput.EstNouvelleTouche(Keys.D3) || GestionInput.EstNouvelleTouche(Keys.NumPad3))
+                {
+                    Roulis = !Roulis;
+                }
             }
-            if (GestionInput.EstNouvelleTouche(Keys.D3) || GestionInput.EstNouvelleTouche(Keys.NumPad3))
-            {
-               Roulis = !Roulis;
-            }
-         }
-         Monde¿Recalculer = Monde¿Recalculer || Lacet || Tangage || Roulis;
-      }
-   }
+            Monde¿Recalculer = Monde¿Recalculer || Lacet || Tangage || Roulis;
+        }
+    }
 }

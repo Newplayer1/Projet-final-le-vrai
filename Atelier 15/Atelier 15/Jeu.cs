@@ -19,7 +19,7 @@ namespace AtelierXNA
         const int POKEMON_SUR_LE_TERRAIN = 25;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
-        const int POKEDEX_MAX = 35;
+        const int POKEDEX_MAX = 152;
         const int RAYON_POKÉBALL = 1;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
@@ -174,23 +174,25 @@ namespace AtelierXNA
         {
             int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
 
+            int[] pokemonPasValides = new int[] { 35, 41, 42, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
+            for (int i = 0; i < pokemonPasValides.Length; i++)
+            {
+                if(pokedexNumberAléatoire == pokemonPasValides[i])
+                {
+                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+                }
+            }
+            //do { pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX); }
+            //while (pokedexNumberAléatoire == 35 || pokedexNumberAléatoire == 41 || pokedexNumberAléatoire == 42 || pokedexNumberAléatoire == 60 || pokedexNumberAléatoire == 77 || pokedexNumberAléatoire == 78 || pokedexNumberAléatoire == 41 || 81 <= pokedexNumberAléatoire <= 94 || pokedexNumberAléatoire == 41)
+
+            
+
             PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }
 
-        private string TrouverAléatoire()
-        {
-            int unNombre = générateurAléatoire.Next(1, POKEDEX_MAX);
-            string local = unNombre.ToString();
-            if (local.Count() == 1)
-            {
-                local = "0" + local;
-            }
-            string nomMod = local + '/' + local;
-            return nomMod;
-        }
         private string TrouverDossierModèle(int pokedexNumber)
         {
             string local = pokedexNumber.ToString();

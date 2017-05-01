@@ -16,6 +16,7 @@ namespace AtelierXNA
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
+        const int POKEMON_SUR_LE_TERRAIN = 25;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
@@ -94,13 +95,16 @@ namespace AtelierXNA
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
-            if (Game.Components.Count < 20)
+            if (Game.Components.Count < POKEMON_SUR_LE_TERRAIN)
             {
                 if (Game.Components.Count(p => p is Afficheur3D) == 2)
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-
+            if (GestionInput.EstNouvelleTouche(Keys.N))
+            {
+                AjoutPokemonsRandom();
+            }
             Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
@@ -169,10 +173,9 @@ namespace AtelierXNA
         private void AjoutPokemonsRandom()
         {
             int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(20, 40));
+
+            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
-            //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
-            //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }

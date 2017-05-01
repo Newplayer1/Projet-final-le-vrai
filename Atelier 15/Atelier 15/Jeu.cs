@@ -63,6 +63,7 @@ namespace AtelierXNA
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(Database.LoadSauvegarde()[0]), float.Parse(Database.LoadSauvegarde()[1]), float.Parse(Database.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            //LeJoueur.AddPokemon(int.Parse(Database.LoadSauvegarde()[3]), int.Parse(Database.LoadSauvegarde()[4]));
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
@@ -144,6 +145,8 @@ namespace AtelierXNA
             Sauvegarde.Add(LeJoueur.Position.X.ToString());
             Sauvegarde.Add(LeJoueur.Position.Y.ToString());
             Sauvegarde.Add(LeJoueur.Position.Z.ToString());
+            Sauvegarde.Add(LeJoueur[0].ToString());
+            Sauvegarde.Add(LeJoueur[0].ToStringLev());
 
             Database.Sauvegarder(Sauvegarde);
         }

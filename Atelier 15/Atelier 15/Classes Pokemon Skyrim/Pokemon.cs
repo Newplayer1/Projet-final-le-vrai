@@ -248,7 +248,11 @@ namespace AtelierXNA
 
         public override string ToString()
         {
-            return Nom + " Lvl." + Level.ToString();
+            return PokedexNumber.ToString();
+        }
+        public string ToStringLev()
+        {
+            return Level.ToString();
         }
         public string VieToString()
         {

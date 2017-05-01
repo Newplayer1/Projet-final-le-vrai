@@ -222,7 +222,6 @@
     <Folder Include="Models\07\images\" />
     <Folder Include="Models\08\images\" />
     <Folder Include="Models\09\images\" />
-    <Folder Include="Models\100\images\" />
     <Folder Include="Models\104\images\" />
     <Folder Include="Models\105\images\" />
     <Folder Include="Models\107\images\" />
@@ -230,15 +229,12 @@
     <Folder Include="Models\112\images\" />
     <Folder Include="Models\115\images\" />
     <Folder Include="Models\11\images\" />
-    <Folder Include="Models\120\images\" />
-    <Folder Include="Models\121\images\" />
     <Folder Include="Models\122\images\" />
     <Folder Include="Models\123\images\" />
     <Folder Include="Models\127\images\" />
     <Folder Include="Models\129\images\" />
     <Folder Include="Models\12\images\" />
     <Folder Include="Models\130\images\" />
-    <Folder Include="Models\132\images\" />
     <Folder Include="Models\133\images\" />
     <Folder Include="Models\134\images\" />
     <Folder Include="Models\136\images\" />
@@ -319,12 +315,6 @@
     <Folder Include="Models\78\" />
     <Folder Include="Models\79\images\" />
     <Folder Include="Models\80\images\" />
-    <Folder Include="Models\81\images\" />
-    <Folder Include="Models\82\images\" />
-    <Folder Include="Models\88\images\" />
-    <Folder Include="Models\89\images\" />
-    <Folder Include="Models\90\images\" />
-    <Folder Include="Models\91\images\" />
     <Folder Include="Models\94\images\" />
   </ItemGroup>
   <ItemGroup>
@@ -368,11 +358,6 @@
     </Compile>
     <Compile Include="Models\07\07.FBX">
       <Name>07</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\08\08.FBX">
-      <Name>08</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
@@ -1154,13 +1139,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\132\132.fbx">
-      <Name>132</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\130\130.FBX">
       <Name>130</Name>
       <Importer>FbxImporter</Importer>
@@ -1191,20 +1169,6 @@
   <ItemGroup>
     <Compile Include="Models\122\122.FBX">
       <Name>122</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\121\121.fbx">
-      <Name>121</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\120\120.fbx">
-      <Name>120</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
@@ -1245,13 +1209,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\100\100.fbx">
-      <Name>100</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\94\94.FBX">
       <Name>94</Name>
       <Importer>FbxImporter</Importer>
@@ -1259,43 +1216,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\91\91.fbx">
-      <Name>91</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\90\90.fbx">
-      <Name>90</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\89\89.fbx">
-      <Name>89</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\88\88.fbx">
-      <Name>88</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\82\82.fbx">
-      <Name>82</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\81\81.fbx">
-      <Name>81</Name>
+    <Compile Include="Models\08\08.FBX">
+      <Name>08</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>

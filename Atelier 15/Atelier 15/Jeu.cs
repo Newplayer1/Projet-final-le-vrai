@@ -85,7 +85,7 @@ namespace AtelierXNA
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
 
-            LeJoueur.AddPokemon(136, 50);
+            LeJoueur.AddPokemon(02, 50);
             Game.Components.Add(ÉtatJeuTexte);
         }
         public override void Update(GameTime gameTime)

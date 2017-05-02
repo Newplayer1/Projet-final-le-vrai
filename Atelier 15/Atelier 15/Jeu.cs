@@ -20,7 +20,7 @@ namespace AtelierXNA
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 152;
-        const int RAYON_POKÉBALL = 1;
+        const float RAYON_POKÉBALL = 0.25f;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
@@ -122,7 +122,7 @@ namespace AtelierXNA
             {
                 AjoutPokemonsRandom();
             }
-            Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
+            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 1, LeJoueur.Position.Z);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
             base.Update(gameTime);

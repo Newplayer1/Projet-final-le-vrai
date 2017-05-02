@@ -16,10 +16,11 @@ namespace AtelierXNA
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
+        const int POKEMON_SUR_LE_TERRAIN = 25;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
-        const float RAYON_POKÉBALL = 0.25f;
-        const int POKEDEX_MAX = 35;
+        const int POKEDEX_MAX = 152;
+        const int RAYON_POKÉBALL = 1;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
@@ -38,8 +39,11 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-
-        TexteFixe DebugTexte { get; set; }
+        
+        AfficheurTexte DebugAfficheurTexteA { get; set; }
+        AfficheurTexte DebugAfficheurTexteB { get; set; }
+        AfficheurTexte DebugAfficheurTexteC { get; set; }
+        AfficheurTexte DebugAfficheurTexteD { get; set; }
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -62,6 +66,7 @@ namespace AtelierXNA
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(Database.LoadSauvegarde()[0]), float.Parse(Database.LoadSauvegarde()[1]), float.Parse(Database.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
+            //LeJoueur.AddPokemon(int.Parse(Database.LoadSauvegarde()[3]), int.Parse(Database.LoadSauvegarde()[4]));
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
         public override void Initialize()
@@ -69,11 +74,16 @@ namespace AtelierXNA
             générateurAléatoire = new Random();
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
+            DebugAfficheurTexteA = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the first box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteB = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "It's not very effective.", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteC = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the third box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteD = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "OH MY GAWD IT'S SUPER EFFECTIVE!", INTERVALLE_MAJ_STANDARD);
 
             ÉtatJeu = ÉtatsJeu.JEU3D;
             ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
-            Attaque test = new Attaque(Game, 28);// attaque test
-            DebugTexte = new TexteFixe(Game, new Vector2(5, 21), test.Name);
             //LoadSauvegarde();
             Game.Components.Add(new ArrièrePlan(Game, "BackGroundNuage"));
             Game.Components.Add(new Afficheur3D(Game));
@@ -89,9 +99,11 @@ namespace AtelierXNA
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
 
-            LeJoueur.AddPokemon(7, 50);
+            LeJoueur.AddPokemon(02, 50);
             Game.Components.Add(ÉtatJeuTexte);
-            Game.Components.Add(DebugTexte);
+            Game.Components.Add(DebugAfficheurTexteA);
+            Game.Components.Add(DebugAfficheurTexteB);
+            Game.Components.Add(DebugAfficheurTexteC); Game.Components.Add(DebugAfficheurTexteD);
         }
         public override void Update(GameTime gameTime)
         {
@@ -100,14 +112,17 @@ namespace AtelierXNA
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
-            if (Game.Components.Count < 20)
+            if (Game.Components.Count < POKEMON_SUR_LE_TERRAIN)
             {
                 if (Game.Components.Count(p => p is Afficheur3D) == 2)
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-
-            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y + 1.2f, LeJoueur.Position.Z);
+            if (GestionInput.EstNouvelleTouche(Keys.N))
+            {
+                AjoutPokemonsRandom();
+            }
+            Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
             base.Update(gameTime);
@@ -148,6 +163,8 @@ namespace AtelierXNA
             Sauvegarde.Add(LeJoueur.Position.X.ToString());
             Sauvegarde.Add(LeJoueur.Position.Y.ToString());
             Sauvegarde.Add(LeJoueur.Position.Z.ToString());
+            Sauvegarde.Add(LeJoueur[0].ToString());
+            Sauvegarde.Add(LeJoueur[0].ToStringLev());
 
             Database.Sauvegarder(Sauvegarde);
         }
@@ -176,26 +193,38 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(20, 40));
+            int pokedexNumberAléatoire;// = générateurAléatoire.Next(1, POKEDEX_MAX);
+
+            int[] pokemonPasValides = new int[] { 35, 41, 42, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
+
+            //Ca crash aussi avec 64 pis 69, y en a qui sont invalides et pas dans le tableau pokemonPasValider
+
+            //for (int i = 0; i < pokemonPasValides.Length; i++)
+            //{
+            //    if(pokedexNumberAléatoire == pokemonPasValides[i])
+            //    {
+            //        pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //    }
+            //}
+
+            //do
+            //{
+            //    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //}
+            //while (pokemonPasValides.Contains(pokedexNumberAléatoire));
+
+            do
+            {
+                pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            }
+            while (!(pokedexNumberAléatoire < 30)); //pour que ça run pis qu'on puisse travailler sur autre chose en même temps
+
+            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
-            //PokemonRandom1 = new ObjetDeBase(Game, 1, 1, TrouverAléatoire(), ÉCHELLE_OBJET, new Vector3(0, 0, 0), TrouverPositionRandom());
-            //Game.Services.AddService(typeof(Pokemon), PokemonRandom1);
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
         }
 
-        private string TrouverAléatoire()
-        {
-            int unNombre = générateurAléatoire.Next(1, POKEDEX_MAX);
-            string local = unNombre.ToString();
-            if (local.Count() == 1)
-            {
-                local = "0" + local;
-            }
-            string nomMod = local + '/' + local;
-            return nomMod;
-        }
         private string TrouverDossierModèle(int pokedexNumber)
         {
             string local = pokedexNumber.ToString();

@@ -632,7 +632,8 @@ namespace AtelierXNA
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
             damage = ((2 * attaquant.Level / 5f + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50f) * multiplicateurType;
-
+            if (damage < 1)
+                damage = 1;
             return (int)damage;
         }
 
@@ -643,7 +644,8 @@ namespace AtelierXNA
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
             damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
-
+            if (damage < 1)
+                damage = 1;
             return (int)damage;
         }
         private int CalculerPointsDamage(int attaqueChoisie, Pokemon attaquant, Pokemon opposant)

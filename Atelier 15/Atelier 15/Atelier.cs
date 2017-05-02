@@ -95,7 +95,6 @@ namespace AtelierXNA
                     if(PageTitre.CurrentPageTitreState == PageTitre.PageTitreState.LoadGame)
                     {
                         InitializePlaying();
-                        LoadSauvegarde();
                         Components.Add(new Jeu(this, Sauvegarde));
                         
                         Components.Add(new AfficheurFPS(this,"Arial20",Color.Green, INTERVALLE_CALCUL_FPS));
@@ -119,17 +118,10 @@ namespace AtelierXNA
                     break;
             }
         }
-
-        private void LoadSauvegarde()
-        {
-            //on va cherche la sauvegarde dans access
-
-        }
-
         private void InitializePlaying()
         {
             ÉtatDépart = ÉtatsDépart.JEU3D;
-            PériphériqueGraphique.IsFullScreen = false;
+            PériphériqueGraphique.IsFullScreen = true;
             PériphériqueGraphique.ApplyChanges();
             CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero /*new Vector3(80, 16, -96)*/, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 

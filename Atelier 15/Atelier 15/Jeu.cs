@@ -63,9 +63,27 @@ namespace AtelierXNA
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
             Vector3 rotationObjet = new Vector3(0, -(float)Math.PI / 4, 0);
             LeJoueur = new Player(Game, "El_guapo", ÉCHELLE_OBJET, rotationObjet, new Vector3(float.Parse(Database.LoadSauvegarde()[0]), float.Parse(Database.LoadSauvegarde()[1]), float.Parse(Database.LoadSauvegarde()[2])), INTERVALLE_MAJ_STANDARD, 1f);
-            //LeJoueur.AddPokemon(int.Parse(Database.LoadSauvegarde()[3]), int.Parse(Database.LoadSauvegarde()[4]));
+            RegarderLeNombreDePokemonAAjouter();
             PokemonSurLeTerrain = new List<ObjetDeBase>();
         }
+
+        private void RegarderLeNombreDePokemonAAjouter()
+        {
+            int cpt = 0;
+            while (cpt < 6)
+            {
+                if (Database.LoadSauvegarde()[cpt + 3] == "Empty")
+                {
+                    cpt = 6;
+                }
+                else
+                {
+                    LeJoueur.AddPokemon(int.Parse(Database.LoadSauvegarde()[cpt + 3]), int.Parse(Database.LoadSauvegarde()[cpt + 4]));
+                    cpt = cpt +2 ;
+                }
+            }
+        }
+
         public override void Initialize()
         {
             générateurAléatoire = new Random();
@@ -85,8 +103,6 @@ namespace AtelierXNA
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
-
-            LeJoueur.AddPokemon(02, 50);
             Game.Components.Add(ÉtatJeuTexte);
         }
         public override void Update(GameTime gameTime)
@@ -125,16 +141,16 @@ namespace AtelierXNA
         {
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
-                if(!(ÉtatJeu == ÉtatsJeu.COMBAT))
+                if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
                 {
-                UploadSauvegarde();
-                foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
-                {
-                    t.ÀDétruire = true;
+                    UploadSauvegarde();
+                    foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                    {
+                        t.ÀDétruire = true;
+                    }
+                    Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
                 }
-                Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
-                }
-                
+
             }
 
         }
@@ -145,8 +161,19 @@ namespace AtelierXNA
             Sauvegarde.Add(LeJoueur.Position.X.ToString());
             Sauvegarde.Add(LeJoueur.Position.Y.ToString());
             Sauvegarde.Add(LeJoueur.Position.Z.ToString());
-            Sauvegarde.Add(LeJoueur[0].ToString());
-            Sauvegarde.Add(LeJoueur[0].ToStringLev());
+            int compteur = 0;
+            while (compteur < LeJoueur.GetNbPokemon)
+            {
+                Sauvegarde.Add(LeJoueur[compteur].ToStringSauvegarde());
+                Sauvegarde.Add(LeJoueur[compteur].ToStringLev());
+                compteur++;
+            }
+            while (compteur < 6)
+            {
+                Sauvegarde.Add("Empty");
+                Sauvegarde.Add("Empty");
+                compteur++;
+            }
 
             Database.Sauvegarder(Sauvegarde);
         }
@@ -242,19 +269,19 @@ namespace AtelierXNA
                         if (PokemonEnCollision.UnPokemon.EstEnVie)
                         {
                             LeJoueur.Visible = false;
-                            Vector2 vecteurPosition = new Vector2(LeJoueur.Position.X - 1 + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + 2 +  TerrainDeJeu.NbRangées / 2);
+                            Vector2 vecteurPosition = new Vector2(LeJoueur.Position.X - 1 + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + 2 + TerrainDeJeu.NbRangées / 2);
                             float posY = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
-                            Vector3 positionjoueurpok = new Vector3(LeJoueur.Position.X + 2, posY, LeJoueur.Position.Z  + 2);
+                            Vector3 positionjoueurpok = new Vector3(LeJoueur.Position.X + 2, posY, LeJoueur.Position.Z + 2);
 
                             Vector2 vecteurPositionopponent = new Vector2(LeJoueur.Position.X + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + TerrainDeJeu.NbRangées / 2);
                             float posYopponent = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
                             //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
-                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur.NextPokemonEnVie().PokedexNumber), ÉCHELLE_OBJET *3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
+                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur.NextPokemonEnVie().PokedexNumber), ÉCHELLE_OBJET * 3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
 
                             Game.Components.Add(new Afficheur3D(Game));
                             Game.Components.Add(PokemonJoueur);
                             PokemonEnCollision.Position = new Vector3(LeJoueur.Position.X - 2, posYopponent, LeJoueur.Position.Z + 2);
-                            PokemonEnCollision.Rotation = new Vector3(0, -(float)( 7 *Math.PI / 5), 0);
+                            PokemonEnCollision.Rotation = new Vector3(0, -(float)(7 * Math.PI / 5), 0);
                             PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).CalculerMonde();
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).Initialize();

@@ -46,7 +46,15 @@ namespace AtelierXNA
 
         public void Sauvegarder(List<string> ÉlémentsASauvegarder)
         {
-            commande.CommandText = "Update Sauvegarde set PositionX = '" +ÉlémentsASauvegarder[0] + "',PositionY = '" + ÉlémentsASauvegarder[1] + "',PositionZ = '" + ÉlémentsASauvegarder[2] + "',Pokemonint = '" + ÉlémentsASauvegarder[3]  + "',PokemonLevel = '" + ÉlémentsASauvegarder[4] + "'";
+            commande.CommandText = "Update Sauvegarde set PositionX = '" + ÉlémentsASauvegarder[0] +
+                "',PositionY = '" + ÉlémentsASauvegarder[1] + "',PositionZ = '" + ÉlémentsASauvegarder[2] +
+
+                "',Pokemonint1 = '" + ÉlémentsASauvegarder[3]  + "',PokemonLevel1 = '" + ÉlémentsASauvegarder[4] + 
+                "' ,Pokemonint2 = '" + ÉlémentsASauvegarder[5] + "',PokemonLevel2 = '" + ÉlémentsASauvegarder[6] + 
+                "',Pokemonint3 = '" + ÉlémentsASauvegarder[7] + "',PokemonLevel3 = '" + ÉlémentsASauvegarder[8] + 
+                "',Pokemonint4 = '" + ÉlémentsASauvegarder[9] + "',PokemonLevel4 = '" + ÉlémentsASauvegarder[10] + 
+                "',Pokemonint5 = '" + ÉlémentsASauvegarder[11] + "',PokemonLevel5 = '" + ÉlémentsASauvegarder[12] + 
+                "',Pokemonint6 = '" + ÉlémentsASauvegarder[13] + "',PokemonLevel6 = '" + ÉlémentsASauvegarder[14] + "'";
             commande.ExecuteNonQuery();
         }
         public List<string> LoadSauvegarde()
@@ -60,6 +68,12 @@ namespace AtelierXNA
                 Tempo.Add(reader.GetString(1));
                 Tempo.Add(reader.GetString(2));
                 Tempo.Add(reader.GetString(3));
+                Tempo.Add(reader.GetString(4));
+                Tempo.Add(reader.GetString(5));
+                Tempo.Add(reader.GetString(6));
+                Tempo.Add(reader.GetString(7));
+                Tempo.Add(reader.GetString(8));
+                Tempo.Add(reader.GetString(9));
             }
             reader.Close();
             return Tempo;

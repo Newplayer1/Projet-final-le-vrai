@@ -245,8 +245,11 @@ namespace AtelierXNA
             if (HP < 0)
                 HP = 0;
         }
-
         public override string ToString()
+        {
+            return Nom + " Lvl." + Level.ToString();
+        }
+        public string ToStringSauvegarde()
         {
             return PokedexNumber.ToString();
         }

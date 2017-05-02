@@ -18,8 +18,8 @@ namespace AtelierXNA
         const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
+        const float RAYON_POKÉBALL = 0.25f;
         const int POKEDEX_MAX = 35;
-        const int RAYON_POKÉBALL = 1;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
@@ -80,6 +80,9 @@ namespace AtelierXNA
             TerrainDeJeu = new TerrainAvecBase(Game, 1f, Vector3.Zero, Vector3.Zero, new Vector3(256, 17, 256), "TerrainPokemon", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD);
             Game.Components.Add(TerrainDeJeu);
             Game.Services.AddService(typeof(TerrainAvecBase), TerrainDeJeu);
+
+            //Game.Services.AddService(typeof(Pokeball), Projectile);
+
             Game.Components.Add(LeJoueur);
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
@@ -104,7 +107,7 @@ namespace AtelierXNA
                 AjoutPokemonsRandom();
             }
 
-            Vector3 positionPokéball = /*new Vector3(Joueur.Position.X, Joueur.Position.Y + 5, Joueur.Position.Z)*/ new Vector3(96, 25, -96);
+            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y + 1.2f, LeJoueur.Position.Z);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
             base.Update(gameTime);
@@ -116,23 +119,25 @@ namespace AtelierXNA
             {
                 Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
                 Game.Components.Add(Projectile);
+
             }
+
         }
 
         private void GérerClavier()
         {
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
-                if(!(ÉtatJeu == ÉtatsJeu.COMBAT))
+                if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
                 {
-                UploadSauvegarde();
-                foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
-                {
-                    t.ÀDétruire = true;
+                    UploadSauvegarde();
+                    foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                    {
+                        t.ÀDétruire = true;
+                    }
+                    Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
                 }
-                Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
-                }
-                
+
             }
 
         }
@@ -239,19 +244,19 @@ namespace AtelierXNA
                         if (PokemonEnCollision.UnPokemon.EstEnVie)
                         {
                             LeJoueur.Visible = false;
-                            Vector2 vecteurPosition = new Vector2(LeJoueur.Position.X - 1 + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + 2 +  TerrainDeJeu.NbRangées / 2);
+                            Vector2 vecteurPosition = new Vector2(LeJoueur.Position.X - 1 + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + 2 + TerrainDeJeu.NbRangées / 2);
                             float posY = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
-                            Vector3 positionjoueurpok = new Vector3(LeJoueur.Position.X + 2, posY, LeJoueur.Position.Z  + 2);
+                            Vector3 positionjoueurpok = new Vector3(LeJoueur.Position.X + 2, posY, LeJoueur.Position.Z + 2);
 
                             Vector2 vecteurPositionopponent = new Vector2(LeJoueur.Position.X + TerrainDeJeu.NbColonnes / 2, LeJoueur.Position.Z + TerrainDeJeu.NbRangées / 2);
                             float posYopponent = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
                             //ObjetDeBase PokemonLancer = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur[0].PokedexNumber), ÉCHELLE_OBJET, new Vector3(0, (float)(16 * Math.PI / 10), 0), new Vector3(LeJoueur.Position.X + 1, LeJoueur.Position.Y, LeJoueur.Position.Z + 1));
-                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur.NextPokemonEnVie().PokedexNumber), ÉCHELLE_OBJET *3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
+                            PokemonJoueur = new ObjetDeBase(Game, TrouverDossierModèle(LeJoueur.NextPokemonEnVie().PokedexNumber), ÉCHELLE_OBJET * 3, new Vector3(0, (float)(8 * Math.PI / 5), 0), positionjoueurpok);
 
                             Game.Components.Add(new Afficheur3D(Game));
                             Game.Components.Add(PokemonJoueur);
                             PokemonEnCollision.Position = new Vector3(LeJoueur.Position.X - 2, posYopponent, LeJoueur.Position.Z + 2);
-                            PokemonEnCollision.Rotation = new Vector3(0, -(float)( 7 *Math.PI / 5), 0);
+                            PokemonEnCollision.Rotation = new Vector3(0, -(float)(7 * Math.PI / 5), 0);
                             PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).CalculerMonde();
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).Initialize();
@@ -314,6 +319,26 @@ namespace AtelierXNA
                         //ÉtatJeu = ÉtatsJeu.JEU3D;
                     }
                 }
+            }
+
+            foreach (Pokemon o in Game.Components.Where(r => r is Pokemon))
+            {
+                //if (!(o is Player))
+                {
+                    if (Projectile.EstEnCollision(o))
+                    {
+                        LeCombat.TryCatchWildPokemon(LeJoueur,o);
+                        //indexPokemonEnCollision = PokemonSurLeTerrain.IndexOf(o);
+                        PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollision];
+                        ÉtatJeu = ÉtatsJeu.JEU3D;
+
+                    }
+                }
+                //if (!LeJoueur.EstEnCollision(p))
+                //{
+                //    Flags.Combat = false;
+                //    //ÉtatJeu = ÉtatsJeu.JEU3D;
+                //}
             }
         }
     }

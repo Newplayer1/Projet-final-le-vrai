@@ -277,7 +277,7 @@ namespace AtelierXNA
             if (MainMenu.ItemPokeball)
             {
                 if (EstOpponentSauvage)
-                    TryCatchWildPokemon();
+                    TryCatchWildPokemon(UserTrainer, OpponentPokemon);
                 else
                 {
                     AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
@@ -327,31 +327,40 @@ namespace AtelierXNA
             
         }
 
-        void TryCatchWildPokemon()
+        public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
-            bool valeurFormule = EffectuerFormuleGenI();
+            bool valeurFormule = EffectuerFormuleGenI(opponent);
 
             if (valeurFormule)
             {
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + OpponentPokemon.Nom + " was caught!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
                 Game.Components.Add(message);
 
-                UserTrainer.AddPokemon(OpponentPokemon);//on ajoute directement la référence dans la liste du joueur sans copies
+                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
 
-                MainMenu.ItemPokeball = false;
-                CombatState = CombatState.END;
+
+                if (EnCombat)
+                {
+                    MainMenu.ItemPokeball = false;
+                    CombatState = CombatState.END;
+                }
+                    
             }
+
             else
             {
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + OpponentPokemon.Nom + " broke free!", IntervalMAJ);
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + opponent.Nom + " broke free!", IntervalMAJ);
                 Game.Components.Add(message);
-
-                MainMenu.ItemPokeball = false;
-                CombatState = CombatState.TOUR_OPPONENT;
+                
+                if (EnCombat)
+                {
+                    MainMenu.ItemPokeball = false;
+                    CombatState = CombatState.TOUR_OPPONENT;
+                }
             }
         }
 
-        private bool EffectuerFormuleGenI()
+        private bool EffectuerFormuleGenI(Pokemon opponent)
         {
             //Formule de pokémon génération I (La forme très algorythmique s'applique bien à la programmation, je vais la reprendre ligne pour ligne) http://bulbapedia.bulbagarden.net/wiki/Catch_rate
             //note: la formule gen II s'appliquerait bien aussi, mais le calcul de "b" est fastidieux
@@ -375,7 +384,7 @@ namespace AtelierXNA
             if (!estAttrapé)
             {
                 int m = Générateur.Next(0, 256);
-                int f = (OpponentPokemon.MaxHp * /*255 * */OpponentPokemon.CatchRate * 4) / (OpponentPokemon.HP * 12); //Laisser la division entière d'après le site de la formule
+                int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
 
                 if (f >= m)
                     estAttrapé = true;

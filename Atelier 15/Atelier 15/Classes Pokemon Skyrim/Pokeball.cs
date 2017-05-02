@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
-    public class Pokeball : SphèreTexturée
+    public class Pokeball : SphèreTexturée, ICollisionable
     {
         const float VITESSE_BALLE = 1.5f;
         const float FORCE_G = 9.8f;
@@ -30,7 +30,7 @@ namespace AtelierXNA
 
         Vector3 DirectionLancer { get; set; }
 
-        Trainer Joueur { get; set; }
+        Player Joueur { get; set; }
 
         public Pokeball(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float rayon, Vector2 charpente, string nomTexture, float intervalleMAJ)
             : base(jeu, échelleInitiale, rotationInitiale, positionInitiale, rayon, charpente, nomTexture, intervalleMAJ)
@@ -39,7 +39,7 @@ namespace AtelierXNA
         public override void Initialize()
         {
             base.Initialize();
-            Joueur = Game.Services.GetService(typeof(Trainer)) as Trainer;
+            Joueur = Game.Services.GetService(typeof(Player)) as Player;
             DirectionLancer = (CaméraJeu as CaméraSubjective).Direction;
             AngleY = MathHelper.ToRadians(30);
             temps = 0;
@@ -59,7 +59,48 @@ namespace AtelierXNA
 
         void GérerProjectile()
         {
-            //double théta = MathHelper.ToRadians(45f);
+            float vitesseInitiale = 3f;
+            double théta = MathHelper.ToRadians(30);
+
+            //float résultatProduitScalaireX = Joueur.DirectionCaméra.X * Vector3.UnitX.X + Joueur.DirectionCaméra.Y * Vector3.UnitX.Y + Joueur.DirectionCaméra.Z * Vector3.UnitX.Z;
+            //float résultatProduitScalaireZ = Joueur.DirectionCaméra.X * Vector3.UnitZ.X + Joueur.DirectionCaméra.Y * Vector3.UnitZ.Y + Joueur.DirectionCaméra.Z * Vector3.UnitZ.Z;
+
+            //float normeDirectionLancer = (float)Math.Sqrt(Math.Pow(Joueur.DirectionCaméra.X, 2) + Math.Pow(Joueur.DirectionCaméra.Y, 2) + Math.Pow(Joueur.DirectionCaméra.Z, 2));
+            //float normeUnit = (float)Math.Sqrt(Math.Pow(Vector3.UnitX.X, 2) + Math.Pow(Vector3.UnitX.Y, 2) + Math.Pow(Vector3.UnitX.Z, 2));
+
+            //float AngleXRad = MathHelper.ToRadians(résultatProduitScalaireX / normeDirectionLancer * normeUnit);
+            //float AngleZRad = MathHelper.ToRadians(résultatProduitScalaireZ / normeDirectionLancer * normeUnit);
+
+            //AngleX = (float)Math.Acos(AngleXRad);
+            //AngleZ = (float)Math.Acos(AngleZRad);
+
+
+
+            VitesseX = (float)Math.Cos(théta);
+            VitesseZ = (float)Math.Cos(théta);
+
+            VitesseY = vitesseInitiale * (float)Math.Sin(théta);
+
+            //float positionPokéballX;
+            float positionPokéballY;
+            //float positionPokéballZ;
+
+            temps -= TempsÉcoulé;
+
+            Vector2 DirectionCam = new Vector2(Joueur.DirectionCaméra.X, Joueur.DirectionCaméra.Z);
+            Vector2 PositionMod = new Vector2(Joueur.Position.X, Joueur.Position.Z);
+            Vector2 tmp = (float)Math.Cos(théta) * (float)temps * Vector2.Normalize(DirectionCam);
+               
+
+            //positionPokéballX = (float)((VitesseX) * temps) ;
+            //positionPokéballZ = (float)((VitesseZ) * temps);
+            positionPokéballY = (float)(VitesseY * temps + (FORCE_G * Math.Pow(temps, 2)));
+
+            Position -= new Vector3(tmp.X, positionPokéballY, tmp.Y);
+            
+            CalculerMatriceMonde();
+
+            /*//double théta = MathHelper.ToRadians(45f);
 
             //float résultatProduitScalaireX = DirectionLancer.X * Vector3.UnitX.X + DirectionLancer.Y * Vector3.UnitX.Y + DirectionLancer.Z * Vector3.UnitX.Z;
             //float résultatProduitScalaireZ = DirectionLancer.X * Vector3.UnitZ.X + DirectionLancer.Y * Vector3.UnitZ.Y + DirectionLancer.Z * Vector3.UnitZ.Z;
@@ -95,7 +136,7 @@ namespace AtelierXNA
 
             Position -= new Vector3(positionPokéballX, positionPokéballY, 0);
 
-            CalculerMatriceMonde();
+            CalculerMatriceMonde();*/
             //AjusterCaméra();
         }
 
@@ -113,8 +154,7 @@ namespace AtelierXNA
 
         public override void Draw(GameTime gameTime)
         {
-            //Game.Window.Title = Game.Components.Count.ToString()
-            Position.ToString();
+            Game.Window.Title = Position.ToString();
             base.Draw(gameTime);
         }
     }

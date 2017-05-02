@@ -37,10 +37,11 @@ namespace AtelierXNA
         float IntervalMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         float TempsÉcouléDepuisMAJClignotant { get; set; }
-       
+
         InputManager GestionInput { get; set; }
 
         public static bool MessageEnCours { get; private set; }
+        bool EstMessageSuivant { get; set; }
 
         string Message { get; set; }
         static AfficheurTexte()
@@ -69,11 +70,15 @@ namespace AtelierXNA
 
             Priorité = true;
             if (MessageEnCours)//s'il y a un message en cours, celui-ci n'as pas la priorité
+            {
+                Enabled = false;
+                Visible = false;
                 Priorité = false;
+            }
             else
                 MessageEnCours = true;
 
-            BattleMenu.Wait = true;
+            BattleMenu.Wait = true;//Nécessaire?
 
             NoDeLigneÀAfficher = NBDeZonesDeTexte - 1;
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
@@ -155,11 +160,11 @@ namespace AtelierXNA
                 GérerClavier();
                 EffectuerMiseÀJour(gameTime);
             }
-                
+
             else
                 Priorité = !MessageEnCours; //tant qu'on a un message en cours, on ne veut pas avoir la priorité
 
-            
+
             base.Update(gameTime);
         }
 
@@ -170,7 +175,11 @@ namespace AtelierXNA
                 if (NBLettresAffichées == MessageListInt.Count)//Si toutes les lettres ont été affichées, et que A est pesé, on supprime le message puisqu'il a rempli sa fonction
                 {
                     MessageEnCours = false;
+                    if (Priorité)
+                        DonnerLaPrioritéAuSuivant();
+
                     ÀDétruire = true;
+                    Priorité = false;
                 }
                 //NBLettresAffichées = NBDeCaractèresParLigne;//Permet d'écrire juste la ligne du dessous, juste elle est animée
                 IndexDébutAffichage = NBLettresAffichées - NBDeCaractèresParLigne;//NBDeCaractèresParLigne * NoDeLigneÀAfficher;
@@ -180,6 +189,23 @@ namespace AtelierXNA
                 Clignotant = false;
             }
         }
+
+        void DonnerLaPrioritéAuSuivant()
+        {
+            List<AfficheurTexte> liste = new List<AfficheurTexte>();
+            foreach (AfficheurTexte u in Game.Components.Where(u => u is AfficheurTexte))
+            {
+                liste.Add(u);
+            }
+            if (liste.Count > 1)
+            {
+                liste[1].Enabled = true;
+                liste[1].Visible = true;
+                liste[1].Priorité = true;
+                MessageEnCours = true;
+            }
+        }
+
         void EffectuerMiseÀJour(GameTime gameTime)
         {
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;

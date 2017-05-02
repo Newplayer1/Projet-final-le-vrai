@@ -39,8 +39,11 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-
-        TexteFixe DebugTexte { get; set; }
+        
+        AfficheurTexte DebugAfficheurTexteA { get; set; }
+        AfficheurTexte DebugAfficheurTexteB { get; set; }
+        AfficheurTexte DebugAfficheurTexteC { get; set; }
+        AfficheurTexte DebugAfficheurTexteD { get; set; }
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -71,6 +74,13 @@ namespace AtelierXNA
             générateurAléatoire = new Random();
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
+            DebugAfficheurTexteA = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the first box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteB = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "It's not very effective.", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteC = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the third box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
+
+            DebugAfficheurTexteD = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "OH MY GAWD IT'S SUPER EFFECTIVE!", INTERVALLE_MAJ_STANDARD);
 
             ÉtatJeu = ÉtatsJeu.JEU3D;
             ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
@@ -88,6 +98,9 @@ namespace AtelierXNA
 
             LeJoueur.AddPokemon(02, 50);
             Game.Components.Add(ÉtatJeuTexte);
+            Game.Components.Add(DebugAfficheurTexteA);
+            Game.Components.Add(DebugAfficheurTexteB);
+            Game.Components.Add(DebugAfficheurTexteC); Game.Components.Add(DebugAfficheurTexteD);
         }
         public override void Update(GameTime gameTime)
         {
@@ -175,20 +188,31 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            int pokedexNumberAléatoire;// = générateurAléatoire.Next(1, POKEDEX_MAX);
 
             int[] pokemonPasValides = new int[] { 35, 41, 42, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
-            for (int i = 0; i < pokemonPasValides.Length; i++)
-            {
-                if(pokedexNumberAléatoire == pokemonPasValides[i])
-                {
-                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-                }
-            }
-            //do { pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX); }
-            //while (pokedexNumberAléatoire == 35 || pokedexNumberAléatoire == 41 || pokedexNumberAléatoire == 42 || pokedexNumberAléatoire == 60 || pokedexNumberAléatoire == 77 || pokedexNumberAléatoire == 78 || pokedexNumberAléatoire == 41 || 81 <= pokedexNumberAléatoire <= 94 || pokedexNumberAléatoire == 41)
 
-            
+            //Ca crash aussi avec 64 pis 69, y en a qui sont invalides et pas dans le tableau pokemonPasValider
+
+            //for (int i = 0; i < pokemonPasValides.Length; i++)
+            //{
+            //    if(pokedexNumberAléatoire == pokemonPasValides[i])
+            //    {
+            //        pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //    }
+            //}
+
+            //do
+            //{
+            //    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //}
+            //while (pokemonPasValides.Contains(pokedexNumberAléatoire));
+
+            do
+            {
+                pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            }
+            while (!(pokedexNumberAléatoire < 30)); //pour que ça run pis qu'on puisse travailler sur autre chose en même temps
 
             PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());

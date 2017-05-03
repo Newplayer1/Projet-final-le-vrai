@@ -117,9 +117,9 @@ namespace AtelierXNA
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
             Game.Components.Add(ÉtatJeuTexte);
-            Game.Components.Add(DebugAfficheurTexteA);
-            Game.Components.Add(DebugAfficheurTexteB);
-            Game.Components.Add(DebugAfficheurTexteC); Game.Components.Add(DebugAfficheurTexteD);
+            //Game.Components.Add(DebugAfficheurTexteA);
+            //Game.Components.Add(DebugAfficheurTexteB);
+            //Game.Components.Add(DebugAfficheurTexteC); Game.Components.Add(DebugAfficheurTexteD);
         }
         public override void Update(GameTime gameTime)
         {

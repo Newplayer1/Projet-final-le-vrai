@@ -361,7 +361,7 @@ namespace AtelierXNA
         {
             foreach (ObjetDeBase p in Game.Components.Where(r => r is ObjetDeBase))
             {
-                if (!(p is Player))
+                if (!(p is Player) && LeJoueur.EstEnVie)
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {

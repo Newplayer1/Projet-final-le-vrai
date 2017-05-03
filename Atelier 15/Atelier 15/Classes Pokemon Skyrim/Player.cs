@@ -89,7 +89,7 @@ namespace AtelierXNA
 
         private void InventairePoks()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.P) && !inventaireOuvert)
+            if (GestionInput.EstNouvelleTouche(Keys.P) && !inventaireOuvert && !Combat.EnCombat)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {

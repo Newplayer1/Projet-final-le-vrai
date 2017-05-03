@@ -123,6 +123,7 @@ namespace AtelierXNA
         {
             int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
             int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
+             Vector3 DirectionJoueur = Monde.Forward - Monde.Backward;  
 
             //déplacement horizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
@@ -132,20 +133,8 @@ namespace AtelierXNA
                 DirectionCaméra = ((CaméraJeu) as CaméraSubjective).Direction; // Pour qu'on puisse avoir accès à la direction de la caméra dans la classe pokéball 
                 DirectionCaméra = Vector3.Normalize(DirectionCaméra);
                 Rotation = new Vector3(0, Rotation.Y + valRotationAjouter, 0);
-                //Vector3 PositionCaméra = Vector3.Transform(CaméraJeu.Position, Matrix.CreateFromAxisAngle(Position, valRotationAjouter));
+                //Vector3 PositionCaméra = Vector3.Transform(CaméraJeu.Position, Matrix.CreateFromAxisAngle(DirectionJoueur, valRotationAjouter));
                 //CaméraJeu.CréerPointDeVue(PositionCaméra,Position,Vector3.Up);
-            }
-            // déplacement vertical Angle # limite = 45'
-            if (GestionInput.GetPositionSouris().Y != Souris.Y)
-            {
-                ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).Latéral, DELTA_TANGAGE * valPitch * VitesseRotation)));
-                Vector3 ancienneDirection = ((CaméraJeu) as CaméraSubjective).Direction;
-                AngleDirection = (float)Math.Asin(((CaméraJeu) as CaméraSubjective).Direction.Y);
-
-                if (AngleDirection > 45 || AngleDirection < -45)
-                {
-                    ((CaméraJeu) as CaméraSubjective).Direction = ancienneDirection;
-                }
             }
         }
 

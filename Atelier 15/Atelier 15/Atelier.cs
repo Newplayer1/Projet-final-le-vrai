@@ -159,6 +159,8 @@ namespace AtelierXNA
             //    }
             //}
             //GraphicsDevice.Clear(Color.Black);
+            Window.Title = Components.Count.ToString();
+
             base.Draw(gameTime);
         }
     }

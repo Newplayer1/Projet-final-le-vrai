@@ -19,7 +19,7 @@ namespace AtelierXNA
         const int POKEMON_SUR_LE_TERRAIN = 25;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float ÉCHELLE_OBJET = 0.004f;
-        const int POKEDEX_MAX = 152;
+        const int POKEDEX_MAX = 35;
         const float RAYON_POKÉBALL = 0.25f;
         Vector2 PositionBoxStandard { get; set; }
         ObjetDeBase PokemonJoueur { get; set; }
@@ -39,7 +39,7 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-        
+
         AfficheurTexte DebugAfficheurTexteA { get; set; }
         AfficheurTexte DebugAfficheurTexteB { get; set; }
         AfficheurTexte DebugAfficheurTexteC { get; set; }
@@ -82,7 +82,7 @@ namespace AtelierXNA
                 else
                 {
                     LeJoueur.AddPokemon(int.Parse(Database.LoadSauvegarde()[cpt + 3]), int.Parse(Database.LoadSauvegarde()[cpt + 4]));
-                    cpt = cpt +2 ;
+                    cpt = cpt + 2;
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
-
+            
             GérerClavier();
             //GérerTransition();
             GérerÉtat();
@@ -139,9 +139,10 @@ namespace AtelierXNA
             {
                 AjoutPokemonsRandom();
             }
-            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 1, LeJoueur.Position.Z);
+            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 0.8f, LeJoueur.Position.Z);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
+            EnleverProjectile();
             base.Update(gameTime);
         }
 
@@ -155,6 +156,21 @@ namespace AtelierXNA
             }
 
         }
+        void EnleverProjectile()
+        {
+            int nbPOkeballactives = Game.Components.Count(x => x is Pokeball);
+            for (int i = Game.Components.Count - 1; i >= 0; --i)
+            {
+                if (Game.Components[i] is Pokeball && nbPOkeballactives == 5) 
+                {
+                    //PROBLÈME : la cinquième balle ajouté va disparaitre tout de suite.. donc le cinquieme clic fait rien théoriquement
+                        Game.Components.RemoveAt(i);
+                }
+            }
+        }
+    
+        //no entiendo porque la pokeball no desaparece cuando esta a bajo de menos diez
+        
 
         private void GérerClavier()
         {
@@ -221,41 +237,47 @@ namespace AtelierXNA
         }
         private void AjoutPokemonsRandom()
         {
-            int pokedexNumberAléatoire;// = générateurAléatoire.Next(1, POKEDEX_MAX);
 
-            int[] pokemonPasValides = new int[] { 35, 41, 42, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
-
-            //Ca crash aussi avec 64 pis 69, y en a qui sont invalides et pas dans le tableau pokemonPasValider
-
-            //for (int i = 0; i < pokemonPasValides.Length; i++)
-            //{
-            //    if(pokedexNumberAléatoire == pokemonPasValides[i])
-            //    {
-            //        pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            //    }
-            //}
-
-            //do
-            //{
-            //    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            //}
-            //while (pokemonPasValides.Contains(pokedexNumberAléatoire));
-
-            do
-            {
-                pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            }
-            while (!(pokedexNumberAléatoire < 30)); //pour que ça run pis qu'on puisse travailler sur autre chose en même temps
-
-            PokemonRandom1Infos = new Pokemon(Game, pokedexNumberAléatoire, générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
-            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(pokedexNumberAléatoire), ÉCHELLE_OBJET, Vector3.Zero, TrouverPositionRandom());
+            //int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //int pokedexNumberAléatoire = NumeroPokemonValides();
+            PokemonRandom1Infos = new Pokemon(Game, NumeroPokemonValides(), générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
+            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(NumeroPokemonValides()), ÉCHELLE_OBJET * 2, Vector3.Zero, TrouverPositionRandom());
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
-        }
 
+
+
+        }
+        private int NumeroPokemonValides()
+        {
+            int[] pokemonPasValides = new int[] { 35, 41, 42, 60, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
+            int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //int vraivaleur = 150;
+            for (int i = 0; i < pokemonPasValides.Length; i++)
+            {
+                if (pokedexNumberAléatoire == pokemonPasValides[i])
+                {
+                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+                }
+            } 
+                if (pokedexNumberAléatoire < 80 || pokedexNumberAléatoire > 34)
+                {
+                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+                }
+            
+            return pokedexNumberAléatoire;
+        }
         private string TrouverDossierModèle(int pokedexNumber)
         {
+            //string local2 = pokedexNumber.ToString();;
+            //if(pokedexNumber > 36) 
+            //{
+            //    local2 += "_0";
+            //}
+            //string nommod = local2 + '/' + local2;
+            //return local2;
             string local = pokedexNumber.ToString();
+
             if (local.Count() == 1)
             {
                 local = "0" + local;
@@ -263,8 +285,8 @@ namespace AtelierXNA
             string nomMod = local + '/' + local;
             return nomMod;
 
+            //grandir échelle si besoin 
             //float échelleObjTest = 0.01f;
-
             //if (local1 == 14.ToString())
             //{
             //    échelleObjTest = ÉCHELLE_OBJET * 10;

@@ -125,9 +125,9 @@ namespace AtelierXNA
         }
         void GérerClavier()//fait juste choisir up/down, on devra peut-être ajouter left/right un jour
         {
-            if (GestionInput.EstNouvelleTouche(Keys.Up) && IndexSélectionné > 0)
+            if (GestionInput.EstNouvelleTouche(Keys.W) && IndexSélectionné > 0)
                 IndexSélectionné--;
-            if (GestionInput.EstNouvelleTouche(Keys.Down) && IndexSélectionné < NBDeZonesDeTexte - 1)
+            if (GestionInput.EstNouvelleTouche(Keys.S) && IndexSélectionné < NBDeZonesDeTexte - 1)
                 IndexSélectionné++;
 
             //la classe qui utilise AfficheurChoix devra updater le choix fait selon l'IndexSélectionné (important d'être fait AVANT de créer un autre AfficheurChoix)

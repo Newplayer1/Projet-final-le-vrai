@@ -93,15 +93,15 @@ namespace AtelierXNA
         //    OpponentPokemon = wildPokemon;
         //    EstOpponentSauvage = true;
         //}
-        public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)
-            : base(game)
-        {
-            PositionBox = positionBox;
-            IntervalMAJ = intervalMAJ;
-            UserTrainer = user;
-            OpponentTrainer = opponent;
-            EstOpponentSauvage = false;
-        }
+        //public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)
+        //    : base(game)
+        //{
+        //    PositionBox = positionBox;
+        //    IntervalMAJ = intervalMAJ;
+        //    UserTrainer = user;
+        //    OpponentTrainer = opponent;
+        //    EstOpponentSauvage = false;
+        //}
         public Combat(Game game, Vector2 positionBox, Player user, Pokemon opponent, float intervalMAJ)
             : base(game)
         {
@@ -111,7 +111,6 @@ namespace AtelierXNA
             OpponentPokemon = opponent;
             EstOpponentSauvage = true;
         }
-
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
             EnCombat = true;
@@ -150,7 +149,6 @@ namespace AtelierXNA
             CombatState = CombatState.BATTLE_MENU;
             base.Initialize();
         }
-
         private void AjouterLesTextesFixes()
         {
             NomOpponentPokemon = new TexteFixe(Game, PositionInfoOpponentPokemon, OpponentPokemon.ToString());
@@ -171,7 +169,6 @@ namespace AtelierXNA
             VieOpponentPokemon.Visible = false;
             VieUserPokemon.Visible = false;
         }
-
         public override void Update(GameTime gameTime)//mise à jour des tours tant que en vie (both trainer et son pokémon)
         {
             //GérerÉtats(); //Passer gameTime si l'on doit animer qqch
@@ -285,6 +282,10 @@ namespace AtelierXNA
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
+            //else if(MainMenu.NuméroChoisi == 1) Aucune idée comment formuler ça pour faire un full heal xD
+            //{
+            //    UserPokemon.HP = UserPokemon.RétablirStats();
+            //}
             else
             {
                 if (UserPokemon.Speed >= OpponentPokemon.Speed)
@@ -326,7 +327,6 @@ namespace AtelierXNA
             }
             
         }
-
         public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
             bool valeurFormule = EffectuerFormuleGenI(opponent);
@@ -359,7 +359,6 @@ namespace AtelierXNA
                 }
             }
         }
-
         private bool EffectuerFormuleGenI(Pokemon opponent)
         {
             //Formule de pokémon génération I (La forme très algorythmique s'applique bien à la programmation, je vais la reprendre ligne pour ligne) http://bulbapedia.bulbagarden.net/wiki/Catch_rate
@@ -391,7 +390,6 @@ namespace AtelierXNA
             }
             return estAttrapé;
         }
-
         void GérerTransitionTOUR_USER()
         {
             if (UserPokemon.EstEnVie)
@@ -453,8 +451,6 @@ namespace AtelierXNA
                 }
             }
         }
-
-
         void GérerTransitionVICTORY()
         {
 
@@ -471,7 +467,6 @@ namespace AtelierXNA
             DonnerExp();
             CombatState = CombatState.END;
         }
-
         private void DonnerExp()
         {
             int exp = OpponentPokemon.GiveExp();
@@ -479,7 +474,6 @@ namespace AtelierXNA
             AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + exp.ToString() + " exp.", IntervalMAJ);
             Game.Components.Add(messageC);
         }
-
         void GérerTransitionDEFEAT()
         {
             if (!EstOpponentSauvage)
@@ -502,7 +496,6 @@ namespace AtelierXNA
 
         }
         #endregion
-
         void EffectuerTourUser()
         {
             if (MainMenu.AttaqueUtilisée)
@@ -515,9 +508,6 @@ namespace AtelierXNA
             else if (MainMenu.TentativeFuite)
                 EssayerFuir();
         }
-
-
-
         void EffectuerTourOpponent()
         {
             //choisir une attaque aléatoire
@@ -527,7 +517,6 @@ namespace AtelierXNA
             EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
 
         }
-
         void EffectuerAttaque(int numéroChoisi)
         {
 
@@ -541,7 +530,7 @@ namespace AtelierXNA
         {
             string messageTour = "User used item " + numéroChoisi.ToString() + ".";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, messageTour, IntervalMAJ);
-            Game.Components.Add(message);
+            //Game.Components.Add(message);
             //Ensuite on fait l'effet de l'item
         }
         void ChangerPokémon(int numéroChoisi)
@@ -556,7 +545,6 @@ namespace AtelierXNA
 
             //faire le reste du code de switch pokemon
         }
-
         void ChangerOpponentPokemon()
         {
             TourOpponentComplété = false;
@@ -636,7 +624,6 @@ namespace AtelierXNA
                 damage = 1;
             return (int)damage;
         }
-
         int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
         {
             float damage;

@@ -41,6 +41,7 @@ namespace AtelierXNA
         public bool PokémonChangé { get; set; }
         public bool TentativeFuite { get; set; }
         public bool ItemPokeball { get; set; }
+        public bool ItemGreatBall { get; set; }
         public int NuméroChoisi { get; private set; }
 
 
@@ -163,7 +164,7 @@ namespace AtelierXNA
         {
             ListeChoix = new List<string>();
             ListeChoix.Add("Pokeball");
-            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
+            ListeChoix.Add("Greatball");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
             ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
             ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
             ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
@@ -394,6 +395,10 @@ namespace AtelierXNA
                 {
                     ItemPokeball = true;
                 }
+                if (BagChoix[BagChoix.IndexSélectionné] == "Greatball")
+                {
+                    ItemGreatBall = true;
+                }
                 //Combat.UseItem(); Pokémon sur lequel il y a un effet, Trainer qui a utilisé l'item, numéro de l'item
                 BattleMenuState = BattleMenuState.READY;
                 //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: User threw an item!", IntervalMAJ);
@@ -438,11 +443,11 @@ namespace AtelierXNA
 
         bool ChoixEstEffectué()
         {
-            return GestionInput.EstNouvelleTouche(Keys.Space);
+            return GestionInput.EstNouvelleTouche(Keys.Space) || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed;
         }
         bool Back()
         {
-            return GestionInput.EstNouvelleTouche(Keys.B) && !BackLock;
+            return (GestionInput.EstNouvelleTouche(Keys.B) || GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed )&& !BackLock;
         }
         void DisableComponents()
         {
@@ -456,6 +461,7 @@ namespace AtelierXNA
             PokémonChangé = false;
             TentativeFuite = false;
             ItemPokeball = false;
+            ItemGreatBall = false;
             BackLock = false;
         }
     }

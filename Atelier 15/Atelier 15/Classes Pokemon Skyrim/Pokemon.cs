@@ -75,7 +75,7 @@ namespace AtelierXNA
         public float CalculerExpTotal(int level)
         {
             float expTotal = 0;
-            for (int i = 1; i <= Level; i++)
+            for (int i = 1; i <= level; i++)
             {
                 switch (ExpGrowth)
                 {

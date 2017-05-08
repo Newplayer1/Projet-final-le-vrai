@@ -62,31 +62,50 @@ namespace AtelierXNA
         public Pokemon(Game jeu, int pokedexNumber)
             : base(jeu)
         {
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
-
-            PokedexNumber = pokedexNumber;
+            CréerDatabase(pokedexNumber);
             Level = 5;
 
             CalculerStatsEtHP(Level);
+            Exp = 0;
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = true;
-            AttribuerAttaquesParDéfaut();
-            Exp = 0;
         }
+
+        public float CalculerExpTotal(int level)
+        {
+            float expTotal = 0;
+                switch (ExpGrowth)
+                {
+                    case ExpGrowthClass.Fast:
+                        expTotal += CalculerExpFast(level);
+                        break;
+                    case ExpGrowthClass.MediumFast:
+                        expTotal += CalculerExpMediumFast(level);
+                        break;
+                    case ExpGrowthClass.MediumSlow:
+                        expTotal += CalculerExpMediumSlow(level);
+                        break;
+                    case ExpGrowthClass.Slow:
+                        expTotal += CalculerExpSlow(level);
+                        break;
+                }
+            return expTotal;
+        }
+
         public Pokemon(Game jeu, int pokedexNumber, Trainer player)
             : base(jeu)
         {
             CréerDatabase(pokedexNumber);
             
             Level = 5;
+            Exp = 0;
 
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
             
-            Exp = 0;
         }
 
         private void CréerDatabase(int pokedexNumber)
@@ -105,22 +124,24 @@ namespace AtelierXNA
             CréerDatabase(pokedexNumber);
             
             Level = level;
+            Exp = 0;
 
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = true;
-            Exp = 0;
         }
         public Pokemon(Game jeu, int pokedexNumber, int level, Trainer player)
             : base(jeu)
         {
             CréerDatabase(pokedexNumber);
             Level = level;
+            Exp = 0;
 
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
-            Exp = 0;
         }
         public Pokemon(Pokemon copie)
             :base(copie.Game)
@@ -129,6 +150,7 @@ namespace AtelierXNA
             Level = copie.Level;
 
             CalculerStatsEtHP(Level);
+            //CalculerExpTotal(Level);
             HP = copie.HP;
             EstSauvage = false;
             Exp = copie.Exp;
@@ -136,7 +158,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
-            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//fonctionne pas dans l'initialize
             base.Initialize();
         }
         void AttribuerAttaquesParDéfaut()
@@ -201,35 +223,22 @@ namespace AtelierXNA
         public bool GainExp(float valeur)
         {
             bool aAugmentéDeNiveau = false;
-            Exp = Exp + 10*valeur;
+            Exp = Exp + valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
             if (Level < MAX_LEVEL && DoitLevelUp())
             {
                 ExécuterSéquenceLevelUp();
                 aAugmentéDeNiveau = true;
             }
+
             return aAugmentéDeNiveau;
         }
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
         {
             bool valeurVérité = false;
-            int levelSuivant = Level + 1;
 
-            switch (ExpGrowth)
-            {
-                case ExpGrowthClass.Fast:
-                    valeurVérité = (Exp >= CalculerExpFast(levelSuivant));
-                    break;
-                case ExpGrowthClass.MediumFast:
-                    valeurVérité = (Exp >= CalculerExpMediumFast(levelSuivant));
-                    break;
-                case ExpGrowthClass.MediumSlow:
-                    valeurVérité = (Exp >= CalculerExpMediumSlow(levelSuivant));
-                    break;
-                case ExpGrowthClass.Slow:
-                    valeurVérité = (Exp >= CalculerExpSlow(levelSuivant));
-                    break;
-            }
+            if (CalculerExpTotal(Level + 1) <= Exp)
+                valeurVérité = true;
             return valeurVérité;
         }
         float CalculerExpFast(int level)

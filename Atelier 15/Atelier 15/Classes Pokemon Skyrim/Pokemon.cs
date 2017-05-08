@@ -73,6 +73,7 @@ namespace AtelierXNA
             HP = MaxHp;
             EstSauvage = true;
             AttribuerAttaquesParDéfaut();
+            Exp = 0;
         }
         public Pokemon(Game jeu, int pokedexNumber, Trainer player)
             : base(jeu)
@@ -88,6 +89,7 @@ namespace AtelierXNA
             HP = MaxHp;
             EstSauvage = false;
             AttribuerAttaquesParDéfaut();
+            Exp = 0;
         }
         public Pokemon(Game jeu, int pokedexNumber, int level)
             : base(jeu)
@@ -104,6 +106,7 @@ namespace AtelierXNA
             HP = MaxHp;
             EstSauvage = true;
             AttribuerAttaquesParDéfaut();
+            Exp = 0;
         }
         public Pokemon(Game jeu, int pokedexNumber, int level, Trainer player)
             : base(jeu)
@@ -119,6 +122,22 @@ namespace AtelierXNA
             HP = MaxHp;
             EstSauvage = false;
             AttribuerAttaquesParDéfaut();
+            Exp = 0;
+        }
+        public Pokemon(Pokemon copie)
+            :base(copie.Game)
+        {
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+            PokemonEnString = Database.AccessDonnéesPokemonStats(copie.PokedexNumber);
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(copie.Type1EnInt);
+            PokedexNumber = copie.PokedexNumber;
+            Level = copie.Level;
+
+            CalculerStatsEtHP(Level);
+            HP = copie.HP;
+            EstSauvage = false;
+            AttribuerAttaquesParDéfaut();
+            Exp = copie.Exp;
         }
 
         public override void Initialize()

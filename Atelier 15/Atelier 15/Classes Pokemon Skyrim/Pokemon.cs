@@ -75,24 +75,21 @@ namespace AtelierXNA
         public float CalculerExpTotal(int level)
         {
             float expTotal = 0;
-            for (int i = 1; i <= level; i++)
-            {
                 switch (ExpGrowth)
                 {
                     case ExpGrowthClass.Fast:
-                        expTotal += CalculerExpFast(i);
+                        expTotal += CalculerExpFast(level);
                         break;
                     case ExpGrowthClass.MediumFast:
-                        expTotal += CalculerExpMediumFast(i);
+                        expTotal += CalculerExpMediumFast(level);
                         break;
                     case ExpGrowthClass.MediumSlow:
-                        expTotal += CalculerExpMediumSlow(i);
+                        expTotal += CalculerExpMediumSlow(level);
                         break;
                     case ExpGrowthClass.Slow:
-                        expTotal += CalculerExpSlow(i);
+                        expTotal += CalculerExpSlow(level);
                         break;
                 }
-            }
             return expTotal;
         }
 
@@ -161,7 +158,7 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
-            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//fonctionne pas dans l'initialize
             base.Initialize();
         }
         void AttribuerAttaquesParDéfaut()
@@ -239,9 +236,8 @@ namespace AtelierXNA
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
         {
             bool valeurVérité = false;
-            int levelSuivant = Level + 1;
 
-            if (CalculerExpTotal(levelSuivant) <= Exp)
+            if (CalculerExpTotal(Level + 1) <= Exp)
                 valeurVérité = true;
             return valeurVérité;
         }

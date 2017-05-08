@@ -92,9 +92,9 @@ namespace AtelierXNA
 
         public void Heal()
         {
-            foreach (Pokemon item in Party)
+            foreach (Pokemon p in Party)
             {
-                //item.AjouterHP(item.MaxHp);
+                p.AjouterHP(p.MaxHp);
             }
         }
         public void AddPokemon(int pokedexNumber)

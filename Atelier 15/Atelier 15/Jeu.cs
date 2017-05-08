@@ -174,6 +174,19 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
+            if (GestionInput.EstNouvelleTouche(Keys.H))
+            {
+                if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
+                {
+                    LeJoueur.Heal();
+                    foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                    {
+                        t.ÀDétruire = true;
+                    }
+                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
+                }
+
+            }
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
                 if (!(ÉtatJeu == ÉtatsJeu.COMBAT))

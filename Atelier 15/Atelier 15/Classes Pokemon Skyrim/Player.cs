@@ -106,7 +106,7 @@ namespace AtelierXNA
                     {
                         InventaireParLigne += " Type2 : " + GetPokemon(i).Type2;
                     }
-                    InventaireParLigne += " HP : " + GetPokemon(i).HP + " Exp : " +GetPokemon(i).Exp;
+                    InventaireParLigne += " HP : " + GetPokemon(i).HP + " / " + GetPokemon(i).MaxHp +" Exp : " +GetPokemon(i).Exp + " / " + ;
 
                     Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
                 }

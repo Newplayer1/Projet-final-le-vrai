@@ -112,6 +112,10 @@ namespace AtelierXNA
             ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
             
             GérerClavier();
+            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 0.8f, LeJoueur.Position.Z);
+            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
+            AjouterProjectile(positionPokéball, rotationObjet);
+
             GérerÉtat();
             if (Game.Components.Count < POKEMON_SUR_LE_TERRAIN)
             {
@@ -123,9 +127,7 @@ namespace AtelierXNA
             {
                 AjoutPokemonsRandom();
             }
-            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 0.8f, LeJoueur.Position.Z);
-            Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
-            AjouterProjectile(positionPokéball, rotationObjet);
+
             EnleverProjectile();
             base.Update(gameTime);
         }
@@ -357,25 +359,20 @@ namespace AtelierXNA
                     }
                 }
             }
-
-            foreach (Pokemon o in Game.Components.Where(r => r is Pokemon))
+            if (Game.Components.Contains(Projectile))
             {
-                //if (!(o is Player))
+                foreach (ObjetDeBase o in Game.Components.Where(r => r is ObjetDeBase))
                 {
-                    if (Projectile.EstEnCollision(o))
+                    if (!(o is Player))
                     {
-                        LeCombat.TryCatchWildPokemon(LeJoueur,o);
-                        //indexPokemonEnCollision = PokemonSurLeTerrain.IndexOf(o);
-                        PokemonEnCollision = PokemonSurLeTerrain[indexPokemonEnCollision];
-                        ÉtatJeu = ÉtatsJeu.JEU3D;
-
+                        if (Projectile.EstEnCollision(o))
+                        {
+                            LeCombat.TryCatchWildPokemon(LeJoueur, o.UnPokemon);
+                            ÉtatJeu = ÉtatsJeu.JEU3D;
+                        }
                     }
+
                 }
-                //if (!LeJoueur.EstEnCollision(p))
-                //{
-                //    Flags.Combat = false;
-                //    //ÉtatJeu = ÉtatsJeu.JEU3D;
-                //}
             }
         }
     }

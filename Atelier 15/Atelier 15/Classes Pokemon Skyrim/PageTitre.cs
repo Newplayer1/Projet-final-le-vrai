@@ -84,6 +84,7 @@ namespace AtelierXNA
 
             //Audio Ajustments
             MediaPlayer.Play(Chanson);
+            MediaPlayer.IsRepeating = true;
 
             //Screen Ajustments
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;

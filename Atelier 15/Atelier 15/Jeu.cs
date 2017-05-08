@@ -32,7 +32,6 @@ namespace AtelierXNA
         TerrainAvecBase TerrainDeJeu { get; set; }
         ObjetDeBase PokemonRandom1 { get; set; }
         Pokemon PokemonRandom1Infos { get; set; }
-        //Pokemon_B test { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         TexteFixe ÉtatJeuTexte { get; set; }
         Random générateurAléatoire { get; set; }
@@ -128,7 +127,7 @@ namespace AtelierXNA
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-            if (GestionInput.EstNouvelleTouche(Keys.N))
+            if (GestionInput.EstNouvelleTouche(Keys.N) || GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed)
             {
                 AjoutPokemonsRandom();
             }
@@ -139,7 +138,7 @@ namespace AtelierXNA
 
         void AjouterProjectile(Vector3 positionPokéball, Vector3 rotationObjet)
         {
-            if (GestionInput.EstNouveauClicGauche())
+            if (GestionInput.EstNouveauClicGauche() /*|| GamePad.GetState(PlayerIndex.One).Triggers.Right == ButtonState.Pressed*/)
             {
                 Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
                 Game.Components.Add(Projectile);
@@ -165,13 +164,13 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.H))
+            if (GestionInput.EstNouvelleTouche(Keys.H) || GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed)
             {
                     LeJoueur.Heal();
                     Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
 
             }
-            if (GestionInput.EstNouvelleTouche(Keys.Enter))
+                if (GestionInput.EstNouvelleTouche(Keys.Enter) || GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed)
             {
                 if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
                 {
@@ -226,7 +225,7 @@ namespace AtelierXNA
         private int NumeroPokemonValides()
         {
             //List< int > pokemonnopeValides = new List<int> { 35, 41, 42, 60, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
-            List<int> pokemonValides = new List<int> { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,94,104,105,107,112,115,122,123,127,129,130,133,134,136,137,138,139,142,144,145,146,147,148,149,150,151};
+            List<int> pokemonValides = new List<int> { /*1,2,3,4,5,6,7,8,9,*/10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,94,104,105,107,112,115,122,123,127,129,130,133,134,136,137,138,139,142,144,145,146,147,148,149,150,151};
 
             int pokedexNumberAléatoire = générateurAléatoire.Next(1, pokemonValides.Count);
             int pokemonchoisi = pokemonValides[pokedexNumberAléatoire];

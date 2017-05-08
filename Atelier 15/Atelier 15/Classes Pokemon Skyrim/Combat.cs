@@ -17,12 +17,13 @@ namespace AtelierXNA
         float IntervalMAJ { get; set; }
         Trainer UserTrainer { get; set; }
         Trainer OpponentTrainer { get; set; }
-
+        
         Pokemon UserPokemon { get; set; } //Le BattleMenu doit avoir accès aux attaques du pokémon... Garder en mémoire l'indice du pkm en jeu?
         public int NoPokédexUserPokemon => UserPokemon.PokedexNumber;//pour afficher un modèle de son numéro
         Pokemon OpponentPokemon { get; set; }
         public int NoPokédexOpponentPokemon => UserPokemon.PokedexNumber;
         AccessBaseDeDonnée Database { get; set; }
+        //RessourcesManager<Song> GestionnaireDetunes { get; set; }
         //AccessBaseDeDonnée Database { get; set; }
         //bool EnCombat { get; set; }
         public bool EstOpponentSauvage { get; private set; }
@@ -34,6 +35,7 @@ namespace AtelierXNA
         CombatState CombatState { get; set; }
         Vector2 PositionBox { get; set; }
         BattleMenu MainMenu { get; set; }
+        Song tuneCombat { get; set; }
 
         TexteFixe NomUserPokemon { get; set; }
         TexteFixe NomOpponentPokemon { get; set; }
@@ -114,6 +116,12 @@ namespace AtelierXNA
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
             EnCombat = true;
+            //GestionnaireDetunes = Game.Services.GetService(typeof(RessourcesManager<Song>)) as RessourcesManager<Song>;
+            //tuneCombat = GestionnaireDetunes.Find("tuneCombat");
+            //if (EnCombat) 
+            //{
+            //    MediaPlayer.Play(tuneCombat);
+            //}
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();
@@ -282,6 +290,17 @@ namespace AtelierXNA
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
+            //if (MainMenu.ItemGreatBall)
+            //{
+            //    if (EstOpponentSauvage)
+            //        TryCatchWildPokemon(UserTrainer, OpponentPokemon);
+            //    else
+            //    {
+            //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
+            //        Game.Components.Add(message);
+            //        CombatState = CombatState.TOUR_OPPONENT;
+            //    }
+            //}
             //else if(MainMenu.NuméroChoisi == 1) Aucune idée comment formuler ça pour faire un full heal xD
             //{
             //    UserPokemon.HP = UserPokemon.RétablirStats();
@@ -330,7 +349,7 @@ namespace AtelierXNA
         public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
             bool valeurFormule = EffectuerFormuleGenI(opponent);
-
+            bool valeurFormule2 = EffectuerFormuleGenIGREATBALL(opponent);
             if (valeurFormule)
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
@@ -344,7 +363,22 @@ namespace AtelierXNA
                     MainMenu.ItemPokeball = false;
                     CombatState = CombatState.END;
                 }
-                    
+
+            
+            if (valeurFormule2)
+            {
+                AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
+                Game.Components.Add(message2);
+
+                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+
+
+                if (EnCombat)
+                {
+                    MainMenu.ItemGreatBall = false;
+                    CombatState = CombatState.END;
+                }
+}
             }
 
             else
@@ -355,6 +389,7 @@ namespace AtelierXNA
                 if (EnCombat)
                 {
                     MainMenu.ItemPokeball = false;
+                    MainMenu.ItemGreatBall = false;
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
@@ -386,6 +421,21 @@ namespace AtelierXNA
                 int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
 
                 if (f >= m)
+                    estAttrapé = true;
+            }
+            return estAttrapé;
+        }
+        private bool EffectuerFormuleGenIGREATBALL(Pokemon opponent)
+        {
+           
+            bool estAttrapé = false;
+
+            if (!estAttrapé)
+            {
+                int m = Générateur.Next(0, 256);
+                int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
+
+                if (f >= m /2)
                     estAttrapé = true;
             }
             return estAttrapé;

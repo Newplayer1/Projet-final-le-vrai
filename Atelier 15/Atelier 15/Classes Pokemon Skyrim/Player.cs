@@ -157,6 +157,17 @@ namespace AtelierXNA
                     BougerCaméra(déplacementHorizontal, déplacementProfondeur);
                 }
             }
+            if(GamePad.GetState(PlayerIndex.One).IsConnected) 
+            {
+                float déplacementHorizontal = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X - GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X) * vitesseDéplacement;
+                float déplacementProfondeur = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y - GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y) * vitesseDéplacement;
+                if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
+                {
+                    //GamePad.SetVibration(PlayerIndex.One, 1, 1); omg cest intense!
+                    BougerTrainer(déplacementHorizontal, déplacementProfondeur);
+                    BougerCaméra(déplacementHorizontal, déplacementProfondeur);
+                }
+            }
         }
         protected void BougerTrainer(float déplacementHorizontal, float déplacementProfondeur)
         {

@@ -14,7 +14,7 @@ namespace AtelierXNA
     public class Atelier : Microsoft.Xna.Framework.Game
     {
         const float INTERVALLE_CALCUL_FPS = 1f;
-        const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
+        public const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         const int LEVEL_DÉPART = 5;
 
         Button1 bulbusaur { get; set; }

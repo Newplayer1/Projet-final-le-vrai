@@ -21,7 +21,7 @@ namespace AtelierXNA
         const float ÉCHELLE_OBJET = 0.004f;
         const int POKEDEX_MAX = 35;
         const float RAYON_POKÉBALL = 0.25f;
-        Vector2 PositionBoxStandard { get; set; }
+        public static Vector2 PositionBoxStandard { get; private set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
         Pokeball Projectile { get; set; }
@@ -38,7 +38,11 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-        
+
+        static Jeu()
+        {
+            PositionBoxStandard = new Vector2();
+        }
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -105,6 +109,7 @@ namespace AtelierXNA
             (CaméraJeu as CaméraSubjective).Cible = new Vector3(LeJoueur.Position.X, LeJoueur.Position.Y + 5, LeJoueur.Position.Z);
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
             Game.Components.Add(ÉtatJeuTexte);
+            
         }
         public override void Update(GameTime gameTime)
         {

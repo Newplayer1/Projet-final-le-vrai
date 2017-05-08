@@ -185,14 +185,17 @@ namespace AtelierXNA
 
         //    return attaqueAléatoire;
         //}
-        public void GainExp(int valeur)
+        public bool GainExp(int valeur)
         {
-            Exp = Exp + valeur;
+            bool aAugmentéDeNiveau = false;
+            Exp = Exp + 3*valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
             if (Level < MAX_LEVEL && DoitLevelUp())
             {
                 ExécuterSéquenceLevelUp();
+                aAugmentéDeNiveau = true;
             }
+            return aAugmentéDeNiveau;
         }
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
         {

@@ -112,7 +112,6 @@ namespace AtelierXNA
             …tatJeuTexte.RemplacerMessage("GameState : " + …tatJeu.ToString());
             
             GÈrerClavier();
-            //GÈrerTransition();
             GÈrer…tat();
             if (Game.Components.Count < POKEMON_SUR_LE_TERRAIN)
             {
@@ -161,15 +160,8 @@ namespace AtelierXNA
         {
             if (GestionInput.EstNouvelleTouche(Keys.H))
             {
-                if (!(…tatJeu == …tatsJeu.COMBAT))
-                {
                     LeJoueur.Heal();
-                    foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
-                    {
-                        t.¿DÈtruire = true;
-                    }
                     Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
-                }
 
             }
             if (GestionInput.EstNouvelleTouche(Keys.Enter))

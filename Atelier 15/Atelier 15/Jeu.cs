@@ -215,8 +215,9 @@ namespace AtelierXNA
 
             //int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
             //int pokedexNumberAléatoire = NumeroPokemonValides();
-            PokemonRandom1Infos = new Pokemon(Game, NumeroPokemonValides(), générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level -1));
-            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(NumeroPokemonValides()), ÉCHELLE_OBJET * 2, Vector3.Zero, TrouverPositionRandom());
+            int numpok = NumeroPokemonValides();
+            PokemonRandom1Infos = new Pokemon(Game, numpok , générateurAléatoire.Next(LeJoueur[0].Level - 3, LeJoueur[0].Level + 3));
+            PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(numpok), ÉCHELLE_OBJET * 2, Vector3.Zero, TrouverPositionRandom());
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
 
@@ -225,23 +226,19 @@ namespace AtelierXNA
         }
         private int NumeroPokemonValides()
         {
-            int[] pokemonPasValides = new int[] { 35, 41, 42, 60, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
+            List< int > pokemonPasValides = new List<int> { 35, 41, 42, 60, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };
+
+
             int pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-            //int vraivaleur = 150;
-            for (int i = 0; i < pokemonPasValides.Length; i++)
-            {
-                if (pokedexNumberAléatoire == pokemonPasValides[i])
-                {
-                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-                }
-            } 
-                if (pokedexNumberAléatoire < 80 || pokedexNumberAléatoire > 34)
-                {
-                    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
-                }
-            
+            //int a = 99;
+
+            //do
+            //{
+            //    pokedexNumberAléatoire = générateurAléatoire.Next(1, POKEDEX_MAX);
+            //} while ((pokemonPasValides.Contains(pokedexNumberAléatoire)) || (pokedexNumberAléatoire < 80 && pokedexNumberAléatoire > 34));
             return pokedexNumberAléatoire;
         }
+
         private string TrouverDossierModèle(int pokedexNumber)
         {
             //string local2 = pokedexNumber.ToString();;

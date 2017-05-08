@@ -39,7 +39,7 @@ namespace AtelierXNA
         public int Level { get; private set; }
         ExpGrowthClass ExpGrowth { get; set; }
         int BaseExp => int.Parse(PokemonEnString[12]);
-        int Exp { get; set; }
+        public int Exp { get; private set; }
 
         List<Attaque> AttaquesList { get; set; }
         public Attaque this[int index]

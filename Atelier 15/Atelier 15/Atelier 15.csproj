@@ -135,14 +135,12 @@
     <Compile Include="Classes Pokemon Skyrim\BattleMenu.cs" />
     <Compile Include="Classes Pokemon Skyrim\Button1.cs" />
     <Compile Include="Classes Pokemon Skyrim\Cadre.cs" />
-    <Compile Include="Classes Pokemon Skyrim\ChoixPokemonDébut.cs" />
     <Compile Include="Classes Pokemon Skyrim\Combat.cs" />
     <Compile Include="Classes Pokemon Skyrim\EncodeurFont.cs" />
     <Compile Include="Classes Pokemon Skyrim\PageTitre.cs" />
     <Compile Include="Classes Pokemon Skyrim\Player.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokeball.cs" />
     <Compile Include="Classes Pokemon Skyrim\Pokemon.cs" />
-    <Compile Include="Classes Pokemon Skyrim\Pokemon_B.cs" />
     <Compile Include="Classes Pokemon Skyrim\TerrainAvecBase.cs" />
     <Compile Include="Classes Pokemon Skyrim\TexteFixe.cs" />
     <Compile Include="Classes Pokemon Skyrim\Trainer.cs" />

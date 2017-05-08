@@ -92,7 +92,7 @@ namespace AtelierXNA
 
         private void InventairePoks()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.P) && !inventaireOuvert && !Combat.EnCombat)
+            if ((GestionInput.EstNouvelleTouche(Keys.P) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)&& !inventaireOuvert && !Combat.EnCombat)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {
@@ -112,7 +112,7 @@ namespace AtelierXNA
                 }
             inventaireOuvert = !inventaireOuvert;
             }
-            else if  (GestionInput.EstNouvelleTouche(Keys.P) && inventaireOuvert)
+            else if  ((GestionInput.EstNouvelleTouche(Keys.P) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ) && inventaireOuvert)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {

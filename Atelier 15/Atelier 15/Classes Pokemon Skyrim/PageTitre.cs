@@ -79,7 +79,8 @@ namespace AtelierXNA
             Background = GestionnaireDeTextures.Find("BackGround");
             Controls = GestionnaireDeTextures.Find("controls");
             Chanson = GestionnaireDeChansons.Find("Pokemon");
-            Arial = ArialFont.Find("Arial20"); 
+            Arial = ArialFont.Find("Arial20");
+            
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
 
             //Audio Ajustments

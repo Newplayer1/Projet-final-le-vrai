@@ -181,7 +181,7 @@ namespace AtelierXNA
                     {
                         t.ÀDétruire = true;
                     }
-                    Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
+                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Upload Sauvegarde", INTERVALLE_MAJ_STANDARD));
                 }
 
             }

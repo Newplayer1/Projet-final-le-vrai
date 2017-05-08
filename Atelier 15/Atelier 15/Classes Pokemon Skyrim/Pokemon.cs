@@ -207,7 +207,7 @@ namespace AtelierXNA
         public bool GainExp(int valeur)
         {
             bool aAugmentéDeNiveau = false;
-            Exp = Exp + 3*valeur;
+            Exp = Exp + 10*valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
             if (Level < MAX_LEVEL && DoitLevelUp())
             {

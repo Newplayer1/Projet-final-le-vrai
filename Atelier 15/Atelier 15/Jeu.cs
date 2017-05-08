@@ -39,11 +39,7 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-
-        AfficheurTexte DebugAfficheurTexteA { get; set; }
-        AfficheurTexte DebugAfficheurTexteB { get; set; }
-        AfficheurTexte DebugAfficheurTexteC { get; set; }
-        AfficheurTexte DebugAfficheurTexteD { get; set; }
+        
         public Jeu(Game game, int choix)
            : base(game)
         {
@@ -92,14 +88,6 @@ namespace AtelierXNA
             générateurAléatoire = new Random();
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
-            DebugAfficheurTexteA = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the first box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
-
-            DebugAfficheurTexteB = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "It's not very effective.", INTERVALLE_MAJ_STANDARD);
-
-            DebugAfficheurTexteC = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "This is the third box. The pokemon used Tackle!", INTERVALLE_MAJ_STANDARD);
-
-            DebugAfficheurTexteD = new AfficheurTexte(Game, new Vector2(2, 2), 32, 6, "OH MY GAWD IT'S SUPER EFFECTIVE!", INTERVALLE_MAJ_STANDARD);
-
             ÉtatJeu = ÉtatsJeu.JEU3D;
             ÉtatJeuTexte = new TexteFixe(Game, new Vector2(5, 5), "GameState : " + ÉtatJeu.ToString());
             //LoadSauvegarde();
@@ -118,9 +106,6 @@ namespace AtelierXNA
             (CaméraJeu as CaméraSubjective).Cible = new Vector3(LeJoueur.Position.X, LeJoueur.Position.Y + 5, LeJoueur.Position.Z);
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
             Game.Components.Add(ÉtatJeuTexte);
-            //Game.Components.Add(DebugAfficheurTexteA);
-            //Game.Components.Add(DebugAfficheurTexteB);
-            //Game.Components.Add(DebugAfficheurTexteC); Game.Components.Add(DebugAfficheurTexteD);
         }
         public override void Update(GameTime gameTime)
         {
@@ -174,6 +159,19 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
+            if (GestionInput.EstNouvelleTouche(Keys.H))
+            {
+                if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
+                {
+                    LeJoueur.Heal();
+                    foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
+                    {
+                        t.ÀDétruire = true;
+                    }
+                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
+                }
+
+            }
             if (GestionInput.EstNouvelleTouche(Keys.Enter))
             {
                 if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
@@ -183,7 +181,7 @@ namespace AtelierXNA
                     {
                         t.ÀDétruire = true;
                     }
-                    Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1), "Saved Successfully"));
+                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Upload Sauvegarde", INTERVALLE_MAJ_STANDARD));
                 }
 
             }
@@ -211,29 +209,6 @@ namespace AtelierXNA
             }
 
             Database.Sauvegarder(Sauvegarde);
-        }
-
-        private void GérerTransition()
-        {
-            switch (ÉtatJeu)
-            {
-                case ÉtatsJeu.JEU3D:
-                    break;
-                    //case États.COMBAT:
-                    //    GérerTransitionCombat();
-                    //    break;
-                    //case États.MAISON:
-                    //    GérerTransitionMaison();
-                    //    break;
-                    //case États.GYM:
-                    //    GérerTransitionGym();
-                    //    break;
-                    //case États.FIN:
-                    //    GérerTransitionFin();
-                    //    break;
-                    //default:
-                    //    break;
-            }
         }
         private void AjoutPokemonsRandom()
         {
@@ -331,7 +306,7 @@ namespace AtelierXNA
 
                             Game.Components.Add(new Afficheur3D(Game));
                             Game.Components.Add(PokemonJoueur);
-                            PokemonEnCollision.Position = new Vector3(LeJoueur.Position.X - 2, posYopponent, LeJoueur.Position.Z + 2);
+                            PokemonEnCollision.Position = new Vector3(LeJoueur.Position.X - 6, posYopponent + 2, LeJoueur.Position.Z);
                             PokemonEnCollision.Rotation = new Vector3(0, -(float)(7 * Math.PI / 5), 0);
                             PokemonSurLeTerrain[indexPokemonEnCollision] = PokemonEnCollision;
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).CalculerMonde();

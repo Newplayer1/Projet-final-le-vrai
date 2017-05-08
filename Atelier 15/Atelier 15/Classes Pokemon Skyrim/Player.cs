@@ -22,7 +22,7 @@ namespace AtelierXNA
         const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public float Hauteur { get; private set; }
         TerrainAvecBase Terrain { get; set; }
-        const float VitesseRotation = 1.5f;
+        const float VitesseRotation = 5f;
         public Vector2 Souris { get; private set; }
 
         float IntervalleMAJ { get; set; }
@@ -101,12 +101,12 @@ namespace AtelierXNA
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
-                    InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + " Type1 : " + GetType1Pokemon()[i];  
-                    if(GetType2Pokemon()[i] != "NULL")
+                    InventaireParLigne = GetPokemon(i).Nom + " Level : " + GetPokemon(i).Level + " Type1 : " + GetPokemon(i).Type1;  
+                    if(GetPokemon(i).Type2 != "NULL")
                     {
-                        InventaireParLigne += " Type2 : " + GetType2Pokemon()[i];
+                        InventaireParLigne += " Type2 : " + GetPokemon(i).Type2;
                     }
-                    InventaireParLigne += " HP : " + GetHPPokemon()[i];
+                    InventaireParLigne += " HP : " + GetPokemon(i).HP + " Exp : " +GetPokemon(i).Exp;
 
                     Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
                 }
@@ -143,7 +143,7 @@ namespace AtelierXNA
         protected void BougerCaméra(float déplacementHorizontal, float déplacementProfondeur)
         {
             ((CaméraJeu) as CaméraSubjective).GérerDéplacement(déplacementProfondeur, déplacementHorizontal);
-            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 1, Position.Z), CaméraJeu.OrientationVerticale);
+            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 2f, Position.Z), CaméraJeu.OrientationVerticale);
         }
         protected void Bouger()
         {

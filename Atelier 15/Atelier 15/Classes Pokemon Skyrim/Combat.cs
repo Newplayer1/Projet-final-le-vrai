@@ -469,10 +469,16 @@ namespace AtelierXNA
         }
         private void DonnerExp()
         {
-            int exp = OpponentPokemon.GiveExp();
-            UserPokemon.GainExp(exp);
-            AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + exp.ToString() + " exp.", IntervalMAJ);
+            bool aAugmentéDeNiveau;
+            float exp = OpponentPokemon.GiveExp();
+            aAugmentéDeNiveau = UserPokemon.GainExp(exp);
+            AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + ((int)exp).ToString() + " exp.", IntervalMAJ);
             Game.Components.Add(messageC);
+            if (aAugmentéDeNiveau)
+            {
+                AfficheurTexte messageD = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " grew to level " + UserPokemon.Level + "!", IntervalMAJ);
+                Game.Components.Add(messageD);
+            }
         }
         void GérerTransitionDEFEAT()
         {

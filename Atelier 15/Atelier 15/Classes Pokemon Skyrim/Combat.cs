@@ -470,9 +470,9 @@ namespace AtelierXNA
         private void DonnerExp()
         {
             bool aAugmentéDeNiveau;
-            int exp = OpponentPokemon.GiveExp();
+            float exp = OpponentPokemon.GiveExp();
             aAugmentéDeNiveau = UserPokemon.GainExp(exp);
-            AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + exp.ToString() + " exp.", IntervalMAJ);
+            AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, UserPokemon.Nom + " gained " + ((int)exp).ToString() + " exp.", IntervalMAJ);
             Game.Components.Add(messageC);
             if (aAugmentéDeNiveau)
             {

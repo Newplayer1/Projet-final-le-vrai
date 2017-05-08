@@ -22,7 +22,7 @@ namespace AtelierXNA
         const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public float Hauteur { get; private set; }
         TerrainAvecBase Terrain { get; set; }
-        const float VitesseRotation = 1.5f;
+        const float VitesseRotation = 5f;
         public Vector2 Souris { get; private set; }
 
         float IntervalleMAJ { get; set; }
@@ -143,7 +143,7 @@ namespace AtelierXNA
         protected void BougerCaméra(float déplacementHorizontal, float déplacementProfondeur)
         {
             ((CaméraJeu) as CaméraSubjective).GérerDéplacement(déplacementProfondeur, déplacementHorizontal);
-            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 1, Position.Z), CaméraJeu.OrientationVerticale);
+            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 2f, Position.Z), CaméraJeu.OrientationVerticale);
         }
         protected void Bouger()
         {

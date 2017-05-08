@@ -23,6 +23,7 @@ namespace AtelierXNA
         Pokemon OpponentPokemon { get; set; }
         public int NoPokédexOpponentPokemon => UserPokemon.PokedexNumber;
         AccessBaseDeDonnée Database { get; set; }
+        //RessourcesManager<Song> GestionnaireDetunes { get; set; }
         //AccessBaseDeDonnée Database { get; set; }
         //bool EnCombat { get; set; }
         public bool EstOpponentSauvage { get; private set; }
@@ -34,6 +35,7 @@ namespace AtelierXNA
         CombatState CombatState { get; set; }
         Vector2 PositionBox { get; set; }
         BattleMenu MainMenu { get; set; }
+        Song tuneCombat { get; set; }
 
         TexteFixe NomUserPokemon { get; set; }
         TexteFixe NomOpponentPokemon { get; set; }
@@ -114,6 +116,12 @@ namespace AtelierXNA
         public override void Initialize()//Ouverture du combat. Tout ce qui doit être fait avant "Combat Menu"
         {
             EnCombat = true;
+            //GestionnaireDetunes = Game.Services.GetService(typeof(RessourcesManager<Song>)) as RessourcesManager<Song>;
+            //tuneCombat = GestionnaireDetunes.Find("tuneCombat");
+            //if (EnCombat) 
+            //{
+            //    MediaPlayer.Play(tuneCombat);
+            //}
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();

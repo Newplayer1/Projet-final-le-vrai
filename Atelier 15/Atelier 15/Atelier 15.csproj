@@ -150,16 +150,13 @@
     <Compile Include="Composantes de base AS3D_XNA\CaméraFixe.cs" />
     <Compile Include="Composantes de base AS3D_XNA\CaméraSubjective.cs" />
     <Compile Include="Composantes de base AS3D_XNA\CubeTexturé.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\CubeTexturéFlottant.cs" />
     <Compile Include="Composantes de base AS3D_XNA\DataPiste.cs" />
     <Compile Include="Composantes de base AS3D_XNA\ICollisionable.cs" />
     <Compile Include="Composantes de base AS3D_XNA\IDestructible.cs" />
     <Compile Include="Composantes de base AS3D_XNA\InputManager.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\Piste.cs" />
     <Compile Include="Composantes de base AS3D_XNA\RessourceDeBase.cs" />
     <Compile Include="Composantes de base AS3D_XNA\RessourcesManager.cs" />
     <Compile Include="Composantes de base AS3D_XNA\SphèreTexturée.cs" />
-    <Compile Include="Composantes de base AS3D_XNA\SphèreTexturéeAutomate.cs" />
     <Compile Include="Composantes de base AS3D_XNA\Sprite.cs" />
     <Compile Include="Composantes de base AS3D_XNA\TexteCentré.cs" />
     <Compile Include="Flags.cs" />

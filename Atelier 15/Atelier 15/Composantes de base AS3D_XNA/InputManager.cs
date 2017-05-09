@@ -11,8 +11,9 @@ namespace AtelierXNA
       KeyboardState ÉtatClavier { get; set; }
       MouseState AncienÉtatSouris { get; set; }
       MouseState NouvelÉtatSouris { get; set; }
-        GamePadState AncienÉtatGamepad { get; set; }
-        GamePadState NouvelÉtatGamepad { get; set; }
+      GamePadState AncienÉtatGamepad { get; set; }
+      GamePadState NouvelÉtatGamepad { get; set; }
+      GamePadState ÉtatGamePad { get; set; }
 
         public InputManager(Game game)
          : base(game)
@@ -35,14 +36,18 @@ namespace AtelierXNA
          AnciennesTouches = NouvellesTouches;
          ÉtatClavier = Keyboard.GetState();
          NouvellesTouches = ÉtatClavier.GetPressedKeys();
+
+            ÉtatGamePad = GamePad.GetState(PlayerIndex.One);
+
+
          if (EstSourisActive)
          {
             ActualiserÉtatSouris();
          }
          if(GamePad.GetState(PlayerIndex.One).IsConnected) 
          {
-                ActualiserÉtatGamepad();
-            }
+            ActualiserÉtatGamepad();
+         }
       }
 
       public bool EstClavierActivé
@@ -53,6 +58,11 @@ namespace AtelierXNA
       public bool EstEnfoncée(Keys touche)
       {
          return ÉtatClavier.IsKeyDown(touche);
+      }
+
+      public bool EstPenché()
+      {
+            return ÉtatGamePad.ThumbSticks.Right.X != 0;
       }
 
       public bool EstNouvelleTouche(Keys touche)
@@ -109,6 +119,11 @@ namespace AtelierXNA
             return NouvelÉtatGamepad.Buttons.A == ButtonState.Pressed &&
                    AncienÉtatGamepad.Buttons.A == ButtonState.Released;
         }
+        public bool EstBougerEnX()
+        {
+            return NouvelÉtatGamepad.ThumbSticks.Right.X != AncienÉtatGamepad.ThumbSticks.Right.X;
+        }
+        
         public bool EstNouveauRightshoulder_pokeball()
         {
             return NouvelÉtatGamepad.Buttons.RightShoulder == ButtonState.Pressed &&

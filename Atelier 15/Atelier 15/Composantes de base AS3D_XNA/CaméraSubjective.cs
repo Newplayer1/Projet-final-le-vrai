@@ -69,7 +69,7 @@ namespace AtelierXNA
             Terrain = Game.Services.GetService(typeof(TerrainAvecBase)) as TerrainAvecBase;
             Angle = new Vector3(DELTA_LACET, DELTA_TANGAGE, DELTA_ROULIS);
             GérerLacet();
-            Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
+            //Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             // float nbRangées = Terrain.NbRangées;
 
         }
@@ -100,7 +100,7 @@ namespace AtelierXNA
                 CréerPointDeVue();
                 TempsÉcouléDepuisMAJ = 0;
             }
-                Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
+                //Souris = new Vector2(GestionInput.GetPositionSouris().X, GestionInput.GetPositionSouris().Y);
             base.Update(gameTime);
         }
         

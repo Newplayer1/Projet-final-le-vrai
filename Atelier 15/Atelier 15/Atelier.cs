@@ -121,7 +121,7 @@ namespace AtelierXNA
         private void InitializePlaying()
         {
             ÉtatDépart = ÉtatsDépart.JEU3D;
-            PériphériqueGraphique.IsFullScreen = true;
+            PériphériqueGraphique.IsFullScreen = false;
             PériphériqueGraphique.ApplyChanges();
             CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 
@@ -143,7 +143,7 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
-            if (GestionInput.EstEnfoncée(Keys.Escape))
+            if (GestionInput.EstEnfoncée(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder == ButtonState.Pressed)
             {
                 Exit();
             }

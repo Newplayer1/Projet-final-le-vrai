@@ -15,12 +15,12 @@ namespace AtelierXNA
     enum ÉtatsJeu { JEU3D, PAGE_TITRE, COMBAT, MAISON, GYM, FIN }
     public class Jeu : Microsoft.Xna.Framework.GameComponent
     {
-        const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
+        public const float INTERVALLE_MAJ_STANDARD = 1 / 60f;
         const int POKEMON_SUR_LE_TERRAIN = 25;
         const float INTERVALLE_CALCUL_FPS = 1f;
-        const float ÉCHELLE_OBJET = 0.004f;
-        const int POKEDEX_MAX = 35;
-        const float RAYON_POKÉBALL = 0.25f;
+        public const float ÉCHELLE_OBJET = 0.004f;
+        //const int POKEDEX_MAX = 35;
+        public const float RAYON_POKÉBALL = 0.25f;
         public static Vector2 PositionBoxStandard { get; private set; }
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
@@ -138,7 +138,7 @@ namespace AtelierXNA
 
         void AjouterProjectile(Vector3 positionPokéball, Vector3 rotationObjet)
         {
-            if (GestionInput.EstNouveauClicGauche() || GestionInput.EstNouveauRightshoulder_pokeball())
+            if ((GestionInput.EstNouveauClicGauche() || GestionInput.EstNouveauRightshoulder_pokeball()) && !Combat.EnCombat)
             {
                 Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
                 Game.Components.Add(Projectile);

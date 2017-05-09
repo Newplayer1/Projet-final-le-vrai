@@ -17,7 +17,7 @@ namespace AtelierXNA
         float IntervalMAJ { get; set; }
         Trainer UserTrainer { get; set; }
         Trainer OpponentTrainer { get; set; }
-        
+
         Pokemon UserPokemon { get; set; } //Le BattleMenu doit avoir accès aux attaques du pokémon... Garder en mémoire l'indice du pkm en jeu?
         public int NoPokédexUserPokemon => UserPokemon.PokedexNumber;//pour afficher un modèle de son numéro
         Pokemon OpponentPokemon { get; set; }
@@ -284,14 +284,14 @@ namespace AtelierXNA
         {
             if (MainMenu.ItemPokeball)
             {
-                if (EstOpponentSauvage)
-                    TryCatchWildPokemon(UserTrainer, OpponentPokemon);
-                else
-                {
-                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
-                    Game.Components.Add(message);
-                    CombatState = CombatState.TOUR_OPPONENT;
-                }
+                //if (EstOpponentSauvage)
+                TryCatchWildPokemon(UserTrainer, OpponentPokemon);
+                //else
+                //{
+                //    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
+                //    Game.Components.Add(message);
+                //    CombatState = CombatState.TOUR_OPPONENT;
+                //}
             }
             if (MainMenu.ItemGreatBall)
             {
@@ -358,7 +358,7 @@ namespace AtelierXNA
                         CombatState = CombatState.VERIFY_OUTCOME;
                 }
             }
-            
+
         }
         public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
@@ -382,11 +382,10 @@ namespace AtelierXNA
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + opponent.Nom + " broke free!", IntervalMAJ);
                 Game.Components.Add(message);
-                
+
                 if (EnCombat)
                 {
                     MainMenu.ItemPokeball = false;
-                    //MainMenu.ItemGreatBall = false;
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
@@ -395,21 +394,19 @@ namespace AtelierXNA
         {
             bool valeurFormule2 = EffectuerFormuleGenIGREATBALL(opponent);
 
-                if (valeurFormule2)
+            if (valeurFormule2)
+            {
+                AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
+                Game.Components.Add(message2);
+
+                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+
+                if (EnCombat)
                 {
-                    AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
-                    Game.Components.Add(message2);
-
-                    joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-
-
-                    if (EnCombat)
-                    {
-                        MainMenu.ItemGreatBall = false;
-                        CombatState = CombatState.END;
-                    }
-
+                    MainMenu.ItemGreatBall = false;
+                    CombatState = CombatState.END;
                 }
+            }
 
             else
             {
@@ -426,16 +423,16 @@ namespace AtelierXNA
         public void CatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
 
-                AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
-                Game.Components.Add(message2);
+            AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
+            Game.Components.Add(message2);
 
-                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+            joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
 
-                if (EnCombat)
-                {
-                    MainMenu.ItemMasterBall = false;
-                    CombatState = CombatState.END;
-                }
+            if (EnCombat)
+            {
+                MainMenu.ItemMasterBall = false;
+                CombatState = CombatState.END;
+            }
 
         }
         private bool EffectuerFormuleGenI(Pokemon opponent)

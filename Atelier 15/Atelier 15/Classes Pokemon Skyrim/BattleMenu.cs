@@ -26,7 +26,8 @@ namespace AtelierXNA
         Vector2 Position { get; set; }
 
         InputManager GestionInput { get; set; }
-
+        Pokeball Projectile { get; set; }
+        Player LeJoueur { get; set; }
         AfficheurChoix MainChoix { get; set; }
         AfficheurChoix FightChoix { get; set; }
         AfficheurChoix BagChoix { get; set; }
@@ -94,7 +95,7 @@ namespace AtelierXNA
             NuméroChoisi = 0;
             NoDuPokemonEnJeu = 0;
             InitialiserMainChoix();
-
+            LeJoueur = Game.Services.GetService(typeof(Player)) as Player;
             InitialiserListeChoixFight();
             FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
@@ -395,6 +396,10 @@ namespace AtelierXNA
                 if (BagChoix[BagChoix.IndexSélectionné] == "Pokeball")
                 {
                     ItemPokeball = true;
+                    //Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.5f, LeJoueur.Position.Y + 1.5f, LeJoueur.Position.Z);
+                    //Vector3 rotationObjet = new Vector3(0, 0, 0);
+                    //Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, Jeu.RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", Jeu.INTERVALLE_MAJ_STANDARD);
+                    //Game.Components.Add(Projectile);
                 }
                 if (BagChoix[BagChoix.IndexSélectionné] == "Greatball")
                 {
@@ -461,6 +466,7 @@ namespace AtelierXNA
                 item.Enabled = false;
                 item.Visible = false;
             }
+
             AttaqueUtilisée = false;
             ItemUtilisé = false;
             PokémonChangé = false;

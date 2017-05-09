@@ -117,13 +117,14 @@ namespace AtelierXNA
         {
             EnCombat = true;
             //GestionnaireDeChansons = Game.Services.GetService(typeof(RessourcesManager<Song>)) as RessourcesManager<Song>;
+            //GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
             //tuneCombat = GestionnaireDeChansons.Find("tuneCombat");
             //if (EnCombat)
             //{
             //    MediaPlayer.Stop();
             //    MediaPlayer.Play(tuneCombat);
             //}
-            
+
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();
@@ -292,17 +293,28 @@ namespace AtelierXNA
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
-            //if (MainMenu.ItemGreatBall)
-            //{
-            //    if (EstOpponentSauvage)
-            //        TryCatchWildPokemon(UserTrainer, OpponentPokemon);
-            //    else
-            //    {
-            //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
-            //        Game.Components.Add(message);
-            //        CombatState = CombatState.TOUR_OPPONENT;
-            //    }
-            //}
+            if (MainMenu.ItemGreatBall)
+            {
+                if (EstOpponentSauvage)
+                    TryCatchWildPokemonEfficace(UserTrainer, OpponentPokemon);
+                else
+                {
+                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
+                    Game.Components.Add(message);
+                    CombatState = CombatState.TOUR_OPPONENT;
+                }
+            }
+            if (MainMenu.ItemMasterBall)
+            {
+                if (EstOpponentSauvage)
+                    CatchWildPokemon(UserTrainer, OpponentPokemon);
+                else
+                {
+                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "You can't catch a trainer's pokemon!", IntervalMAJ);
+                    Game.Components.Add(message);
+                    CombatState = CombatState.TOUR_OPPONENT;
+                }
+            }
             //else if(MainMenu.NuméroChoisi == 1) Aucune idée comment formuler ça pour faire un full heal xD
             //{
             //    UserPokemon.HP = UserPokemon.RétablirStats();
@@ -351,7 +363,6 @@ namespace AtelierXNA
         public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
             bool valeurFormule = EffectuerFormuleGenI(opponent);
-            bool valeurFormule2 = EffectuerFormuleGenIGREATBALL(opponent);
             if (valeurFormule)
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
@@ -365,22 +376,6 @@ namespace AtelierXNA
                     MainMenu.ItemPokeball = false;
                     CombatState = CombatState.END;
                 }
-
-            
-            if (valeurFormule2)
-            {
-                AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
-                Game.Components.Add(message2);
-
-                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-
-
-                if (EnCombat)
-                {
-                    MainMenu.ItemGreatBall = false;
-                    CombatState = CombatState.END;
-                }
-}
             }
 
             else
@@ -391,10 +386,57 @@ namespace AtelierXNA
                 if (EnCombat)
                 {
                     MainMenu.ItemPokeball = false;
+                    //MainMenu.ItemGreatBall = false;
+                    CombatState = CombatState.TOUR_OPPONENT;
+                }
+            }
+        }
+        public void TryCatchWildPokemonEfficace(Trainer joueur, Pokemon opponent)
+        {
+            bool valeurFormule2 = EffectuerFormuleGenIGREATBALL(opponent);
+
+                if (valeurFormule2)
+                {
+                    AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
+                    Game.Components.Add(message2);
+
+                    joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+
+
+                    if (EnCombat)
+                    {
+                        MainMenu.ItemGreatBall = false;
+                        CombatState = CombatState.END;
+                    }
+
+                }
+
+            else
+            {
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "The wild " + opponent.Nom + " broke free!", IntervalMAJ);
+                Game.Components.Add(message);
+
+                if (EnCombat)
+                {
                     MainMenu.ItemGreatBall = false;
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
+        }
+        public void CatchWildPokemon(Trainer joueur, Pokemon opponent)
+        {
+
+                AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
+                Game.Components.Add(message2);
+
+                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+
+                if (EnCombat)
+                {
+                    MainMenu.ItemMasterBall = false;
+                    CombatState = CombatState.END;
+                }
+
         }
         private bool EffectuerFormuleGenI(Pokemon opponent)
         {
@@ -429,7 +471,7 @@ namespace AtelierXNA
         }
         private bool EffectuerFormuleGenIGREATBALL(Pokemon opponent)
         {
-           
+
             bool estAttrapé = false;
 
             if (!estAttrapé)
@@ -437,11 +479,12 @@ namespace AtelierXNA
                 int m = Générateur.Next(0, 256);
                 int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
 
-                if (f >= m /2)
+                if (f >= m / 2) //DEUX FOIS PLUS EFFICACE
                     estAttrapé = true;
             }
             return estAttrapé;
         }
+
         void GérerTransitionTOUR_USER()
         {
             if (UserPokemon.EstEnVie)

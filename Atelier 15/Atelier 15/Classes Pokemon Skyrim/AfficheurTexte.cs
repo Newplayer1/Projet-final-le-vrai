@@ -171,7 +171,7 @@ namespace AtelierXNA
 
         void GérerClavier()
         {
-            if ((GestionInput.EstNouvelleTouche(Keys.Space) || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed) && ((NBLettresAffichées == MessageListInt.Count) || NBLettresAffichées == NBDeCaractèresParLigne * (NoDeLigneÀAfficher + 1))) //Si la condition du clignotant est remplie ou que l'on a fini d'afficher le message
+            if ((GestionInput.EstNouvelleTouche(Keys.Space) || GestionInput.EstNouveauA()) && ((NBLettresAffichées == MessageListInt.Count) || NBLettresAffichées == NBDeCaractèresParLigne * (NoDeLigneÀAfficher + 1))) //Si la condition du clignotant est remplie ou que l'on a fini d'afficher le message
             {
                 if (NBLettresAffichées == MessageListInt.Count)//Si toutes les lettres ont été affichées, et que A est pesé, on supprime le message puisqu'il a rempli sa fonction
                 {

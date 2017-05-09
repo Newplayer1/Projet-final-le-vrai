@@ -92,7 +92,7 @@ namespace AtelierXNA
 
         private void InventairePoks()
         {
-            if ((GestionInput.EstNouvelleTouche(Keys.P) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)&& !inventaireOuvert && !Combat.EnCombat)
+            if ((GestionInput.EstNouvelleTouche(Keys.P) || GestionInput.EstNouveauY_inventaire())&& !inventaireOuvert && !Combat.EnCombat)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {
@@ -112,7 +112,7 @@ namespace AtelierXNA
                 }
             inventaireOuvert = !inventaireOuvert;
             }
-            else if  ((GestionInput.EstNouvelleTouche(Keys.P) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ) && inventaireOuvert)
+            else if  ((GestionInput.EstNouvelleTouche(Keys.P) || GestionInput.EstNouveauY_inventaire()) && inventaireOuvert)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {
@@ -159,8 +159,8 @@ namespace AtelierXNA
             }
             if(GamePad.GetState(PlayerIndex.One).IsConnected) 
             {
-                float déplacementHorizontal = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X - GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X) * vitesseDéplacement;
-                float déplacementProfondeur = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y - GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y) * vitesseDéplacement;
+                float déplacementHorizontal = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X) * vitesseDéplacement;
+                float déplacementProfondeur = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y) * vitesseDéplacement;
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {
                     //GamePad.SetVibration(PlayerIndex.One, 1, 1); omg cest intense!

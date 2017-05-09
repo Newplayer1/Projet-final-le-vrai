@@ -116,7 +116,7 @@ namespace AtelierXNA
             ÉtatJeuTexte.RemplacerMessage("GameState : " + ÉtatJeu.ToString());
             
             GérerClavier();
-            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 0.8f, LeJoueur.Position.Z);
+            Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 0.6f, LeJoueur.Position.Z);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
 
@@ -127,7 +127,7 @@ namespace AtelierXNA
                     Game.Components.Add(new Afficheur3D(Game));
                 AjoutPokemonsRandom();
             }
-            if (GestionInput.EstNouvelleTouche(Keys.N) || GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed)
+            if (GestionInput.EstNouvelleTouche(Keys.N) || GestionInput.EstNouveauX_newpokemon())
             {
                 AjoutPokemonsRandom();
             }
@@ -138,7 +138,7 @@ namespace AtelierXNA
 
         void AjouterProjectile(Vector3 positionPokéball, Vector3 rotationObjet)
         {
-            if (GestionInput.EstNouveauClicGauche() /*|| GamePad.GetState(PlayerIndex.One).Triggers.Right == ButtonState.Pressed*/)
+            if (GestionInput.EstNouveauClicGauche() || GestionInput.EstNouveauRightshoulder_pokeball())
             {
                 Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
                 Game.Components.Add(Projectile);
@@ -164,13 +164,13 @@ namespace AtelierXNA
 
         private void GérerClavier()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.H) || GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed)
+            if (GestionInput.EstNouvelleTouche(Keys.H) || GestionInput.EstNouveauSelect_heal())
             {
                     LeJoueur.Heal();
                     Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
 
             }
-                if (GestionInput.EstNouvelleTouche(Keys.Enter) || GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed)
+                if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouveauStart_save())
             {
                 if (!(ÉtatJeu == ÉtatsJeu.COMBAT))
                 {

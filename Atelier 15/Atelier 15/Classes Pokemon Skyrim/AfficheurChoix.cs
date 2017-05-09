@@ -125,9 +125,9 @@ namespace AtelierXNA
         }
         void GérerClavier()//fait juste choisir up/down, on devra peut-être ajouter left/right un jour
         {
-            if ((GestionInput.EstNouvelleTouche(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed) && IndexSélectionné > 0)
+            if ((GestionInput.EstNouvelleTouche(Keys.W) || GestionInput.EstNouveauUp_menucombat()) && IndexSélectionné > 0)
                 IndexSélectionné--;
-            if ((GestionInput.EstNouvelleTouche(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed )&& IndexSélectionné < NBDeZonesDeTexte - 1)
+            if ((GestionInput.EstNouvelleTouche(Keys.S) || GestionInput.EstNouveauDown_menucombat()) && IndexSélectionné < NBDeZonesDeTexte - 1)
                 IndexSélectionné++;
 
             //la classe qui utilise AfficheurChoix devra updater le choix fait selon l'IndexSélectionné (important d'être fait AVANT de créer un autre AfficheurChoix)

@@ -38,57 +38,10 @@ namespace AtelierXNA
                 return Party[index]; //C'est correct, on veut pas faire de new, on veut changer directement ce pokémon (HP, etc)
             }
         }
-        
-        //public List<string> GetNomPokemon()
-        //{
-        //    List<string> listeRetour = new List<string>();
-        //    foreach (Pokemon item in Party)
-        //    {
-        //        listeRetour.Add(item.Nom);
-        //    }
-        //    return listeRetour;
-        //}
-        //public List<string> GetLVLPokemon()
-        //{
-        //    List<string> listeRetour = new List<string>();
-        //    foreach (Pokemon item in Party)
-        //    {
-        //        listeRetour.Add(item.Level.ToString());
-        //    }
-        //    return listeRetour;
-        //}
-        //public List<string> GetType1Pokemon()
-        //{
-        //    List<string> listeRetour = new List<string>();
-        //    foreach (Pokemon item in Party)
-        //    {
-        //        listeRetour.Add(item.Type1);
-        //    }
-        //    return listeRetour;
-            
-        //}
-        //public List<string> GetType2Pokemon()
-        //{
-        //    List<string> listeRetour = new List<string>();
-        //    foreach (Pokemon item in Party)
-        //    {
-        //        listeRetour.Add(item.Type2);
-        //    }
-        //    return listeRetour;
-        //}
         public Pokemon GetPokemon(int i)
         {
             return new Pokemon(Party[i]);
         }
-        //public List<string> GetHPPokemon()
-        //{
-        //    List<string> listeRetour = new List<string>();
-        //    foreach (Pokemon item in Party)
-        //    {
-        //        listeRetour.Add(item.VieToString());
-        //    }
-        //    return listeRetour;
-        //}
         public Pokemon NextPokemonEnVie()
         {
             return Party.Find(pkm => pkm.EstEnVie); //Retourne le premier pokémon trouvé qui est encore en vie.
@@ -128,6 +81,12 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
+
+        public void ChangerListe(Pokemon PremierDeLaListe)
+        {
+            Party.Remove(PremierDeLaListe);
+            Party.Insert(0, PremierDeLaListe);
         }
     }
 }

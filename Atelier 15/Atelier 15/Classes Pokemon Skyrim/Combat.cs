@@ -31,7 +31,7 @@ namespace AtelierXNA
         bool TourComplété => TourUserComplété && TourOpponentComplété;/*{ get; set; }*/
         bool TourUserComplété { get; set; }
         bool TourOpponentComplété { get; set; }
-
+        private Player LeJoueur { get; set; }
         CombatState CombatState { get; set; }
         Vector2 PositionBox { get; set; }
         BattleMenu MainMenu { get; set; }
@@ -124,11 +124,11 @@ namespace AtelierXNA
             //    MediaPlayer.Stop();
             //    MediaPlayer.Play(tuneCombat);
             //}
-
+            
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();
-
+            LeJoueur = Game.Services.GetService(typeof(Player)) as Player;
             PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
             PositionInfoOpponentPokemon = new Vector2(Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height / 10);
             Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
@@ -591,9 +591,16 @@ namespace AtelierXNA
 
             EnCombat = false;
             ÀDétruire = true;
-
+            GetPremierPokemon();
         }
         #endregion
+
+
+
+        private void GetPremierPokemon()
+        {
+            LeJoueur.ChangerListe(UserPokemon);
+        }
         void EffectuerTourUser()
         {
             if (MainMenu.AttaqueUtilisée)

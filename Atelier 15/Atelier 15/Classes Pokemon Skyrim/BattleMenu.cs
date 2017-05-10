@@ -166,11 +166,11 @@ namespace AtelierXNA
         {
             ListeChoix = new List<string>();
             ListeChoix.Add("Pokeball");
-            ListeChoix.Add("Greatball");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
-            ListeChoix.Add("Masterball");//UserTrainerBag[1].toString()
-            ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
-            ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
-            ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
+            //ListeChoix.Add("Greatball");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
+            //ListeChoix.Add("Masterball");//UserTrainerBag[1].toString()
+            //ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
+            //ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
+            //ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
             //ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
             BagChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
@@ -353,13 +353,6 @@ namespace AtelierXNA
 
         private void GérerTransitionPOKEMON()
         {
-            //InitialiserPokemonChoix();//On réinitialise chaque fois comme ça si la vie a changée, on le voit
-
-            //ListeChoix = new List<string>();
-            //for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
-            //{
-            //    ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
-            //}
             InitialiserListeChoixPokemon();
             PokemonChoix.ModifierChoix(ListeChoix);
 

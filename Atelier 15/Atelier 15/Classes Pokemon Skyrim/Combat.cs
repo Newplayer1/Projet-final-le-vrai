@@ -124,7 +124,7 @@ namespace AtelierXNA
             //    MediaPlayer.Stop();
             //    MediaPlayer.Play(tuneCombat);
             //}
-            GamePad.SetVibration(PlayerIndex.One, 1, 1);
+            GamePad.SetVibration(PlayerIndex.One, 1,1);
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();
@@ -268,6 +268,7 @@ namespace AtelierXNA
         }
         void GérerTransitionBATTLE_MENU()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             NomOpponentPokemon.Visible = true;
             NomUserPokemon.Visible = true;
             VieOpponentPokemon.Visible = true;
@@ -484,6 +485,7 @@ namespace AtelierXNA
 
         void GérerTransitionTOUR_USER()
         {
+            GamePad.SetVibration(PlayerIndex.One, 1, 0);
             if (UserPokemon.EstEnVie)
             {
                 EffectuerTourUser();
@@ -506,6 +508,7 @@ namespace AtelierXNA
         }
         void GérerTransitionTOUR_OPPONENT()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 1);
             EffectuerTourOpponent();
             VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
             TourOpponentComplété = true;
@@ -513,6 +516,7 @@ namespace AtelierXNA
         }
         void GérerTransitionVERIFY_OUTCOME()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             //L'un des deux est mort donc nous sommes arrivé ici. (on doit assurer à 100% qu'on change le state ici parce que sinon on va aller à défaut, soit END)
             if (UserPokemon.EstEnVie)
             {
@@ -588,7 +592,7 @@ namespace AtelierXNA
         {
             //GameState = Jeu3D; ??
             //Détruire le component?
-
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             EnCombat = false;
             ÀDétruire = true;
             GetPremierPokemon();

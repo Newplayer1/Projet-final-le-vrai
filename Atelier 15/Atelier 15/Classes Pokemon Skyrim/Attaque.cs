@@ -12,7 +12,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA
 {
-    enum PokemonTypes { NULL, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
+    enum PokemonTypes { Null, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
     public class Attaque : Microsoft.Xna.Framework.GameComponent
     {
         AccessBaseDeDonnée Database { get; set; }

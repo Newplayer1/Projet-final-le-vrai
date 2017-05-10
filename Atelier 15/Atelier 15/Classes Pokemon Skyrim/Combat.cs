@@ -746,7 +746,7 @@ namespace AtelierXNA
                 AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "It's not very effective...", IntervalMAJ);
                 Game.Components.Add(messageB);
             }
-            if (pourcentageMultiplicatif > 0)
+            if (pourcentageMultiplicatif > 100)
             {
                 AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "It's super effective!", IntervalMAJ);
                 Game.Components.Add(messageC);
@@ -758,8 +758,10 @@ namespace AtelierXNA
             float damage;
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            AfficherMessageMultiplicateur(multiplicateurType);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
             damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
+            
             int damageInt = (int)(damage * 100);
             if (damageInt < 100 && damageInt != 0)
                 damage = 1;

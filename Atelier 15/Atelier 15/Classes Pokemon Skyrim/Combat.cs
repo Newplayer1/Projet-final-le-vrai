@@ -124,7 +124,7 @@ namespace AtelierXNA
             //    MediaPlayer.Stop();
             //    MediaPlayer.Play(tuneCombat);
             //}
-            
+            GamePad.SetVibration(PlayerIndex.One, 1,1);
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();
@@ -268,6 +268,7 @@ namespace AtelierXNA
         }
         void GérerTransitionBATTLE_MENU()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             NomOpponentPokemon.Visible = true;
             NomUserPokemon.Visible = true;
             VieOpponentPokemon.Visible = true;
@@ -484,6 +485,7 @@ namespace AtelierXNA
 
         void GérerTransitionTOUR_USER()
         {
+            GamePad.SetVibration(PlayerIndex.One, 1, 0);
             if (UserPokemon.EstEnVie)
             {
                 EffectuerTourUser();
@@ -506,6 +508,7 @@ namespace AtelierXNA
         }
         void GérerTransitionTOUR_OPPONENT()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 1);
             EffectuerTourOpponent();
             VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
             TourOpponentComplété = true;
@@ -513,6 +516,7 @@ namespace AtelierXNA
         }
         void GérerTransitionVERIFY_OUTCOME()
         {
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             //L'un des deux est mort donc nous sommes arrivé ici. (on doit assurer à 100% qu'on change le state ici parce que sinon on va aller à défaut, soit END)
             if (UserPokemon.EstEnVie)
             {
@@ -588,7 +592,7 @@ namespace AtelierXNA
         {
             //GameState = Jeu3D; ??
             //Détruire le component?
-
+            GamePad.SetVibration(PlayerIndex.One, 0, 0);
             EnCombat = false;
             ÀDétruire = true;
             GetPremierPokemon();
@@ -723,20 +727,47 @@ namespace AtelierXNA
             float damage;
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            AfficherMessageMultiplicateur(multiplicateurType);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
             damage = ((2 * attaquant.Level / 5f + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50f) * multiplicateurType;
-            if (damage < 1)
+            int damageInt = (int)(damage * 100);
+            if (damageInt < 100 && damageInt != 0)
                 damage = 1;
             return (int)damage;
         }
+
+        private void AfficherMessageMultiplicateur(float multiplicateurType)
+        {
+            int pourcentageMultiplicatif = (int)(multiplicateurType * 100);
+
+            if (pourcentageMultiplicatif == 0)
+            {
+                AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "It had no effect.", IntervalMAJ);
+                Game.Components.Add(messageA);
+            }
+            if (pourcentageMultiplicatif < 100)
+            {
+                AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "It's not very effective...", IntervalMAJ);
+                Game.Components.Add(messageB);
+            }
+            if (pourcentageMultiplicatif > 100)
+            {
+                AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, LargeurBox, Cadre.HAUTEUR_BOX_STANDARD, "It's super effective!", IntervalMAJ);
+                Game.Components.Add(messageC);
+            }
+        }
+
         int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
         {
             float damage;
 
             float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            AfficherMessageMultiplicateur(multiplicateurType);
             //MessageBox: "It's super effective!", "It's very effective!", "It's not very effective.", "It has no effect at all."
             damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
-            if (damage < 1)
+            
+            int damageInt = (int)(damage * 100);
+            if (damageInt < 100 && damageInt != 0)
                 damage = 1;
             return (int)damage;
         }

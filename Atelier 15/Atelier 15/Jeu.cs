@@ -21,7 +21,7 @@ namespace AtelierXNA
         public const float ÉCHELLE_OBJET = 0.004f;
         //const int POKEDEX_MAX = 35;
         public const float RAYON_POKÉBALL = 0.25f;
-        public static Vector2 PositionBoxStandard { get; private set; }
+        
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
         Pokeball Projectile { get; set; }
@@ -39,9 +39,14 @@ namespace AtelierXNA
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
 
+        public static Vector2 PositionBoxMessage { get; private set; }
+        public static int LargeurBoxMessage { get; private set; }
+        public static int HauteurBoxMessage { get; private set; }
         static Jeu()
         {
-            PositionBoxStandard = new Vector2();
+            PositionBoxMessage = new Vector2();
+            LargeurBoxMessage = 0;
+            HauteurBoxMessage = 0;
         }
         public Jeu(Game game, int choix)
            : base(game)
@@ -107,7 +112,9 @@ namespace AtelierXNA
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
             (CaméraJeu as CaméraSubjective).Cible = new Vector3(LeJoueur.Position.X, LeJoueur.Position.Y + 5, LeJoueur.Position.Z);
-            PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
+            PositionBoxMessage = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
+            HauteurBoxMessage = Cadre.HAUTEUR_BOX_STANDARD;
+            LargeurBoxMessage = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             Game.Components.Add(ÉtatJeuTexte);
             
         }
@@ -167,7 +174,7 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.H) || GestionInput.EstNouveauSelect_heal())
             {
                     LeJoueur.Heal();
-                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
+                    Game.Components.Add(new AfficheurTexte(Game, PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
 
             }
                 if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouveauStart_save())
@@ -179,7 +186,7 @@ namespace AtelierXNA
                     {
                         t.ÀDétruire = true;
                     }
-                    Game.Components.Add(new AfficheurTexte(Game, new Vector2(PositionBoxStandard.X, PositionBoxStandard.Y), Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Upload Sauvegarde", INTERVALLE_MAJ_STANDARD));
+                    Game.Components.Add(new AfficheurTexte(Game, PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "Upload Sauvegarde", INTERVALLE_MAJ_STANDARD));
                 }
 
             }
@@ -304,7 +311,7 @@ namespace AtelierXNA
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).CalculerMonde();
                             (PokemonSurLeTerrain[indexPokemonEnCollision] as ObjetDeBase).Initialize();
                             Flags.Combat = true;
-                            LeCombat = new Combat(Game, PositionBoxStandard, LeJoueur, PokemonEnCollision.UnPokemon, INTERVALLE_MAJ_STANDARD);
+                            LeCombat = new Combat(Game, PositionBoxMessage, LeJoueur, PokemonEnCollision.UnPokemon, INTERVALLE_MAJ_STANDARD);
                             Game.Components.Add(LeCombat);
                         }
 

@@ -264,6 +264,8 @@ namespace AtelierXNA
         void ExécuterSéquenceLevelUp()
         {
             Level++;
+            Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " grew to level " + Level + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+
             Évoluer(NiveauÉvolution);
             //VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
@@ -276,7 +278,7 @@ namespace AtelierXNA
                 string ancienNom = Nom;
                 ChangerPokedexNumber(++PokedexNumber);
                 
-                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxStandard, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, ancienNom + " evolved into " + Nom + "!" , Atelier.INTERVALLE_MAJ_STANDARD));
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, ancienNom + " evolved into " + Nom + "!" , Atelier.INTERVALLE_MAJ_STANDARD));
             }
         }
 

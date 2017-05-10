@@ -124,7 +124,7 @@ namespace AtelierXNA
             //    MediaPlayer.Stop();
             //    MediaPlayer.Play(tuneCombat);
             //}
-            
+            GamePad.SetVibration(PlayerIndex.One, 1, 1);
             Générateur = new Random();
             LargeurBox = Game.Window.ClientBounds.Width / Cadre.TAILLE_TILE;
             UserPokemon = UserTrainer.NextPokemonEnVie();

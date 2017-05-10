@@ -111,8 +111,6 @@ namespace AtelierXNA
             Générateur = new Random();
             
             
-            PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
-            PositionInfoOpponentPokemon = new Vector2(Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height / 10);
             MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage), IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);
 
@@ -153,6 +151,9 @@ namespace AtelierXNA
         }
         private void AjouterLesTextesFixes()
         {
+            PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
+            PositionInfoOpponentPokemon = new Vector2(Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height / 10);
+
             NomOpponentPokemon = new TexteFixe(Game, PositionInfoOpponentPokemon, OpponentPokemon.ToString());
             Game.Components.Add(NomOpponentPokemon);
 
@@ -225,7 +226,7 @@ namespace AtelierXNA
         //#endregion
 
         #region GérerTransition
-        void GérerTransitions() //ici on vérifie la condition qui change l'état (et on le change au besoin)
+        void GérerTransitions()
         {
             switch (CombatState)
             {
@@ -265,71 +266,24 @@ namespace AtelierXNA
 
             if (MainMenu.BattleMenuState == BattleMenuState.READY)
                 CombatState = CombatState.IN_BATTLE;
-            if (MainMenu.TentativeFuite /*&& EstOpponentSauvage*/)//possible de gosser ici pour pas faire manquer de tour si c'est un trainer
-            {
-                EssayerFuir();
-            }
+
         }
         void GérerTransitionIN_BATTLE()
         {
-            if (MainMenu.ItemPokeball)
+            if (MainMenu.ItemPokeballEstUtilisé)
+                LancerUnePokeball();
+            else if (MainMenu.TentativeFuite)
+                EssayerFuir();
+            else if (MainMenu.PokémonChangé)
             {
-                if (EstOpponentSauvage)
-                    TryCatchWildPokemon(UserTrainer, OpponentPokemon);
-                else
-                {
-                    AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "You can't catch a trainer's pokemon!", IntervalMAJ);
-                    Game.Components.Add(message);
-                    CombatState = CombatState.TOUR_OPPONENT;
-                }
+                MainMenu.PokémonChangé = false;
+                ChangerPokémon(MainMenu.NuméroChoisi);
+                TourUserComplété = true;
+                CombatState = CombatState.TOUR_OPPONENT;
             }
-            //if (MainMenu.ItemGreatBall)
-            //{
-            //    if (EstOpponentSauvage)
-            //        TryCatchWildPokemonEfficace(UserTrainer, OpponentPokemon);
-            //    else
-            //    {
-            //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "You can't catch a trainer's pokemon!", IntervalMAJ);
-            //        Game.Components.Add(message);
-            //        CombatState = CombatState.TOUR_OPPONENT;
-            //    }
-            //}
-            //if (MainMenu.ItemMasterBall)
-            //{
-            //    if (EstOpponentSauvage)
-            //        CatchWildPokemon(UserTrainer, OpponentPokemon);
-            //    else
-            //    {
-            //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "You can't catch a trainer's pokemon!", IntervalMAJ);
-            //        Game.Components.Add(message);
-            //        CombatState = CombatState.TOUR_OPPONENT;
-            //    }
-            //}
-
             else
             {
-                if (UserPokemon.Speed >= OpponentPokemon.Speed)
-                {
-                    if (!TourOpponentComplété && OpponentPokemon.EstEnVie) //ça attaque en sens inverse, user avant opponent. Très contre-intuitif, comment ça se fait?
-                        CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
-
-                    if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
-                        CombatState = CombatState.VERIFY_OUTCOME;
-
-                    if (!TourUserComplété && UserPokemon.EstEnVie)
-                        CombatState = CombatState.TOUR_USER;//EffectuerTourUser();
-                }
-                else
-                {
-                    if (!TourUserComplété && UserPokemon.EstEnVie)
-                        CombatState = CombatState.TOUR_USER;
-
-                    if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
-                        CombatState = CombatState.VERIFY_OUTCOME;
-
-                    if (!TourOpponentComplété && OpponentPokemon.EstEnVie)
-                        CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
-                }
+                EffectuerLeRound();
 
                 if (TourComplété)
                 {
@@ -340,14 +294,52 @@ namespace AtelierXNA
                         MainMenu.BattleMenuState = BattleMenuState.MAIN;
                         CombatState = CombatState.BATTLE_MENU;
                     }
-
-                    else //si l'un des deux est mort
+                    else
                         CombatState = CombatState.VERIFY_OUTCOME;
                 }
             }
+        }
+
+        void EffectuerLeRound()
+        {
+            if (UserPokemon.Speed >= OpponentPokemon.Speed)
+            {
+                if (!TourOpponentComplété && OpponentPokemon.EstEnVie) //ça attaque en sens inverse, user avant opponent. Très contre-intuitif, comment ça se fait?
+                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+
+                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
+                    CombatState = CombatState.VERIFY_OUTCOME;
+
+                if (!TourUserComplété && UserPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_USER;//EffectuerTourUser();
+            }
+            else
+            {
+                if (!TourUserComplété && UserPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_USER;
+
+                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
+                    CombatState = CombatState.VERIFY_OUTCOME;
+
+                if (!TourOpponentComplété && OpponentPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+            }
 
         }
-        public void TryCatchWildPokemon(Trainer joueur, Pokemon opponent)
+
+        void LancerUnePokeball()
+        {
+            if (EstOpponentSauvage)
+                EssayerAttraperWildPokemon(UserTrainer, OpponentPokemon);
+            else
+            {
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "You can't catch a trainer's pokemon!", IntervalMAJ);
+                Game.Components.Add(message);
+                CombatState = CombatState.TOUR_OPPONENT;
+            }
+        }
+
+        public void EssayerAttraperWildPokemon(Trainer joueur, Pokemon opponent)
         {
             bool valeurFormule = EffectuerFormuleGenI(opponent);
             if (valeurFormule)
@@ -356,15 +348,13 @@ namespace AtelierXNA
                 Game.Components.Add(message);
 
                 joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-
-
-                if (EnCombat)
+                
+                if (EnCombat)//Parce qu'on pourrait vouloir l'utiliser hors combat
                 {
-                    MainMenu.ItemPokeball = false;
+                    MainMenu.ItemPokeballEstUtilisé = false;
                     CombatState = CombatState.END;
                 }
             }
-
             else
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "The wild " + opponent.Nom + " broke free!", IntervalMAJ);
@@ -372,41 +362,12 @@ namespace AtelierXNA
 
                 if (EnCombat)
                 {
-                    MainMenu.ItemPokeball = false;
+                    MainMenu.ItemPokeballEstUtilisé = false;
+                    TourUserComplété = true;
                     CombatState = CombatState.TOUR_OPPONENT;
                 }
             }
         }
-        //public void TryCatchWildPokemonEfficace(Trainer joueur, Pokemon opponent)
-        //{
-        //    bool valeurFormule2 = EffectuerFormuleGenIGREATBALL(opponent);
-
-        //    if (valeurFormule2)
-        //    {
-        //        AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
-        //        Game.Components.Add(message2);
-
-        //        joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-
-        //        if (EnCombat)
-        //        {
-        //            MainMenu.ItemGreatBall = false;
-        //            CombatState = CombatState.END;
-        //        }
-        //    }
-
-        //    else
-        //    {
-        //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "The wild " + opponent.Nom + " broke free!", IntervalMAJ);
-        //        Game.Components.Add(message);
-
-        //        if (EnCombat)
-        //        {
-        //            MainMenu.ItemGreatBall = false;
-        //            CombatState = CombatState.TOUR_OPPONENT;
-        //        }
-        //    }
-        //}
         public void CatchWildPokemon(Trainer joueur, Pokemon opponent)
         {
 
@@ -422,7 +383,7 @@ namespace AtelierXNA
             }
 
         }
-        private bool EffectuerFormuleGenI(Pokemon opponent)
+        bool EffectuerFormuleGenI(Pokemon opponent)
         {
             //Formule de pokémon génération I (La forme très algorythmique s'applique bien à la programmation, je vais la reprendre ligne pour ligne) http://bulbapedia.bulbagarden.net/wiki/Catch_rate
             //note: la formule gen II s'appliquerait bien aussi, mais le calcul de "b" est fastidieux
@@ -453,25 +414,12 @@ namespace AtelierXNA
             }
             return estAttrapé;
         }
-        //private bool EffectuerFormuleGenIGREATBALL(Pokemon opponent)
-        //{
-
-        //    bool estAttrapé = false;
-
-        //    if (!estAttrapé)
-        //    {
-        //        int m = Générateur.Next(0, 256);
-        //        int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
-
-        //        if (f >= m / 2) //DEUX FOIS PLUS EFFICACE
-        //            estAttrapé = true;
-        //    }
-        //    return estAttrapé;
-        //}
 
         void GérerTransitionTOUR_USER()
         {
             GamePad.SetVibration(PlayerIndex.One, 1, 0);
+            NomOpponentPokemon.Visible = true;
+            VieOpponentPokemon.Visible = true;
             if (UserPokemon.EstEnVie)
             {
                 EffectuerTourUser();
@@ -495,6 +443,8 @@ namespace AtelierXNA
         void GérerTransitionTOUR_OPPONENT()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 1);
+            NomUserPokemon.Visible = true;
+            VieUserPokemon.Visible = true;
             EffectuerTourOpponent();
             VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
             TourOpponentComplété = true;
@@ -571,19 +521,16 @@ namespace AtelierXNA
         void GérerTransitionEND()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 0);
-            
+
+            UserTrainer.MettreEnPremièrePosition(UserPokemon);
             EnCombat = false;
             ÀDétruire = true;
-            GetPremierPokemon();
         }
         #endregion
 
 
 
-        private void GetPremierPokemon()
-        {
-            UserTrainer.ChangerListe(UserPokemon);
-        }
+
         void EffectuerTourUser()
         {
             if (MainMenu.AttaqueUtilisée)
@@ -599,38 +546,47 @@ namespace AtelierXNA
         {
             //choisir une attaque aléatoire
             int nbAléatoire = Générateur.Next(0, OpponentPokemon.NbAttaques);
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Wild " + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
-            Game.Components.Add(message);//Message opponent
-            EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
+            AfficheurTexte message;
+            if (EstOpponentSauvage)
+                message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Wild " + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
+            else
+                message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Foe " + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
 
+            Game.Components.Add(message);
+            EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
         }
         void EffectuerAttaque(int numéroChoisi)
         {
-
             string messageTour = UserPokemon.Nom + " used " + UserPokemon[numéroChoisi].ToString() + "!";
-            AfficheurTexte message = new AfficheurTexte(Game, new Vector2(PositionBox.X, PositionBox.Y), Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(message);
             EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[numéroChoisi]);
-
         }
         void UtilierItem(int numéroChoisi)
         {
-            string messageTour = "User used item " + numéroChoisi.ToString() + ".";
-            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
-            //Game.Components.Add(message);
-            //Ensuite on fait l'effet de l'item
+            if (!MainMenu.ItemPokeballEstUtilisé)
+            {
+                string messageTour = "User used item " + numéroChoisi.ToString() + ".";
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
+                Game.Components.Add(message);
+            }
+            
         }
         void ChangerPokémon(int numéroChoisi)
         {
-            UserPokemon = UserTrainer[numéroChoisi];//ligne de code qui switch de pokémon
+            UserPokemon = UserTrainer[numéroChoisi];
+            PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
+            NomUserPokemon.Visible = false;
+            VieUserPokemon.Visible = false;
+            NomUserPokemon.RemplacerPosition(PositionInfoUserPokemon);
             NomUserPokemon.RemplacerMessage(UserPokemon.ToString());
+            VieUserPokemon.RemplacerPosition(new Vector2(PositionInfoUserPokemon.X, PositionInfoUserPokemon.Y + Cadre.TAILLE_TILE));
             VieUserPokemon.RemplacerMessage(UserPokemon.VieToString());
 
             string messageTour = UserTrainer.Nom + " send out " + UserPokemon.Nom + "!";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(message);
-
-            //faire le reste du code de switch pokemon
+            
         }
         void ChangerOpponentPokemon()
         {
@@ -663,9 +619,8 @@ namespace AtelierXNA
             {
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Got away safely!", IntervalMAJ);
                 Game.Components.Add(message);
-                CombatState = CombatState.END;//On met fin au combat
+                CombatState = CombatState.END;
             }
-
         }
 
         void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)//Maybe, je sais pas trop, reformuler?

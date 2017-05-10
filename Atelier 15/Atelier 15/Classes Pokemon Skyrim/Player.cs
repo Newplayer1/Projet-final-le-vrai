@@ -101,10 +101,11 @@ namespace AtelierXNA
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
-                    InventaireParLigne = GetPokemon(i).Nom + " Level : " + GetPokemon(i).Level + " Type1 : " + GetPokemon(i).Type1;  
-                    if(GetPokemon(i).Type2 != "NULL")
+                    InventaireParLigne = GetPokemon(i).Nom + " Level : " + GetPokemon(i).Level + " Type : " + GetPokemon(i).Type1;  
+                    if(GetPokemon(i).Type2 != "Null")
                     {
-                        InventaireParLigne += " Type2 : " + GetPokemon(i).Type2;
+                        InventaireParLigne += "/" + GetPokemon(i).Type2;
+                        //InventaireParLigne += " Type2 : " + GetPokemon(i).Type2;
                     }
                     InventaireParLigne += " HP : " + GetPokemon(i).HP + "/" + GetPokemon(i).MaxHp +" Exp : " +GetPokemon(i).Exp + "/" + Math.Round(GetPokemon(i).CalculerExpTotal(GetPokemon(i).Level + 1), 0);
 

@@ -41,7 +41,7 @@ namespace AtelierXNA
         public bool ItemUtilisé { get; set; }
         public bool PokémonChangé { get; set; }
         public bool TentativeFuite { get; set; }
-        public bool ItemPokeball { get; set; }
+        public bool ItemPokeballEstUtilisé { get; set; }
         public bool ItemGreatBall { get; set; }
         public bool ItemMasterBall { get; set; }
         public int NuméroChoisi { get; private set; }
@@ -388,7 +388,7 @@ namespace AtelierXNA
                 NuméroChoisi = BagChoix.IndexSélectionné;
                 if (BagChoix[BagChoix.IndexSélectionné] == "Pokeball")
                 {
-                    ItemPokeball = true;
+                    ItemPokeballEstUtilisé = true;
                     //Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.5f, LeJoueur.Position.Y + 1.5f, LeJoueur.Position.Z);
                     //Vector3 rotationObjet = new Vector3(0, 0, 0);
                     //Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, Jeu.RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", Jeu.INTERVALLE_MAJ_STANDARD);
@@ -464,7 +464,7 @@ namespace AtelierXNA
             ItemUtilisé = false;
             PokémonChangé = false;
             TentativeFuite = false;
-            ItemPokeball = false;
+            ItemPokeballEstUtilisé = false;
             ItemGreatBall = false;
             ItemMasterBall = false;
             BackLock = false;

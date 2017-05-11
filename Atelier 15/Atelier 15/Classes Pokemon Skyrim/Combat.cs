@@ -275,7 +275,7 @@ namespace AtelierXNA
                 LancerUnePokeball();
             else if (MainMenu.TentativeFuite)
                 EssayerFuir();
-            else if (MainMenu.PokémonChangé)
+            else if (MainMenu.PokémonChangé) 
             {
                 MainMenu.PokémonChangé = false;
                 ChangerPokémon(MainMenu.NuméroChoisi);

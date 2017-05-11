@@ -269,6 +269,7 @@ namespace AtelierXNA
             {
                 DisableComponents(); // On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
                 
+
                 if (MainChoix.IndexSélectionné == 0)
                 {
                     //MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)

@@ -72,7 +72,7 @@ namespace AtelierXNA
             Message = nouveauMessage;
         }
         public void RemplacerPosition(Vector2 nouvellePosition)
-        {     
+        {      
             Position = nouvellePosition;
             CréerListePositions();
         }

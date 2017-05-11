@@ -46,7 +46,7 @@ namespace AtelierXNA
         bool TourComplété => TourUserComplété && TourOpponentComplété;
 
 
-        
+
         public static bool EnCombat { get; set; }
         static Combat()
         {
@@ -109,9 +109,9 @@ namespace AtelierXNA
             //}
             GamePad.SetVibration(PlayerIndex.One, 1, 1);
             Générateur = new Random();
-            
 
-            
+
+
             MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage), IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);
 
@@ -275,7 +275,7 @@ namespace AtelierXNA
                 LancerUnePokeball();
             else if (MainMenu.TentativeFuite)
                 EssayerFuir();
-            else if (MainMenu.PokémonChangé) 
+            else if (MainMenu.PokémonChangé)
             {
                 MainMenu.PokémonChangé = false;
                 ChangerPokémon(MainMenu.NuméroChoisi);
@@ -349,7 +349,7 @@ namespace AtelierXNA
                 Game.Components.Add(message);
 
                 joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-                
+
                 if (EnCombat)//Parce qu'on pourrait vouloir l'utiliser hors combat
                 {
                     MainMenu.ItemPokeballEstUtilisé = false;
@@ -571,7 +571,7 @@ namespace AtelierXNA
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
                 Game.Components.Add(message);
             }
-            
+
         }
         void ChangerPokémon(int numéroChoisi)
         {
@@ -587,7 +587,7 @@ namespace AtelierXNA
             string messageTour = UserTrainer.Nom + " send out " + UserPokemon.Nom + "!";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(message);
-            
+
         }
         void ChangerOpponentPokemon()
         {
@@ -655,7 +655,7 @@ namespace AtelierXNA
             return (int)damage;
         }
 
-        
+
 
         int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
         {

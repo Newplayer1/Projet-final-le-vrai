@@ -37,7 +37,7 @@ namespace AtelierXNA
         List<string> ListeChoix { get; set; }
         List<DrawableGameComponent> ComposantesBattleMenu { get; set; }
 
-        public bool AttaqueUtilisée  { get; set; }
+        public bool AttaqueUtilisée { get; set; }
         public bool ItemUtilisé { get; set; }
         public bool PokémonChangé { get; set; }
         public bool TentativeFuite { get; set; }
@@ -73,7 +73,7 @@ namespace AtelierXNA
             }
         }
 
-        
+
 
         static BattleMenu()
         {
@@ -122,7 +122,7 @@ namespace AtelierXNA
             BattleMenuState = BattleMenuState.MAIN;
             base.Initialize();
         }
-        
+
         private void InitialiserMainChoix()
         {
             ListeChoix = new List<string>();
@@ -153,7 +153,7 @@ namespace AtelierXNA
             //string plusLongueLigne = "a"; //La plus longue string serai "aaaaaaaaaa Lvl.100 255/255 HP" soit 29 caractères
             for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
             {
-                 ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
+                ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
             }
             //for (int i = 0; i < ListeChoix.Count; i++)
             //{
@@ -264,11 +264,11 @@ namespace AtelierXNA
         {
             MainChoix.Visible = true;
             MainChoix.Enabled = true;
-            
+
             if (ChoixEstEffectué()) //On a pesé sur A
             {
                 DisableComponents(); // On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
-                
+
 
                 if (MainChoix.IndexSélectionné == 0)
                 {
@@ -312,7 +312,7 @@ namespace AtelierXNA
                     //AttaqueChoisie = UserPokemon[0]; (.ToInt?)
                     //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 0!", IntervalMAJ);
                     //Game.Components.Add(message); On doit pas faire ça ici. C'est au Combat de gérer les messages et tout, le menu principal c'est juste pour choisir
-                    
+
                     BattleMenuState = BattleMenuState.READY;
                     //BattleMenuState = BattleMenuState.MAIN;
                 }
@@ -360,7 +360,7 @@ namespace AtelierXNA
             MainChoix.Visible = true;
             PokemonChoix.Visible = true;
             PokemonChoix.Enabled = true;
-            
+
             if (ChoixEstEffectué() && PokemonChoix[PokemonChoix.IndexSélectionné] != "-" && UserTrainer[PokemonChoix.IndexSélectionné].EstEnVie && PokemonChoix.IndexSélectionné != NoDuPokemonEnJeu) //On a pesé sur A
             {
                 DisableComponents();
@@ -451,7 +451,7 @@ namespace AtelierXNA
         }
         bool Back()
         {
-            return (GestionInput.EstNouvelleTouche(Keys.B) || GestionInput.EstNouveauB_back() )&& !BackLock;
+            return (GestionInput.EstNouvelleTouche(Keys.B) || GestionInput.EstNouveauB_back()) && !BackLock;
         }
         void DisableComponents()
         {

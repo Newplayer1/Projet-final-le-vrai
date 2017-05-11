@@ -174,7 +174,7 @@ namespace AtelierXNA
             if (GestionInput.EstNouvelleTouche(Keys.H) || GestionInput.EstNouveauSelect_heal())
             {
                     LeJoueur.Heal();
-                    Game.Components.Add(new AfficheurTexte(Game, PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon have been healed", INTERVALLE_MAJ_STANDARD));
+                    Game.Components.Add(new AfficheurTexte(Game, PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon has been healed", INTERVALLE_MAJ_STANDARD));
 
             }
                 if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouveauStart_save())
@@ -334,7 +334,7 @@ namespace AtelierXNA
                         PokemonJoueur.ÀDétruire = true;
                         ÉtatJeu = ÉtatsJeu.JEU3D;
                     }
-                    if (Combat.EnCombat)// && LeCombat.GetPokemonEstChangé) //Ajouter si possible la condition que le pokémon est changé
+                    if (Combat.EnCombat && LeCombat.GetPokemonEstChangé) //Ajouter si possible la condition que le pokémon est changé
                         PokemonJoueur.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexUserPokemon));
                     //PokemonEnCollision.ChangerModèle(TrouverDossierModèle(LeCombat.NoPokédexOpponentPokemon));
                     break;
@@ -378,7 +378,7 @@ namespace AtelierXNA
                     {
                         if (Projectile.EstEnCollision(o))
                         {
-                            LeCombat.EssayerAttraperWildPokemon(LeJoueur, o.UnPokemon);
+                            LeCombat.TryCatchWildPokemon(LeJoueur, o.UnPokemon);
                             ÉtatJeu = ÉtatsJeu.JEU3D;
                         }
                     }

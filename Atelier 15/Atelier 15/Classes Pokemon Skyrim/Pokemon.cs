@@ -89,7 +89,6 @@ namespace AtelierXNA
             Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
-            
         }
 
         private void CréerDatabase(int pokedexNumber)
@@ -267,8 +266,26 @@ namespace AtelierXNA
             Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " grew to level " + Level + "!", Jeu.INTERVALLE_MAJ_STANDARD));
 
             Évoluer(NiveauÉvolution);
-            //VérifierSiNouvelleAttaqueApprise();
+            VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
+        }
+
+        void VérifierSiNouvelleAttaqueApprise()
+        {
+            if (Level == 10)
+            {
+                Attaque nouvelleAttaque = new Attaque(Game, int.Parse(LearnsetEnString[4]));
+                AttaquesList.Add(nouvelleAttaque);
+                //AttribuerAttaquesParDéfaut();
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " learned " + nouvelleAttaque.Name + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+            }
+            else if (Level == 25)
+            {
+                Attaque nouvelleAttaque = new Attaque(Game, int.Parse(LearnsetEnString[5]));
+                AttaquesList.Add(nouvelleAttaque);
+                //AttribuerAttaquesParDéfaut();
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " learned " + nouvelleAttaque.Name + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+            }
         }
 
         void Évoluer(int niveauEvolution)

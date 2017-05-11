@@ -83,7 +83,7 @@ namespace AtelierXNA
             base.Update(gameTime);
         }
 
-        public void MettreEnPremièrePosition(Pokemon PremierDeLaListe)
+        public void ChangerListe(Pokemon PremierDeLaListe)
         {
             Party.Remove(PremierDeLaListe);
             Party.Insert(0, PremierDeLaListe);

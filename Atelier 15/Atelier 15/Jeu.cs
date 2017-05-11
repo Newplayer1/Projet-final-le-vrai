@@ -379,7 +379,7 @@ namespace AtelierXNA
                     {
                         if (Projectile.EstEnCollision(o))
                         {
-                            LeCombat.TryCatchWildPokemon(LeJoueur, o.UnPokemon);
+                            LeCombat.EssayerAttraperWildPokemon(LeJoueur, o.UnPokemon);
                             ÉtatJeu = ÉtatsJeu.JEU3D;
                         }
                     }

@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 
 namespace AtelierXNA
-{
+{ 
     public class Trainer : Vivant
     {
         List<Pokemon> Party { get; set; }

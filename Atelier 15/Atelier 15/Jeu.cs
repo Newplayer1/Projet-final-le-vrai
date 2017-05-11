@@ -176,7 +176,7 @@ namespace AtelierXNA
                     LeJoueur.Heal();
                     Game.Components.Add(new AfficheurTexte(Game, PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, "All Pokemon have been healed", INTERVALLE_MAJ_STANDARD));
 
-            }
+            } 
                 if (GestionInput.EstNouvelleTouche(Keys.Enter) || GestionInput.EstNouveauStart_save())
             {
                 if (!(ÉtatJeu == ÉtatsJeu.COMBAT))

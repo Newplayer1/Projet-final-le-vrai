@@ -267,7 +267,7 @@ namespace AtelierXNA
             
             if (ChoixEstEffectué()) //On a pesé sur A
             {
-                DisableComponents(); //On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
+                DisableComponents(); // On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
                 
                 if (MainChoix.IndexSélectionné == 0)
                 {

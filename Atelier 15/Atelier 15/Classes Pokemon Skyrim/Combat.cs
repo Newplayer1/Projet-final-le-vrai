@@ -110,6 +110,7 @@ namespace AtelierXNA
             GamePad.SetVibration(PlayerIndex.One, 1, 1);
             Générateur = new Random();
             
+
             
             MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage), IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);

@@ -89,7 +89,6 @@ namespace AtelierXNA
             Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
-            
         }
 
         private void CréerDatabase(int pokedexNumber)

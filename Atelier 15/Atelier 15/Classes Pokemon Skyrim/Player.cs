@@ -15,7 +15,7 @@ namespace AtelierXNA
     public class Player : Trainer
     {
         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
-        const float vitesseDéplacement = 0.2f;
+        const float vitesseDéplacement = 1f;
         const float HAUTEUR_CAMÉRA = 2f;
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
@@ -78,7 +78,7 @@ namespace AtelierXNA
             SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
         }
 
-        protected void EffectuerMiseÀJour()
+        protected override void EffectuerMiseÀJour()
         {
             if (!(Combat.EnCombat || AfficheurTexte.MessageEnCours))
             {
@@ -207,7 +207,6 @@ namespace AtelierXNA
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Game.Window.Title = Game.Components.Count.ToString();
         }
     }
 }

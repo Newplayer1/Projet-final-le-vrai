@@ -21,7 +21,16 @@ namespace AtelierXNA
         public const float ÉCHELLE_OBJET = 0.004f;
         //const int POKEDEX_MAX = 35;
         public const float RAYON_POKÉBALL = 0.25f;
-        
+
+        bool EstPremierSaut { get; set; }
+        float Tps { get; set; }
+        Vector3 AnciennePositionAléatoire { get; set; }
+        Vector3 PositionPokemon { get; set; }
+        Vector3 PosTmpPok { get; set; }
+        List<Vector3> ListePositionsRandom { get; set; }
+
+
+
         ObjetDeBase PokemonJoueur { get; set; }
         Player LeJoueur { get; set; }
         Pokeball Projectile { get; set; }
@@ -30,7 +39,7 @@ namespace AtelierXNA
         Combat LeCombat { get; set; }
         CaméraSubjective CaméraJeu { get; set; }
         TerrainAvecBase TerrainDeJeu { get; set; }
-        ObjetDeBase PokemonRandom1 { get; set; }
+        public ObjetDeBase PokemonRandom1 { get; private set; }
         Pokemon PokemonRandom1Infos { get; set; }
         ÉtatsJeu ÉtatJeu { get; set; }
         TexteFixe ÉtatJeuTexte { get; set; }
@@ -38,7 +47,7 @@ namespace AtelierXNA
         List<ObjetDeBase> PokemonSurLeTerrain { get; set; }
         ObjetDeBase PokemonEnCollision { get; set; }
         int indexPokemonEnCollision;
-
+        float TempsÉcouléDepuisMAJ { get; set; }
         public static Vector2 PositionBoxMessage { get; private set; }
         public static int LargeurBoxMessage { get; private set; }
         public static int HauteurBoxMessage { get; private set; }
@@ -93,6 +102,14 @@ namespace AtelierXNA
 
         public override void Initialize()
         {
+            //EstPremierSaut = true;
+            //Tps = 0;
+
+            //Vector3 positionTmp = new Vector3(0, 0, 0);
+
+            //ListePositionsRandom = new List<Vector3>();
+            //ListePositionsRandom.Add(positionTmp);
+
             générateurAléatoire = new Random();
             Vector3 positionObjet = new Vector3(96, 16.37255f, -96);
             //Vector3 positionObjet = new Vector3(100, 20, -100);
@@ -140,6 +157,17 @@ namespace AtelierXNA
             }
 
             EnleverProjectile();
+
+            //float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //TempsÉcouléDepuisMAJ += TempsÉcoulé;
+
+            //if (TempsÉcouléDepuisMAJ >= 5)
+            //{
+            //    EffectuerMiseÀJour();
+            //    //TempsÉcouléDepuisMAJ -= IntervalleMAJ;
+            //    TempsÉcouléDepuisMAJ = 0;
+            //}
+
             base.Update(gameTime);
         }
 
@@ -226,10 +254,105 @@ namespace AtelierXNA
             PokemonRandom1 = new ObjetDeBase(Game, PokemonRandom1Infos, TrouverDossierModèle(numpok), ÉCHELLE_OBJET * 2, Vector3.Zero, TrouverPositionRandom());
             Game.Components.Add(PokemonRandom1);
             PokemonSurLeTerrain.Add(PokemonRandom1);
-
-
-
         }
+
+        //void EffectuerMiseÀJour()
+        //{
+        //    GérerDéplacementAléatoire();
+        //    PokemonRandom1.CalculerMonde();
+        //}
+
+        //void GérerDéplacementAléatoire()
+        //{
+        //    if (EstPremierSaut)
+        //    {
+        //        DéterminerDéplacementModèle();
+        //        EstPremierSaut = false;
+        //    }
+
+        //    Vector3[] ptsSaut = InitialiserSaut();
+
+        //    if (Tps > 60)
+        //    {
+        //        DéterminerDéplacementModèle();
+        //        Tps = 0;
+        //    }
+
+        //    PokemonRandom1.Position = CalculerBézier(Tps * (1f / 60f), ptsSaut);
+
+        //    ++Tps;
+
+        //    NettoyerListePositions();
+        //}
+
+        //void DéterminerDéplacementModèle()
+        //{
+        //    const int DÉPLACEMENTS_POSSIBLES = 8;
+
+        //    AnciennePositionAléatoire = PokemonRandom1.Position;
+
+        //    ListePositionsRandom.Add(AnciennePositionAléatoire);
+
+        //    Random GérérateurAléatoire = new Random();
+        //    float posX;
+        //    float posZ;
+        //    float posY;
+
+        //    Vector2[] PositionsPossibles = new Vector2[DÉPLACEMENTS_POSSIBLES] { new Vector2(PokemonRandom1.Position.X, PokemonRandom1.Position.Z - 3), new Vector2(PokemonRandom1.Position.X, PokemonRandom1.Position.Z + 3), new Vector2(PokemonRandom1.Position.X + 3, PokemonRandom1.Position.Z), new Vector2(PokemonRandom1.Position.X - 3, PokemonRandom1.Position.Z), new Vector2(PokemonRandom1.Position.X + 3, PokemonRandom1.Position.Z - 3), new Vector2(PokemonRandom1.Position.X + 3, PokemonRandom1.Position.Z + 3), new Vector2(PokemonRandom1.Position.X - 3, PokemonRandom1.Position.Z - 3), new Vector2(PokemonRandom1.Position.X - 3, PokemonRandom1.Position.Z + 3) };
+        //    Vector2 vecteurPosition;
+            
+        //    do
+        //    {
+        //        int valeurAléatoire = GérérateurAléatoire.Next(0, DÉPLACEMENTS_POSSIBLES);
+
+
+        //        posX = MathHelper.Max(MathHelper.Min(PositionsPossibles[valeurAléatoire].X, TerrainDeJeu.NbColonnes / 2), -TerrainDeJeu.NbColonnes / 2);
+        //        posZ = MathHelper.Max(MathHelper.Min(PositionsPossibles[valeurAléatoire].Y, TerrainDeJeu.NbRangées / 2), -TerrainDeJeu.NbRangées / 2);
+
+        //        vecteurPosition = new Vector2(posX + TerrainDeJeu.NbColonnes / 2, posZ + TerrainDeJeu.NbRangées / 2);
+
+
+        //        posY = (TerrainDeJeu.GetPointSpatial((int)Math.Round(vecteurPosition.X, 0), TerrainDeJeu.NbRangées - (int)Math.Round(vecteurPosition.Y, 0)) + Vector3.Zero).Y;
+
+        //    }
+        //    while (posX == ListePositionsRandom.ElementAt(ListePositionsRandom.Count - 2).X && posZ == ListePositionsRandom.ElementAt(ListePositionsRandom.Count - 2).Z);
+
+        //    PosTmpPok = new Vector3(posX, posY, posZ);
+        //}
+
+        //Vector3[] InitialiserSaut()
+        //{
+        //    Vector3[] tabPts = new Vector3[4];
+
+        //    tabPts[0] = PokemonRandom1.Position;
+        //    tabPts[3] = PosTmpPok;
+
+        //    tabPts[1] = new Vector3((tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].Z - tabPts[0].Z) / 3) + PositionPokemon;
+        //    tabPts[2] = new Vector3((2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].Z - tabPts[0].Z)) / 3) + PositionPokemon;
+
+        //    return tabPts;
+        //}
+
+        //void NettoyerListePositions()
+        //{
+        //    int cpt = 0;
+        //    int grandeurListe = ListePositionsRandom.Count;
+        //    for (int i = 0; i < grandeurListe - 1; i++)
+        //    {
+        //        ListePositionsRandom.RemoveAt(cpt);
+        //    }
+        //}
+
+        //Vector3 CalculerBézier(float t, Vector3[] pts)
+        //{
+        //    float moinsUn = (1 - t);
+
+        //    return pts[0] * (float)Math.Pow(moinsUn, 3) +
+        //        3 * pts[1] * t * (float)Math.Pow(moinsUn, 2) +
+        //        3 * pts[2] * t * t * moinsUn +
+        //        pts[3] * t * t * t;
+        //}
+
         private int NumeroPokemonValides()
         {
             //List< int > pokemonnopeValides = new List<int> { 35, 41, 42, 60, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 106, 108, 109, 110, 111, 113, 114, 116, 117, 118, 119, 120, 121, 124, 125, 126, 128, 131, 132, 135, 140, 141, 143 };

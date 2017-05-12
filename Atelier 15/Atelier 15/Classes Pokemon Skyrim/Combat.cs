@@ -423,7 +423,8 @@ namespace AtelierXNA
             VieOpponentPokemon.Visible = true;
             if (UserPokemon.EstEnVie)
             {
-                EffectuerTourUser();
+                //if (MainMenu.AttaqueUtilisée)
+                    EffectuerTourUser(MainMenu.NuméroChoisi);
                 VieOpponentPokemon.RemplacerMessage(OpponentPokemon.VieToString());
                 TourUserComplété = true;
                 if (CombatState != CombatState.END)
@@ -530,49 +531,34 @@ namespace AtelierXNA
         #endregion
 
 
-
-
-        void EffectuerTourUser()
-        {
-            if (MainMenu.AttaqueUtilisée)
-                EffectuerAttaque(MainMenu.NuméroChoisi);
-            else if (MainMenu.ItemUtilisé)
-                UtilierItem(MainMenu.NuméroChoisi);
-            else if (MainMenu.PokémonChangé)
-                ChangerPokémon(MainMenu.NuméroChoisi);
-            //else if (MainMenu.TentativeFuite)
-            //    EssayerFuir();
-        }
         void EffectuerTourOpponent()
         {
-            //choisir une attaque aléatoire
             int nbAléatoire = Générateur.Next(0, OpponentPokemon.NbAttaques);
-            AfficheurTexte message;
+            string préfixe = "";
             if (EstOpponentSauvage)
-                message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Wild " + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
+                préfixe = "Wild ";
             else
-                message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Foe " + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
-
+                préfixe = "Foe ";
+            AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, préfixe + OpponentPokemon.Nom + " used " + OpponentPokemon[nbAléatoire].ToString() + "!", IntervalMAJ);
             Game.Components.Add(message);
             EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
         }
-        void EffectuerAttaque(int numéroChoisi)
+        void EffectuerTourUser(int numéroChoisi)
         {
             string messageTour = UserPokemon.Nom + " used " + UserPokemon[numéroChoisi].ToString() + "!";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(message);
             EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[numéroChoisi]);
         }
-        void UtilierItem(int numéroChoisi)
-        {
-            if (!MainMenu.ItemPokeballEstUtilisé)
-            {
-                string messageTour = "User used item " + numéroChoisi.ToString() + ".";
-                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
-                Game.Components.Add(message);
-            }
-
-        }
+        //void UtilierItem(int numéroChoisi)
+        //{
+        //    if (!MainMenu.ItemPokeballEstUtilisé)
+        //    {
+        //        string messageTour = "User used item " + numéroChoisi.ToString() + ".";
+        //        AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
+        //        Game.Components.Add(message);
+        //    }
+        //}
         void ChangerPokémon(int numéroChoisi)
         {
             UserPokemon = UserTrainer[numéroChoisi];
@@ -624,21 +610,25 @@ namespace AtelierXNA
             }
         }
 
-        void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)//Maybe, je sais pas trop, reformuler?
+        void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)
         {
             int nombreAléatoire = Générateur.Next(0, 101);
-            //if (nombreAléatoire <= attaqueChoisie.Accuracy)//attaque!
-            //{
-            //on va faire une attaque classique, ensuite on applique pardessus l'effet plus complexe peu importe l'attaque
-            if (attaqueChoisie.EstUneAttaqueSpéciale() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
-                opposant.Défendre(CalculPointsDamageSpécial(attaquant, opposant, attaqueChoisie));
+            if (nombreAléatoire <= attaqueChoisie.Accuracy)//attaque!
+            {
+                //on va faire une attaque classique, ensuite on applique pardessus l'effet plus complexe peu importe l'attaque
+                if (attaqueChoisie.EstUneAttaqueSpéciale() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamageSpécial(attaquant, opposant, attaqueChoisie));
 
-            else if (attaqueChoisie.EstUneAttaquePhysique() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
-                opposant.Défendre(CalculPointsDamagePhysique(attaquant, opposant, attaqueChoisie));
+                else if (attaqueChoisie.EstUneAttaquePhysique() && attaqueChoisie.EstUneAttaqueAvecBasePowerValide())
+                    opposant.Défendre(CalculPointsDamagePhysique(attaquant, opposant, attaqueChoisie));
 
-            //ExécuterEffet(attaquant, opposant, atk);
-            //}
-            //opposant.Défendre(CalculerPointsDamage(attaqueChoisie, attaquant, opposant));
+                Attaque.AppliquerEffetAttaque(attaquant, opposant, attaqueChoisie);
+            }
+            else
+            {
+                AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "It missed!", IntervalMAJ);
+                Game.Components.Add(message);
+            }
         }
         int CalculPointsDamagePhysique(Pokemon attaquant, Pokemon opposant, Attaque atk)// s'il y a un base power
         {
@@ -654,8 +644,6 @@ namespace AtelierXNA
                 damage = 1;
             return (int)damage;
         }
-
-
 
         int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
         {

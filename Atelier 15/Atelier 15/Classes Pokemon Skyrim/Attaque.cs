@@ -132,6 +132,11 @@ namespace AtelierXNA
             return value;
         }
 
+        public static void AppliquerEffetAttaque(Pokemon attaquant, Pokemon opponent, Attaque attaqueChoisie)
+        {
+
+        }
+
         public override string ToString()
         {
             return Name;

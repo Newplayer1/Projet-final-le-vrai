@@ -142,6 +142,12 @@ namespace AtelierXNA
             Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.2f, LeJoueur.Position.Y + 1, LeJoueur.Position.Z);
             Vector3 rotationObjet = new Vector3(0, MathHelper.PiOver2, 0);
             AjouterProjectile(positionPokéball, rotationObjet);
+
+            //if (positionPokéball.Y <= 0)
+            //{
+            //    Game.Components.RemoveAt(Game.Components.Where(r => r is Pokeball));
+            //}
+
             base.Update(gameTime);
         }
 
@@ -151,9 +157,7 @@ namespace AtelierXNA
             {
                 Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", INTERVALLE_MAJ_STANDARD);
                 Game.Components.Add(Projectile);
-
             }
-
         }
 
         private void GérerClavier()

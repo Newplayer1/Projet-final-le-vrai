@@ -18,6 +18,7 @@ namespace AtelierXNA
 
         const int MAX_LEVEL = 100;
         public const int MAX_LETTRES_NOM_POKEMON = 10;
+        const int LEVEL_PAR_DÉFAUT = 15;
         public bool EstSauvage { get; set; }
 
         public int MaxHp { get; private set; }
@@ -36,10 +37,11 @@ namespace AtelierXNA
         public int PokedexNumber { get; private set; }
         public int NbAttaques => AttaquesList.Count;
         public int CatchRate => int.Parse(PokemonEnString[10]);
+        public int NiveauÉvolution => int.Parse(PokemonEnString[13]);
         public int Level { get; private set; }
         ExpGrowthClass ExpGrowth { get; set; }
         int BaseExp => int.Parse(PokemonEnString[12]);
-        int Exp { get; set; }
+        public float Exp { get; private set; }
 
         List<Attaque> AttaquesList { get; set; }
         public Attaque this[int index]
@@ -62,68 +64,84 @@ namespace AtelierXNA
         public Pokemon(Game jeu, int pokedexNumber)
             : base(jeu)
         {
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
+            CréerDatabase(pokedexNumber);
+            Level = LEVEL_PAR_DÉFAUT;
 
-            PokedexNumber = pokedexNumber;
-            Level = 5;
-
+            AttribuerAttaquesParDéfaut();
             CalculerStatsEtHP(Level);
+            Exp = 0;
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = true;
-            AttribuerAttaquesParDéfaut();
         }
+
+        
+
         public Pokemon(Game jeu, int pokedexNumber, Trainer player)
             : base(jeu)
         {
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
-
-            PokedexNumber = pokedexNumber;
-            Level = 5;
-
+            CréerDatabase(pokedexNumber);
+            
+            Level = LEVEL_PAR_DÉFAUT;
+            Exp = 0;
+            AttribuerAttaquesParDéfaut();
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
-            AttribuerAttaquesParDéfaut();
         }
+
+        private void CréerDatabase(int pokedexNumber)
+        {
+            PokedexNumber = pokedexNumber;
+            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
+            PokemonEnString = Database.AccessDonnéesPokemonStats(PokedexNumber);
+            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
+            
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+        }
+
         public Pokemon(Game jeu, int pokedexNumber, int level)
             : base(jeu)
         {
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
-
-
-            PokedexNumber = pokedexNumber;
+            CréerDatabase(pokedexNumber);
+            
             Level = level;
-
+            Exp = 0;
+            AttribuerAttaquesParDéfaut();
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = true;
-            AttribuerAttaquesParDéfaut();
         }
         public Pokemon(Game jeu, int pokedexNumber, int level, Trainer player)
             : base(jeu)
         {
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            PokemonEnString = Database.AccessDonnéesPokemonStats(pokedexNumber);
-            LearnsetEnString = Database.AccessDonnéesTypeLevelAttaque(Type1EnInt);
-            
-            PokedexNumber = pokedexNumber;
+            CréerDatabase(pokedexNumber);
             Level = level;
-
+            Exp = 0;
+            AttribuerAttaquesParDéfaut();
             CalculerStatsEtHP(Level);
+            Exp = CalculerExpTotal(Level);
             HP = MaxHp;
             EstSauvage = false;
+        }
+        public Pokemon(Pokemon copie)
+            :base(copie.Game)
+        {
+            CréerDatabase(copie.PokedexNumber);
+            Level = copie.Level;
             AttribuerAttaquesParDéfaut();
+            CalculerStatsEtHP(Level);
+            //CalculerExpTotal(Level);
+            HP = copie.HP;
+            EstSauvage = false;
+            Exp = copie.Exp;
         }
 
         public override void Initialize()
         {
-            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);
+            ExpGrowth = (ExpGrowthClass)Enum.Parse(typeof(ExpGrowthClass), PokemonEnString[11]);//fonctionne pas dans l'initialize
             base.Initialize();
         }
         void AttribuerAttaquesParDéfaut()
@@ -160,6 +178,26 @@ namespace AtelierXNA
             }
             RétablirStats();
         }
+        public float CalculerExpTotal(int level)
+        {
+            float expTotal = 0;
+            switch (ExpGrowth)
+            {
+                case ExpGrowthClass.Fast:
+                    expTotal += CalculerExpFast(level);
+                    break;
+                case ExpGrowthClass.MediumFast:
+                    expTotal += CalculerExpMediumFast(level);
+                    break;
+                case ExpGrowthClass.MediumSlow:
+                    expTotal += CalculerExpMediumSlow(level);
+                    break;
+                case ExpGrowthClass.Slow:
+                    expTotal += CalculerExpSlow(level);
+                    break;
+            }
+            return expTotal;
+        }
         public void RétablirStats()//Après chaque combat (et level up) TRÈS IMPORTANT
         {
             Stats = new List<int>(StatsFixes);
@@ -185,44 +223,81 @@ namespace AtelierXNA
 
         //    return attaqueAléatoire;
         //}
-        public void GainExp(int valeur)
+        public bool GainExp(float valeur)
         {
+            bool aAugmentéDeNiveau = false;
             Exp = Exp + valeur;
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
             if (Level < MAX_LEVEL && DoitLevelUp())
             {
                 ExécuterSéquenceLevelUp();
+                aAugmentéDeNiveau = true;
             }
+
+            return aAugmentéDeNiveau;
         }
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
         {
             bool valeurVérité = false;
-            int levelSuivant = Level + 1;
 
-            switch (ExpGrowth)
-            {
-                case ExpGrowthClass.Fast:
-                    valeurVérité = (Exp >= (int)(0.8 * Math.Pow(levelSuivant, 3)));
-                    break;
-                case ExpGrowthClass.MediumFast:
-                    valeurVérité = (Exp >= (int)Math.Pow(levelSuivant, 3));
-                    break;
-                case ExpGrowthClass.MediumSlow:
-                    valeurVérité = (Exp >= (int)(1.2 * Math.Pow(levelSuivant, 3) - 15 * Math.Pow(levelSuivant, 2) + 100 * levelSuivant - 140));
-                    break;
-                case ExpGrowthClass.Slow:
-                    valeurVérité = (Exp >= (int)(1.25 * Math.Pow(levelSuivant, 3)));
-                    break;
-            }
+            if (CalculerExpTotal(Level + 1) <= Exp)
+                valeurVérité = true;
             return valeurVérité;
+        }
+        float CalculerExpFast(int level)
+        {
+            return (float)(0.8 * Math.Pow(level, 3));
+        }
+        float CalculerExpMediumFast(int level)
+        {
+            return (float)Math.Pow(level, 3);
+        }
+        float CalculerExpMediumSlow(int level)
+        {
+            return (float)(1.2 * Math.Pow(level, 3) - 15 * Math.Pow(level, 2) + 100 * level - 140);
+        }
+        float CalculerExpSlow(int level)
+        {
+            return (float)(1.25 * Math.Pow(level, 3));
         }
         void ExécuterSéquenceLevelUp()
         {
             Level++;
-            //VérifierSiÉvolution(NiveauEvolution);
-            //VérifierSiNouvelleAttaqueApprise();
+            Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " grew to level " + Level + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+
+            Évoluer(NiveauÉvolution);
+            VérifierSiNouvelleAttaqueApprise();
             CalculerStatsEtHP(Level);//inclu RétablirStats()
         }
+
+        void Évoluer(int niveauEvolution)
+        { 
+            if (Level >= niveauEvolution)
+            {
+                string ancienNom = Nom;
+                ChangerPokedexNumber(++PokedexNumber);
+                
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Cadre.LARGEUR_BOX_STANDARD, Cadre.HAUTEUR_BOX_STANDARD, ancienNom + " evolved into " + Nom + "!" , Atelier.INTERVALLE_MAJ_STANDARD));
+            }
+        }
+        void VérifierSiNouvelleAttaqueApprise()
+        {
+            if (Level == 10)
+            {
+                Attaque nouvelleAttaque = new Attaque(Game, int.Parse(LearnsetEnString[4]));
+                AttaquesList.Add(nouvelleAttaque);
+                //AttribuerAttaquesParDéfaut();
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " learned " + nouvelleAttaque.Name + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+            }
+            else if (Level == 25)
+            {
+                Attaque nouvelleAttaque = new Attaque(Game, int.Parse(LearnsetEnString[5]));
+                AttaquesList.Add(nouvelleAttaque);
+                //AttribuerAttaquesParDéfaut();
+                Game.Components.Add(new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " learned " + nouvelleAttaque.Name + "!", Jeu.INTERVALLE_MAJ_STANDARD));
+            }
+        }
+
         public int GiveExp()
         {
             float a = 1;

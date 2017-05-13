@@ -26,6 +26,7 @@ namespace AtelierXNA
         float VitesseY { get; set; }
         float VitesseZ { get; set; }
 
+        
         double temps { get; set; }
 
         Vector3 DirectionLancer { get; set; }
@@ -78,13 +79,9 @@ namespace AtelierXNA
 
             VitesseX = (float)Math.Cos(théta);
             VitesseZ = (float)Math.Cos(théta);
-
             VitesseY = vitesseInitiale * (float)Math.Sin(théta);
 
-            //float positionPokéballX;
             float positionPokéballY;
-            //float positionPokéballZ;
-
             temps -= TempsÉcoulé;
 
             Vector2 DirectionCam = new Vector2(Joueur.DirectionCaméra.X, Joueur.DirectionCaméra.Z);
@@ -154,7 +151,7 @@ namespace AtelierXNA
 
         public override void Draw(GameTime gameTime)
         {
-            Game.Window.Title = Position.ToString();
+            //Game.Window.Title = Position.ToString();
             base.Draw(gameTime);
         }
     }

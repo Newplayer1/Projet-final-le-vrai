@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 
 namespace AtelierXNA
-{
+{  
     public class Trainer : Vivant
     {
         List<Pokemon> Party { get; set; }
@@ -38,52 +38,9 @@ namespace AtelierXNA
                 return Party[index]; //C'est correct, on veut pas faire de new, on veut changer directement ce pokémon (HP, etc)
             }
         }
-        
-        public List<string> GetNomPokemon()
+        public Pokemon GetPokemon(int i)
         {
-            List<string> listeRetour = new List<string>();
-            foreach (Pokemon item in Party)
-            {
-                listeRetour.Add(item.Nom);
-            }
-            return listeRetour;
-        }
-        public List<string> GetLVLPokemon()
-        {
-            List<string> listeRetour = new List<string>();
-            foreach (Pokemon item in Party)
-            {
-                listeRetour.Add(item.Level.ToString());
-            }
-            return listeRetour;
-        }
-        public List<string> GetType1Pokemon()
-        {
-            List<string> listeRetour = new List<string>();
-            foreach (Pokemon item in Party)
-            {
-                listeRetour.Add(item.Type1);
-            }
-            return listeRetour;
-            
-        }
-        public List<string> GetType2Pokemon()
-        {
-            List<string> listeRetour = new List<string>();
-            foreach (Pokemon item in Party)
-            {
-                listeRetour.Add(item.Type2);
-            }
-            return listeRetour;
-        }
-        public List<string> GetHPPokemon()
-        {
-            List<string> listeRetour = new List<string>();
-            foreach (Pokemon item in Party)
-            {
-                listeRetour.Add(item.VieToString());
-            }
-            return listeRetour;
+            return new Pokemon(Party[i]);
         }
         public Pokemon NextPokemonEnVie()
         {
@@ -92,9 +49,9 @@ namespace AtelierXNA
 
         public void Heal()
         {
-            foreach (Pokemon item in Party)
+            foreach (Pokemon p in Party)
             {
-                //item.AjouterHP(item.MaxHp);
+                p.AjouterHP(p.MaxHp);
             }
         }
         public void AddPokemon(int pokedexNumber)
@@ -124,6 +81,12 @@ namespace AtelierXNA
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+        }
+
+        public void MettreEnPremièrePosition(Pokemon PremierDeLaListe)
+        {
+            Party.Remove(PremierDeLaListe);
+            Party.Insert(0, PremierDeLaListe);
         }
     }
 }

@@ -26,7 +26,8 @@ namespace AtelierXNA
         Vector2 Position { get; set; }
 
         InputManager GestionInput { get; set; }
-
+        Pokeball Projectile { get; set; }
+        Player LeJoueur { get; set; }
         AfficheurChoix MainChoix { get; set; }
         AfficheurChoix FightChoix { get; set; }
         AfficheurChoix BagChoix { get; set; }
@@ -36,11 +37,13 @@ namespace AtelierXNA
         List<string> ListeChoix { get; set; }
         List<DrawableGameComponent> ComposantesBattleMenu { get; set; }
 
-        public bool AttaqueUtilisée  { get; set; }
+        public bool AttaqueUtilisée { get; set; }
         public bool ItemUtilisé { get; set; }
         public bool PokémonChangé { get; set; }
         public bool TentativeFuite { get; set; }
-        public bool ItemPokeball { get; set; }
+        public bool ItemPokeballEstUtilisé { get; set; }
+        public bool ItemGreatBall { get; set; }
+        public bool ItemMasterBall { get; set; }
         public int NuméroChoisi { get; private set; }
 
 
@@ -70,7 +73,7 @@ namespace AtelierXNA
             }
         }
 
-        
+
 
         static BattleMenu()
         {
@@ -92,7 +95,7 @@ namespace AtelierXNA
             NuméroChoisi = 0;
             NoDuPokemonEnJeu = 0;
             InitialiserMainChoix();
-
+            LeJoueur = Game.Services.GetService(typeof(Player)) as Player;
             InitialiserListeChoixFight();
             FightChoix = new AfficheurChoix(Game, Position, (int)Dimensions.X, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
@@ -119,7 +122,7 @@ namespace AtelierXNA
             BattleMenuState = BattleMenuState.MAIN;
             base.Initialize();
         }
-        
+
         private void InitialiserMainChoix()
         {
             ListeChoix = new List<string>();
@@ -150,7 +153,7 @@ namespace AtelierXNA
             //string plusLongueLigne = "a"; //La plus longue string serai "aaaaaaaaaa Lvl.100 255/255 HP" soit 29 caractères
             for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
             {
-                 ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
+                ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
             }
             //for (int i = 0; i < ListeChoix.Count; i++)
             //{
@@ -163,11 +166,11 @@ namespace AtelierXNA
         {
             ListeChoix = new List<string>();
             ListeChoix.Add("Pokeball");
-            ListeChoix.Add("Item 1");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
-            ListeChoix.Add("Item 2");//UserTrainerBag[1].toString()
-            ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
-            ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
-            ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
+            //ListeChoix.Add("Greatball");//UserTrainerBag[0].toString()     //Mettre en boucle? (on devra override item.tostring? (faire une classe item?))
+            //ListeChoix.Add("Masterball");//UserTrainerBag[1].toString()
+            //ListeChoix.Add("Item 3");//UserTrainerBag[2].toString()
+            //ListeChoix.Add("Item 4");//UserTrainerBag[3].toString()
+            //ListeChoix.Add("Item 5");//UserTrainerBag[4].toString()
             //ListeChoix.Add("Item 6");//UserTrainerBag[5].toString()
             BagChoix = new AfficheurChoix(Game, new Vector2(Position.X + Cadre.TAILLE_TILE * 9, Position.Y - Cadre.TAILLE_TILE * 2), (int)Dimensions.X - 9, ListeChoix.Count + 2, ListeChoix, IntervalMAJ);
 
@@ -261,11 +264,12 @@ namespace AtelierXNA
         {
             MainChoix.Visible = true;
             MainChoix.Enabled = true;
-            
+
             if (ChoixEstEffectué()) //On a pesé sur A
             {
-                DisableComponents(); //On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
-                
+                DisableComponents(); // On désactive tout parce que quand on arrive ailleur, on active ce dont on a besoin
+
+
                 if (MainChoix.IndexSélectionné == 0)
                 {
                     //MainChoix.Visible = true;? (on pourrait garder le menu principal visible si l'on peut le voir)
@@ -308,7 +312,7 @@ namespace AtelierXNA
                     //AttaqueChoisie = UserPokemon[0]; (.ToInt?)
                     //AfficheurTexte message = new AfficheurTexte(Game, Position, (int)Dimensions.X, (int)Dimensions.Y, "temp: Pokemon used attack 0!", IntervalMAJ);
                     //Game.Components.Add(message); On doit pas faire ça ici. C'est au Combat de gérer les messages et tout, le menu principal c'est juste pour choisir
-                    
+
                     BattleMenuState = BattleMenuState.READY;
                     //BattleMenuState = BattleMenuState.MAIN;
                 }
@@ -350,20 +354,13 @@ namespace AtelierXNA
 
         private void GérerTransitionPOKEMON()
         {
-            //InitialiserPokemonChoix();//On réinitialise chaque fois comme ça si la vie a changée, on le voit
-
-            //ListeChoix = new List<string>();
-            //for (int i = 0; i < UserTrainer.GetNbPokemon; i++)
-            //{
-            //    ListeChoix.Add(UserTrainer[i].ToString() + " " + UserTrainer[i].VieToString());
-            //}
             InitialiserListeChoixPokemon();
             PokemonChoix.ModifierChoix(ListeChoix);
 
             MainChoix.Visible = true;
             PokemonChoix.Visible = true;
             PokemonChoix.Enabled = true;
-            
+
             if (ChoixEstEffectué() && PokemonChoix[PokemonChoix.IndexSélectionné] != "-" && UserTrainer[PokemonChoix.IndexSélectionné].EstEnVie && PokemonChoix.IndexSélectionné != NoDuPokemonEnJeu) //On a pesé sur A
             {
                 DisableComponents();
@@ -392,7 +389,19 @@ namespace AtelierXNA
                 NuméroChoisi = BagChoix.IndexSélectionné;
                 if (BagChoix[BagChoix.IndexSélectionné] == "Pokeball")
                 {
-                    ItemPokeball = true;
+                    ItemPokeballEstUtilisé = true;
+                    //Vector3 positionPokéball = new Vector3(LeJoueur.Position.X + 1.5f, LeJoueur.Position.Y + 1.5f, LeJoueur.Position.Z);
+                    //Vector3 rotationObjet = new Vector3(0, 0, 0);
+                    //Projectile = new Pokeball(Game, 0.4f, rotationObjet, positionPokéball, Jeu.RAYON_POKÉBALL, new Vector2(20, 20), "Pokeball", Jeu.INTERVALLE_MAJ_STANDARD);
+                    //Game.Components.Add(Projectile);
+                }
+                if (BagChoix[BagChoix.IndexSélectionné] == "Greatball")
+                {
+                    ItemGreatBall = true;
+                }
+                if (BagChoix[BagChoix.IndexSélectionné] == "Masterball")
+                {
+                    ItemMasterBall = true;
                 }
                 //Combat.UseItem(); Pokémon sur lequel il y a un effet, Trainer qui a utilisé l'item, numéro de l'item
                 BattleMenuState = BattleMenuState.READY;
@@ -438,11 +447,11 @@ namespace AtelierXNA
 
         bool ChoixEstEffectué()
         {
-            return GestionInput.EstNouvelleTouche(Keys.Space);
+            return GestionInput.EstNouvelleTouche(Keys.Space) || GestionInput.EstNouveauA();
         }
         bool Back()
         {
-            return GestionInput.EstNouvelleTouche(Keys.B) && !BackLock;
+            return (GestionInput.EstNouvelleTouche(Keys.B) || GestionInput.EstNouveauB_back()) && !BackLock;
         }
         void DisableComponents()
         {
@@ -451,11 +460,14 @@ namespace AtelierXNA
                 item.Enabled = false;
                 item.Visible = false;
             }
+
             AttaqueUtilisée = false;
             ItemUtilisé = false;
             PokémonChangé = false;
             TentativeFuite = false;
-            ItemPokeball = false;
+            ItemPokeballEstUtilisé = false;
+            ItemGreatBall = false;
+            ItemMasterBall = false;
             BackLock = false;
         }
     }

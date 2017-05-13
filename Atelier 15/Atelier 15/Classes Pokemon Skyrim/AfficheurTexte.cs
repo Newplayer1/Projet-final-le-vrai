@@ -19,6 +19,7 @@ namespace AtelierXNA
 
     public class AfficheurTexte : Cadre
     {
+    
         const float INTERVALLE_MAJ_CLIGNOTANT = 45 / 60f;
         public bool Priorité { get; set; }
         string NomPolice { get; set; }
@@ -26,7 +27,7 @@ namespace AtelierXNA
         List<Rectangle> RectangleSourcesPolice { get; set; }
         //byte[] MessageBytes { get; set; }
         List<int> MessageListInt { get; set; }
-
+        
         int NBDeCaractèresParLigne => NBColonnes - 3; //Avant c'était - 2 mais - 3 pour laisser une colonne vide à la fin pour le clignotant
         int NBDeZonesDeTexte => (NBLignes - 2) / 2;//divisé par deux si double interligne
 
@@ -170,7 +171,7 @@ namespace AtelierXNA
 
         void GérerClavier()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.Space) && ((NBLettresAffichées == MessageListInt.Count) || NBLettresAffichées == NBDeCaractèresParLigne * (NoDeLigneÀAfficher + 1))) //Si la condition du clignotant est remplie ou que l'on a fini d'afficher le message
+            if ((GestionInput.EstNouvelleTouche(Keys.Space) || GestionInput.EstNouveauA()) && ((NBLettresAffichées == MessageListInt.Count) || NBLettresAffichées == NBDeCaractèresParLigne * (NoDeLigneÀAfficher + 1))) //Si la condition du clignotant est remplie ou que l'on a fini d'afficher le message
             {
                 if (NBLettresAffichées == MessageListInt.Count)//Si toutes les lettres ont été affichées, et que A est pesé, on supprime le message puisqu'il a rempli sa fonction
                 {

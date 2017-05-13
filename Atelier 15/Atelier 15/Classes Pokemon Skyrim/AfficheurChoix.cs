@@ -23,7 +23,7 @@ namespace AtelierXNA
         //public bool Priorité { get; set; } remplacer par juste enabled/disabled
         int NBDeCaractèresParLigne => NBColonnes - 4; //toute la largeur moins le cadre (2), moins le curseur (1) pis moins l'espace entre curseur et cadre (1)
         int NBDeZonesDeTexte => NBLignes - 2; //Toute la hauteur moins le cadre (2) (dans AfficheurTexte on avait mis /2 pour que l'on skip une ligne)
-
+        
         List<List<int>> MessagesEnInt { get; set; }
         List<string> MessagesEnString { get; set; }
         List<int> CurrentMessageInt { get; set; }
@@ -125,9 +125,9 @@ namespace AtelierXNA
         }
         void GérerClavier()//fait juste choisir up/down, on devra peut-être ajouter left/right un jour
         {
-            if (GestionInput.EstNouvelleTouche(Keys.Up) && IndexSélectionné > 0)
+            if ((GestionInput.EstNouvelleTouche(Keys.W) || GestionInput.EstNouveauUp_menucombat()) && IndexSélectionné > 0)
                 IndexSélectionné--;
-            if (GestionInput.EstNouvelleTouche(Keys.Down) && IndexSélectionné < NBDeZonesDeTexte - 1)
+            if ((GestionInput.EstNouvelleTouche(Keys.S) || GestionInput.EstNouveauDown_menucombat()) && IndexSélectionné < NBDeZonesDeTexte - 1)
                 IndexSélectionné++;
 
             //la classe qui utilise AfficheurChoix devra updater le choix fait selon l'IndexSélectionné (important d'être fait AVANT de créer un autre AfficheurChoix)

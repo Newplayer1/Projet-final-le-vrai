@@ -71,6 +71,11 @@ namespace AtelierXNA
         {
             Message = nouveauMessage;
         }
+        public void RemplacerPosition(Vector2 nouvellePosition)
+        {      
+            Position = nouvellePosition;
+            CréerListePositions();
+        }
         public override void Update(GameTime gameTime)
         {
             if (!AfficheurTexte.MessageEnCours)

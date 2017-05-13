@@ -10,19 +10,19 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
-{
+{  
 
     public class Player : Trainer
     {
         public const int DISTANCE_MODÈLE_CAMÉRA = 1;
-        const float vitesseDéplacement = 0.2f;
+        const float vitesseDéplacement = 1f;
         const float HAUTEUR_CAMÉRA = 2f;
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
         const float DÉPLACEMEMENT_MODÈLE = /*0.05f*/1f;
         public float Hauteur { get; private set; }
         TerrainAvecBase Terrain { get; set; }
-        const float VitesseRotation = 1.5f;
+        const float VitesseRotation = 5f;
         public Vector2 Souris { get; private set; }
 
         float IntervalleMAJ { get; set; }
@@ -78,7 +78,7 @@ namespace AtelierXNA
             SphèreDeCollision = new BoundingSphere(Position, SphèreDeCollision.Radius);
         }
 
-        protected void EffectuerMiseÀJour()
+        protected override void EffectuerMiseÀJour()
         {
             if (!(Combat.EnCombat || AfficheurTexte.MessageEnCours))
             {
@@ -92,7 +92,7 @@ namespace AtelierXNA
 
         private void InventairePoks()
         {
-            if (GestionInput.EstNouvelleTouche(Keys.P) && !inventaireOuvert && !Combat.EnCombat)
+            if ((GestionInput.EstNouvelleTouche(Keys.P) || GestionInput.EstNouveauY_inventaire())&& !inventaireOuvert && !Combat.EnCombat)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {
@@ -101,18 +101,19 @@ namespace AtelierXNA
                 string InventaireParLigne = null;
                 for (int i = 0; i < GetNbPokemon; i++)
                 {
-                    InventaireParLigne = GetNomPokemon()[i] + " Level : " + GetLVLPokemon()[i] + " Type1 : " + GetType1Pokemon()[i];  
-                    if(GetType2Pokemon()[i] != "NULL")
+                    InventaireParLigne = GetPokemon(i).Nom + " Level : " + GetPokemon(i).Level + " Type : " + GetPokemon(i).Type1;  
+                    if(GetPokemon(i).Type2 != "Null")
                     {
-                        InventaireParLigne += " Type2 : " + GetType2Pokemon()[i];
+                        InventaireParLigne += "/" + GetPokemon(i).Type2;
+                        //InventaireParLigne += " Type2 : " + GetPokemon(i).Type2;
                     }
-                    InventaireParLigne += " HP : " + GetHPPokemon()[i];
+                    InventaireParLigne += " HP : " + GetPokemon(i).HP + "/" + GetPokemon(i).MaxHp +" Exp : " +GetPokemon(i).Exp + "/" + Math.Round(GetPokemon(i).CalculerExpTotal(GetPokemon(i).Level + 1), 0);
 
                     Game.Components.Add(new TexteFixe(Game, new Vector2(1, 1 + i * 16), InventaireParLigne));
                 }
             inventaireOuvert = !inventaireOuvert;
             }
-            else if  (GestionInput.EstNouvelleTouche(Keys.P) && inventaireOuvert)
+            else if  ((GestionInput.EstNouvelleTouche(Keys.P) || GestionInput.EstNouveauY_inventaire()) && inventaireOuvert)
             {
                 foreach (TexteFixe t in Game.Components.Where(t => t is TexteFixe))
                 {
@@ -124,26 +125,34 @@ namespace AtelierXNA
 
         private void TournerTrainer()
         {
-            int valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
-            int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
-             Vector3 DirectionJoueur = Monde.Forward - Monde.Backward;  
+            if(GamePad.GetState(PlayerIndex.One).IsConnected && GestionInput.EstPenché())
+            {
+                float valYaw = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X;
+                //float valPitch = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y;
+                Modificationangle(valYaw);
+            }
 
             //déplacement horizontale Angle # pas de limite
             if (GestionInput.GetPositionSouris().X != Souris.X)
-            {
-                float valRotationAjouter = DELTA_LACET * valYaw * VitesseRotation;
+            {            
+                float valYaw = GestionInput.GetPositionSouris().X > Souris.X ? 1 : -1;
+                //int valPitch = GestionInput.GetPositionSouris().Y > Souris.Y ? 1 : -1;
+                Modificationangle(valYaw);
+            }
+        }
+        void Modificationangle(float valeurDetour) 
+        {
+                Vector3 DirectionJoueur = Monde.Forward - Monde.Backward;
+                float valRotationAjouter = DELTA_LACET * valeurDetour * VitesseRotation;
                 ((CaméraJeu) as CaméraSubjective).Direction = Vector3.Normalize(Vector3.Transform(((CaméraJeu) as CaméraSubjective).Direction, Matrix.CreateFromAxisAngle(((CaméraJeu) as CaméraSubjective).OrientationVerticale, valRotationAjouter)));
                 DirectionCaméra = ((CaméraJeu) as CaméraSubjective).Direction; // Pour qu'on puisse avoir accès à la direction de la caméra dans la classe pokéball 
                 DirectionCaméra = Vector3.Normalize(DirectionCaméra);
                 Rotation = new Vector3(0, Rotation.Y + valRotationAjouter, 0);
-                //Vector3 PositionCaméra = Vector3.Transform(CaméraJeu.Position, Matrix.CreateFromAxisAngle(DirectionJoueur, valRotationAjouter));
-                //CaméraJeu.CréerPointDeVue(PositionCaméra,Position,Vector3.Up);
-            }
         }
         protected void BougerCaméra(float déplacementHorizontal, float déplacementProfondeur)
         {
             ((CaméraJeu) as CaméraSubjective).GérerDéplacement(déplacementProfondeur, déplacementHorizontal);
-            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 1, Position.Z), CaméraJeu.OrientationVerticale);
+            CaméraJeu.CréerPointDeVue(CaméraJeu.Position, new Vector3(Position.X, Position.Y + 2f, Position.Z), CaméraJeu.OrientationVerticale);
         }
         protected void Bouger()
         {
@@ -153,6 +162,17 @@ namespace AtelierXNA
                 float déplacementProfondeur = (GérerTouche(Keys.W) - GérerTouche(Keys.S)) * vitesseDéplacement;
                 if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
                 {
+                    BougerTrainer(déplacementHorizontal, déplacementProfondeur);
+                    BougerCaméra(déplacementHorizontal, déplacementProfondeur);
+                }
+            }
+            if(GamePad.GetState(PlayerIndex.One).IsConnected) 
+            {
+                float déplacementHorizontal = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X) * vitesseDéplacement;
+                float déplacementProfondeur = (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y) * vitesseDéplacement;
+                if (déplacementHorizontal != 0 || déplacementProfondeur != 0)
+                {
+                    //GamePad.SetVibration(PlayerIndex.One, 1, 1); omg cest intense!
                     BougerTrainer(déplacementHorizontal, déplacementProfondeur);
                     BougerCaméra(déplacementHorizontal, déplacementProfondeur);
                 }
@@ -187,7 +207,6 @@ namespace AtelierXNA
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Game.Window.Title = Game.Components.Count.ToString();
         }
     }
 }

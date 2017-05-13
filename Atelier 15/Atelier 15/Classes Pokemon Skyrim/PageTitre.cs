@@ -35,10 +35,10 @@ namespace AtelierXNA
         Button1 btnSoundOff { get; set; }
         Button1 btnBack { get; set; }
         Button1 controls { get; set; }
-
         Button1 charmander { get; set; }
         Button1 bulbusaur { get; set; }
         Button1 squirtle { get; set; }
+
         public bool Yachoisi { get; set; }
         public int choix { get; set; }
 
@@ -56,13 +56,9 @@ namespace AtelierXNA
 
         public PageTitre(Game game)
           : base(game)
-      {
+        {
             graphics = Game.Services.GetService(typeof(GraphicsDeviceManager)) as GraphicsDeviceManager;
-
         }
-
-
-
 
         public override void Initialize()
         {
@@ -70,7 +66,6 @@ namespace AtelierXNA
             GestionnaireDeTextures = new RessourcesManager<Texture2D>(Game, "Textures");
             GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
             ArialFont = new RessourcesManager<SpriteFont>(Game, "Fonts");
-
 
             screenSize = new Vector2(800, 400);
             base.Initialize();
@@ -84,11 +79,13 @@ namespace AtelierXNA
             Background = GestionnaireDeTextures.Find("BackGround");
             Controls = GestionnaireDeTextures.Find("controls");
             Chanson = GestionnaireDeChansons.Find("Pokemon");
-            Arial = ArialFont.Find("Arial20"); 
+            Arial = ArialFont.Find("Arial20");
+            
             RectangleAffichage = new Rectangle(0, 0, (int)screenSize.X, (int)screenSize.Y);
 
             //Audio Ajustments
             MediaPlayer.Play(Chanson);
+            MediaPlayer.IsRepeating = true;
 
             //Screen Ajustments
             graphics.PreferredBackBufferHeight = (int)screenSize.Y;
@@ -99,16 +96,16 @@ namespace AtelierXNA
         }
         private void AjoutDeboutons()
         {
-            btnOptions = new Button1(Game, GestionnaireDeTextures.Find("btn_Options"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnNewGame = new Button1(Game,GestionnaireDeTextures.Find("Btn_New_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnLoadGame = new Button1(Game,GestionnaireDeTextures.Find("btn_Load_Game"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnSoundOn = new Button1(Game,GestionnaireDeTextures.Find("SoundOn"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnSoundOff = new Button1(Game,GestionnaireDeTextures.Find("SoundOff"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            btnBack = new Button1(Game,GestionnaireDeTextures.Find("btn_back"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            controls = new Button1(Game, GestionnaireDeTextures.Find("btn_Controles"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            squirtle = new Button1(Game, GestionnaireDeTextures.Find("squirtle"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            bulbusaur = new Button1(Game, GestionnaireDeTextures.Find("bulbasaur"), graphics.GraphicsDevice, INTERVALLEMAJ);
-            charmander = new Button1(Game, GestionnaireDeTextures.Find("Charmander"), graphics.GraphicsDevice, INTERVALLEMAJ);
+            btnOptions = ChaqueBouton("btn_Options");
+            btnNewGame = ChaqueBouton("Btn_New_Game");
+            btnLoadGame =  ChaqueBouton("btn_Load_Game");
+            btnSoundOn = ChaqueBouton("SoundOn");
+            btnSoundOff =  ChaqueBouton("SoundOff");
+            btnBack = ChaqueBouton("btn_back");
+            controls = ChaqueBouton("btn_Controles");
+            squirtle = ChaqueBouton("squirtle");
+            bulbusaur = ChaqueBouton("bulbasaur");
+            charmander = ChaqueBouton("Charmander");
 
             squirtle.ResetPosition(new Vector2(600, 200));
             bulbusaur.ResetPosition(new Vector2(400, 200));
@@ -122,7 +119,10 @@ namespace AtelierXNA
             controls.ResetPosition(new Vector2(375, 320));
 
         }
-
+        private Button1 ChaqueBouton(string nomBouton) 
+        {
+            return new Button1(Game, GestionnaireDeTextures.Find(nomBouton), graphics.GraphicsDevice, INTERVALLEMAJ);
+        }
 
         public override void Update(GameTime gameTime)
         {

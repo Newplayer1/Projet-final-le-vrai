@@ -12,7 +12,7 @@ using System.Data.OleDb;
 
 namespace AtelierXNA
 {
-    enum PokemonTypes { NULL, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
+    enum PokemonTypes { Null, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel }
     public class Attaque : Microsoft.Xna.Framework.GameComponent
     {
         AccessBaseDeDonnée Database { get; set; }
@@ -38,7 +38,7 @@ namespace AtelierXNA
             AttaqueEnString = Database.AccessDonnéesAttaqueStats(NuméroAttaque);
 
             AttackType = (int)Enum.Parse(typeof(PokemonTypes), AttaqueEnString[4]);// comme "AttackType = (int)Type.Water;", le type vaut 3. Ici, on va chercher le num du type de l'attaque peu importe l'attaque
-            Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType);
+            Weaknesses = Database.AccessDonnéesArrayWeaknessStrengh(AttackType + 1);
 
             Power = int.Parse(AttaqueEnString[2]);
         }
@@ -57,8 +57,8 @@ namespace AtelierXNA
             int indexPremierType = (int)Enum.Parse(typeof(PokemonTypes), premierType);
             int indexSecondType = (int)Enum.Parse(typeof(PokemonTypes), secondType);
 
-            int multiplierPremierType = Weaknesses[indexPremierType + 2];//+2 parce qu'on skip la colonne du numéro de type et du nom de type
-            int multiplierSecondType = Weaknesses[indexSecondType + 2];
+            int multiplierPremierType = Weaknesses[indexPremierType];//+2 parce qu'on skip la colonne du numéro de type et du nom de type
+            int multiplierSecondType = Weaknesses[indexSecondType];
 
             return (multiplierPremierType / 100f) * (multiplierSecondType / 100f);
         }
@@ -130,6 +130,11 @@ namespace AtelierXNA
                 value = true;
 
             return value;
+        }
+
+        public static void AppliquerEffetAttaque(Pokemon attaquant, Pokemon opponent, Attaque attaqueChoisie)
+        {
+
         }
 
         public override string ToString()

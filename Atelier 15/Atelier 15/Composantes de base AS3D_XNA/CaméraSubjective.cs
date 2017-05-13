@@ -119,20 +119,10 @@ namespace AtelierXNA
             }
         }
 
-        protected void GérerDéplacement()
+        public void GérerDéplacement(float déplacementDirection, float déplacementLatéral)
         {
-            Vector3 nouvellePosition = Position;
-
-            float déplacementDirection = (GérerTouche(Keys.J) - GérerTouche(Keys.U)) * VitesseTranslation;
-            float déplacementLatéral = (GérerTouche(Keys.K) - GérerTouche(Keys.H)) * VitesseTranslation;
-
-            // Calcul du déplacement avant arrière
-            // Calcul du déplacement latéral
-            // À compléter
-
             EffectuerDéplacementDirec(déplacementDirection);
             EffectuerDéplacementLat(déplacementLatéral);
-
         }
 
 

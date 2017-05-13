@@ -115,6 +115,7 @@ namespace AtelierXNA
             Game.Services.AddService(typeof(Player), LeJoueur);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as CaméraSubjective;
+            (CaméraJeu as CaméraSubjective).Cible = new Vector3(LeJoueur.Position.X, LeJoueur.Position.Y + 5, LeJoueur.Position.Z);
             PositionBoxStandard = new Vector2(0, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 6);
             Game.Components.Add(ÉtatJeuTexte);
             //Game.Components.Add(DebugAfficheurTexteA);
@@ -361,7 +362,7 @@ namespace AtelierXNA
         {
             foreach (ObjetDeBase p in Game.Components.Where(r => r is ObjetDeBase))
             {
-                if (!(p is Player))
+                if (!(p is Player) && LeJoueur.EstEnVie)
                 {
                     if (LeJoueur.EstEnCollision(p))
                     {

@@ -223,18 +223,18 @@ namespace AtelierXNA
 
         //    return attaqueAléatoire;
         //}
-        public bool GainExp(float valeur)
+        public void GainExp(float valeur)
         {
-            bool aAugmentéDeNiveau = false;
             Exp = Exp + valeur;
+
+            AfficheurTexte messageC = new AfficheurTexte(Game, Jeu.PositionBoxMessage, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, Nom + " gained " + ((int)valeur).ToString() + " exp.", Jeu.INTERVALLE_MAJ_STANDARD);
+            Game.Components.Add(messageC);
             //si Exp dépasse un threshold, faire le level up : check if evolution, recalcul les stats, check if new move is learned
             if (Level < MAX_LEVEL && DoitLevelUp())
             {
                 ExécuterSéquenceLevelUp();
-                aAugmentéDeNiveau = true;
             }
-
-            return aAugmentéDeNiveau;
+            
         }
         bool DoitLevelUp() //Selon les polynômes de Pokemon, comment on nommerait ces constantes si on devait en faire?
         {

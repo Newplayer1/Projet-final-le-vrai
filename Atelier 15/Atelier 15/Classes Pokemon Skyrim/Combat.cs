@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace AtelierXNA
 {
@@ -20,12 +14,7 @@ namespace AtelierXNA
         Random Générateur { get; set; }
         Vector2 PositionBox { get; set; }
         BattleMenu MainMenu { get; set; }
-
-        RessourcesManager<Song> GestionnaireDeChansons { get; set; }
-        //Player LeJoueur { get; set; } Faut utiliser UserTrainer ici.
-        Song tuneCombat { get; set; }
-
-
+        
         Trainer UserTrainer { get; set; }
         Pokemon UserPokemon { get; set; }
         public int NoPokédexUserPokemon => UserPokemon.PokedexNumber;
@@ -44,8 +33,8 @@ namespace AtelierXNA
 
         public bool EstOpponentSauvage { get; private set; }
         bool TourComplété => TourUserComplété && TourOpponentComplété;
+        public bool GetPokemonEstChangé => MainMenu.PokémonChangé;
 
-        
         public static bool EnCombat { get; set; }
         static Combat()
         {
@@ -68,14 +57,17 @@ namespace AtelierXNA
                 NomUserPokemon.ÀDétruire = value;
                 VieOpponentPokemon.ÀDétruire = value;
                 VieUserPokemon.ÀDétruire = value;
-                //peut-être que faire une liste de composantes "combat composantes" serait plus approprié
             }
         }
-
-
-        public bool GetPokemonEstChangé => MainMenu.PokémonChangé;
-
-
+        
+        /// <summary>
+        /// Constructeur d'un combat entre le joueur et un Trainer adversaire.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="positionBox">La position de la boite d'affichage du texte</param>
+        /// <param name="user">Le joueur (de type Player.cs)</param>
+        /// <param name="opponent">L'adversaire (de type Trainer.cs)</param>
+        /// <param name="intervalMAJ">L'intervalle de mise à jour du combat</param>
         public Combat(Game game, Vector2 positionBox, Player user, Trainer opponent, float intervalMAJ)
             : base(game)
         {
@@ -85,6 +77,14 @@ namespace AtelierXNA
             OpponentTrainer = opponent;
             EstOpponentSauvage = false;
         }
+        /// <summary>
+        /// Constructeur d'un combat entre le joueur et un Pokémon sauvage.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="positionBox">La position de la boite d'affichage du texte</param>
+        /// <param name="user">Le joueur (de type Player.cs)</param>
+        /// <param name="opponent">L'adversaire (de type Pokemon.cs)</param>
+        /// <param name="intervalMAJ">L'intervalle de mise à jour du combat</param>
         public Combat(Game game, Vector2 positionBox, Player user, Pokemon opponent, float intervalMAJ)
             : base(game)
         {
@@ -98,20 +98,9 @@ namespace AtelierXNA
         {
             EnCombat = true;
             UserPokemon = UserTrainer.NextPokemonEnVie();
-            Database = Game.Services.GetService(typeof(AccessBaseDeDonnée)) as AccessBaseDeDonnée;
-            //GestionnaireDeChansons = Game.Services.GetService(typeof(RessourcesManager<Song>)) as RessourcesManager<Song>;
-
-            //LeJoueur = Game.Services.GetService(typeof(Player)) as Player;
-            //GestionnaireDeChansons = new RessourcesManager<Song>(Game, "Songs");
-            //tuneCombat = GestionnaireDeChansons.Find("tuneCombat");
-            //if (EnCombat)
-            //{
-            //    MediaPlayer.Stop();
-            //    MediaPlayer.Play(tuneCombat);
-            //}
             GamePad.SetVibration(PlayerIndex.One, 1, 1);
+
             Générateur = new Random();
-            
             MainMenu = new BattleMenu(Game, PositionBox, new Vector2(Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage), IntervalMAJ, UserPokemon, UserTrainer);
             Game.Components.Add(MainMenu);
             
@@ -122,7 +111,9 @@ namespace AtelierXNA
             CombatState = CombatState.BATTLE_MENU;
             base.Initialize();
         }
-
+        /// <summary>
+        /// Fonction qui affiche les messages du début d'un combat.
+        /// </summary>
         private void AfficherMessagesInitialisation()
         {
             if (EstOpponentSauvage)
@@ -142,6 +133,9 @@ namespace AtelierXNA
             AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, UserTrainer.Nom + ": Go, " + UserPokemon.Nom + "!", IntervalMAJ);
             Game.Components.Add(messageB);
         }
+        /// <summary>
+        /// Fonction qui ajoute les textes de vie et de nom des pokémons en combat.
+        /// </summary>
         private void AjouterLesTextesFixes()
         {
             PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
@@ -165,60 +159,19 @@ namespace AtelierXNA
             VieOpponentPokemon.Visible = false;
             VieUserPokemon.Visible = false;
         }
+
         public override void Update(GameTime gameTime)
         {
             if (!AfficheurTexte.MessageEnCours)
                 GérerTransitions();
-
-            //base.Update(gameTime);//Utile?
         }
 
-        //#region GérerÉtats
-        //void GérerÉtats() //ici on exécute ce que l'on fait à un tel état
-        //{
-        //    switch (CombatState)
-        //    {
-        //        case CombatState.BATTLE_MENU:
-        //            GérerBATTLE_MENU();
-        //            break;
-        //        case CombatState.IN_BATTLE:
-        //            GérerIN_BATTLE();
-        //            break;
-        //        //case CombatState.VERIFY_OUTCOME:
-        //        //    GérerVERIFY_ALIVE();
-        //        //    break;
-        //        case CombatState.VICTORY:
-        //            GérerVICTORY();
-        //            break;
-        //        case CombatState.DEFEAT:
-        //            GérerDEFEAT();
-        //            break;
-        //        case CombatState.END:
-        //            GérerEND();
-        //            break;
-        //    }
-        //}
-        //void GérerBATTLE_MENU()
-        //{
-        //}
-        //void GérerIN_BATTLE()
-        //{
-        //    EffectuerTourUser();
-        //    EffectuerTourOpponent();
-        //    TourComplété = true; // simple, pour que ça run
-        //}
-        //void GérerVICTORY()
-        //{
-        //}
-        //void GérerDEFEAT()
-        //{
-        //}
-        //void GérerEND()
-        //{
-        //}
-        //#endregion
+        
 
         #region GérerTransition
+            /// <summary>
+            /// Fonction de l'update qui gère les transitions entre les états et ce que ceux-ci font.
+            /// </summary>
         void GérerTransitions()
         {
             switch (CombatState)
@@ -253,6 +206,9 @@ namespace AtelierXNA
                     break;
             }
         }
+        /// <summary>
+        /// Fonction de transition qui attend que le joueur fasse son choix dans le menu du combat.
+        /// </summary>
         void GérerTransitionBATTLE_MENU()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 0);
@@ -265,6 +221,9 @@ namespace AtelierXNA
                 CombatState = CombatState.IN_BATTLE;
 
         }
+        /// <summary>
+        /// Fonction de transition qui fait l'action choisie et renvoie à un autre état selon le cas.
+        /// </summary>
         void GérerTransitionIN_BATTLE()
         {
             if (MainMenu.ItemPokeballEstUtilisé)
@@ -274,7 +233,7 @@ namespace AtelierXNA
             else if (MainMenu.PokémonChangé)
             {
                 MainMenu.PokémonChangé = false;
-                ChangerPokémon(MainMenu.NuméroChoisi);
+                ChangerUserPokémon(MainMenu.NuméroChoisi);
                 TourUserComplété = true;
                 CombatState = CombatState.TOUR_OPPONENT;
             }
@@ -297,33 +256,37 @@ namespace AtelierXNA
             }
         }
 
+        /// <summary>
+        /// Fonction qui fait les attaques entre les deux Pokémons et qui s'assure qu'ils sont encore en vie.
+        /// </summary>
         void EffectuerLeRound()
         {
             if (UserPokemon.Speed >= OpponentPokemon.Speed)
             {
-                if (!TourOpponentComplété && OpponentPokemon.EstEnVie) //ça attaque en sens inverse, user avant opponent. Très contre-intuitif, comment ça se fait?
-                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+                if (!TourOpponentComplété && OpponentPokemon.EstEnVie)
+                    CombatState = CombatState.TOUR_OPPONENT;
 
                 if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
                     CombatState = CombatState.VERIFY_OUTCOME;
 
                 if (!TourUserComplété && UserPokemon.EstEnVie)
-                    CombatState = CombatState.TOUR_USER;//EffectuerTourUser();
+                    CombatState = CombatState.TOUR_USER;
             }
             else
             {
                 if (!TourUserComplété && UserPokemon.EstEnVie)
                     CombatState = CombatState.TOUR_USER;
 
-                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)//Parce que le combat pourrait finir entre les attaques des deux pokémons
+                if (!OpponentPokemon.EstEnVie || !UserPokemon.EstEnVie)
                     CombatState = CombatState.VERIFY_OUTCOME;
 
                 if (!TourOpponentComplété && OpponentPokemon.EstEnVie)
-                    CombatState = CombatState.TOUR_OPPONENT;//EffectuerTourOpponent();
+                    CombatState = CombatState.TOUR_OPPONENT;
             }
-
         }
-
+        /// <summary>
+        /// Fonction qui s'effectue quand le joueur sélectionne l'objet "Pokeball".
+        /// </summary>
         void LancerUnePokeball()
         {
             if (EstOpponentSauvage)
@@ -335,7 +298,11 @@ namespace AtelierXNA
                 CombatState = CombatState.TOUR_OPPONENT;
             }
         }
-
+        /// <summary>
+        /// Fonction pour tenter d'attraper un Pokémon sauvage qui peut servir aussi hors combat.
+        /// </summary>
+        /// <param name="joueur">Le trainer qui tente d'attraper le Pokémon</param>
+        /// <param name="opponent">Le Pokémon que l'on veut attraper</param>
         public void EssayerAttraperWildPokemon(Trainer joueur, Pokemon opponent)
         {
             bool valeurFormule = EffectuerFormuleGenI(opponent);
@@ -344,9 +311,9 @@ namespace AtelierXNA
                 AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
                 Game.Components.Add(message);
 
-                joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
+                joueur.AddPokemon(opponent);
 
-                if (EnCombat)//Parce qu'on pourrait vouloir l'utiliser hors combat
+                if (EnCombat)
                 {
                     MainMenu.ItemPokeballEstUtilisé = false;
                     CombatState = CombatState.END;
@@ -365,53 +332,29 @@ namespace AtelierXNA
                 }
             }
         }
-        public void CatchWildPokemon(Trainer joueur, Pokemon opponent)
-        {
-
-            AfficheurTexte message2 = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Gotcha! " + opponent.Nom + " was caught!", IntervalMAJ);
-            Game.Components.Add(message2);
-
-            joueur.AddPokemon(opponent);//on ajoute directement la référence dans la liste du joueur sans copies
-
-            if (EnCombat)
-            {
-                MainMenu.ItemMasterBall = false;
-                CombatState = CombatState.END;
-            }
-
-        }
+        /// <summary>
+        /// Fonction qui vérifie si le Pokémon s'est fait attraper ou non selon la formule originale.
+        /// </summary>
+        /// <param name="opponent">Le Pokémon que le joueur tente d'attraper</param>
+        /// <returns>La valeur s'il est attrapé ou non</returns>
         bool EffectuerFormuleGenI(Pokemon opponent)
         {
-            //Formule de pokémon génération I (La forme très algorythmique s'applique bien à la programmation, je vais la reprendre ligne pour ligne) http://bulbapedia.bulbagarden.net/wiki/Catch_rate
-            //note: la formule gen II s'appliquerait bien aussi, mais le calcul de "b" est fastidieux
-            /*
-             1. générer un nombre "n" aléatoire (pokéball = 0 à 255, greatball = 0 à 200 et ultraball = 0 à 150)
-             2. return true if (((Sleep || Frozen) && n < 25) || ((Paralyzed || Burned || Poisoned) && n < 12)) //(sleep ou fozen et n < 25 = true; par, burn, psn et n < 12 = true; )
-             3. si N (ou N - 25 ou - 12 selon status) <= catchrate, true
-             4. si valeur = false, générer M entre 0 et 255
-             5. Calculer F = (HPmaxOpp * 255 * 4)/(HPcurrent * Ball) et ball = 8 si greatball, 12 otherwise.
-             6. si F >= M, true
-
-            Le reste de l'algorithme est juste pour indiquer combien de fois la balle shake si le pokémon n'est pas attrapé (on fait pas pour l'instant)
-            
-             
-             */
-            bool estAttrapé = false; //attrape pas, à moins que l'on le dit.
-            //int n = Générateur.Next(0, 256); //on ne fera que les pokéballs pour l'instant, et ici ça dépend si y a un status uniquement 
-            //if (n <= OpponentPokemon.CatchRate)
-            //    estAttrapé = true;
+            bool estAttrapé = false;
 
             if (!estAttrapé)
             {
                 int m = Générateur.Next(0, 256);
-                int f = (opponent.MaxHp * /*255 * */opponent.CatchRate * 4) / (opponent.HP * 12); //Laisser la division entière d'après le site de la formule
-
+                int f = (opponent.MaxHp * opponent.CatchRate * 4) / (opponent.HP * 12);
+                //La possibilité de division entière est voulue, la source de l'algorithme le spécifie.
                 if (f >= m)
                     estAttrapé = true;
             }
             return estAttrapé;
         }
 
+        /// <summary>
+        /// Fonction de transition qui fait le tour du joueur et renvoie à l'état IN_BATTLE pour compléter le tour.
+        /// </summary>
         void GérerTransitionTOUR_USER()
         {
             GamePad.SetVibration(PlayerIndex.One, 1, 0);
@@ -419,8 +362,7 @@ namespace AtelierXNA
             VieOpponentPokemon.Visible = true;
             if (UserPokemon.EstEnVie)
             {
-                //if (MainMenu.AttaqueUtilisée)
-                    EffectuerTourUser(MainMenu.NuméroChoisi);
+                EffectuerTourUser(MainMenu.NuméroChoisi);
                 VieOpponentPokemon.RemplacerMessage(OpponentPokemon.VieToString());
                 TourUserComplété = true;
                 if (CombatState != CombatState.END)
@@ -432,12 +374,15 @@ namespace AtelierXNA
                 {
                     TourOpponentComplété = false;
                     TourUserComplété = false;
-                    ChangerPokémon(MainMenu.NuméroChoisi);
+                    ChangerUserPokémon(MainMenu.NuméroChoisi);
                     MainMenu.BattleMenuState = BattleMenuState.MAIN;
                     CombatState = CombatState.BATTLE_MENU;
                 }
             }
         }
+        /// <summary>
+        /// Fonction de transition qui fait le tour de l'adversaire et renvoie à l'état IN_BATTLE pour compléter le tour.
+        /// </summary>
         void GérerTransitionTOUR_OPPONENT()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 1);
@@ -448,6 +393,9 @@ namespace AtelierXNA
             TourOpponentComplété = true;
             CombatState = CombatState.IN_BATTLE;
         }
+        /// <summary>
+        /// Fonction de transition qui vérifie l'état du combat, s'il doit finir, continuer et comment procéder si l'on continue.
+        /// </summary>
         void GérerTransitionVERIFY_OUTCOME()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 0);
@@ -475,18 +423,22 @@ namespace AtelierXNA
                     AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, UserPokemon.Nom + " fainted!", IntervalMAJ);
                     Game.Components.Add(message);
 
-                    MainMenu.BackLock = true; //pour forcer à changer de pokemon
+                    MainMenu.BackLock = true; //Pour forcer le joueur à changer de pokemon sans pouvoir revenir dans le menu.
                     MainMenu.BattleMenuState = BattleMenuState.POKEMON;
                     CombatState = CombatState.TOUR_USER;
                 }
             }
         }
+        /// <summary>
+        /// Fonction de transition de victoire qui mène à la fin du combat.
+        /// </summary>
         void GérerTransitionVICTORY()
         {
             if (!EstOpponentSauvage)
             {
                 AfficheurTexte messageA = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "Trainer " + OpponentTrainer.Nom + " was defeated! ", IntervalMAJ);
                 Game.Components.Add(messageA);
+                //On peut ajouter un gain d'argent pour le joueur ici si l'on ajoute des magasins d'objets.
             }
             else
             {
@@ -496,11 +448,17 @@ namespace AtelierXNA
             DonnerExp();
             CombatState = CombatState.END;
         }
+        /// <summary>
+        /// Fonction pour attribuer les points d'expérience au Pokémon du joueur.
+        /// </summary>
         private void DonnerExp()
         {
             float exp = OpponentPokemon.GiveExp();
             UserPokemon.GainExp(exp);
         }
+        /// <summary>
+        /// Fonction de transition de défaite qui mène à la fin du combat.
+        /// </summary>
         void GérerTransitionDEFEAT()
         {
             if (!EstOpponentSauvage)
@@ -512,6 +470,10 @@ namespace AtelierXNA
             Game.Components.Add(messageB);
             CombatState = CombatState.END;
         }
+
+        /// <summary>
+        /// Fonction de transition mettant fin au combat.
+        /// </summary>
         void GérerTransitionEND()
         {
             GamePad.SetVibration(PlayerIndex.One, 0, 0);
@@ -522,7 +484,9 @@ namespace AtelierXNA
         }
         #endregion
 
-
+        /// <summary>
+        /// Fonction qui affiche le message de l'attaque aléatoire de l'adversaire et l'effectue.
+        /// </summary>
         void EffectuerTourOpponent()
         {
             int nbAléatoire = Générateur.Next(0, OpponentPokemon.NbAttaques);
@@ -535,16 +499,25 @@ namespace AtelierXNA
             Game.Components.Add(message);
             EffectuerAttaque(OpponentPokemon, UserPokemon, OpponentPokemon[nbAléatoire]);
         }
-        void EffectuerTourUser(int numéroChoisi)
+        /// <summary>
+        /// Fonction qui affiche le message de l'attaque choisie par le joueur et l'effectue.
+        /// </summary>
+        /// <param name="attaqueSélectionnée">Numéro de l'attaque sélectionnée</param>
+        void EffectuerTourUser(int attaqueSélectionnée)
         {
-            string messageTour = UserPokemon.Nom + " used " + UserPokemon[numéroChoisi].ToString() + "!";
+            string messageTour = UserPokemon.Nom + " used " + UserPokemon[attaqueSélectionnée].ToString() + "!";
             AfficheurTexte message = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(message);
-            EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[numéroChoisi]);
+            EffectuerAttaque(UserPokemon, OpponentPokemon, UserPokemon[attaqueSélectionnée]);
         }
-        void ChangerPokémon(int numéroChoisi)
+
+        /// <summary>
+        /// Fonction qui change le pokémon du joueur.
+        /// </summary>
+        /// <param name="pokémonSélectionné">Le numéro en inventaire du pokémon choisi</param>
+        void ChangerUserPokémon(int pokémonSélectionné)
         {
-            UserPokemon = UserTrainer[numéroChoisi];
+            UserPokemon = UserTrainer[pokémonSélectionné];
 
             PositionInfoUserPokemon = new Vector2(Game.Window.ClientBounds.Width - (UserPokemon.ToString().Count() + 3) * Cadre.TAILLE_TILE, Game.Window.ClientBounds.Height - Cadre.TAILLE_TILE * 9);
             NomUserPokemon.Visible = false;
@@ -559,6 +532,9 @@ namespace AtelierXNA
             Game.Components.Add(message);
 
         }
+        /// <summary>
+        /// Fonction qui change le Pokémon de l'adversaire s'il lui en reste qui sont vivants.
+        /// </summary>
         void ChangerOpponentPokemon()
         {
             TourOpponentComplété = false;
@@ -574,10 +550,13 @@ namespace AtelierXNA
             AfficheurTexte messageB = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, messageTour, IntervalMAJ);
             Game.Components.Add(messageB);
         }
+
+        /// <summary>
+        /// Fonction qui sert à déterminer si le joueur peut fuir le combat ou non.
+        /// </summary>
         void EssayerFuir()
         {
             MainMenu.TentativeFuite = false;
-            //random selon des probabilités et level des deux pokemons. pour l'instant on dit qu'y réussi à tout coup
             if (!EstOpponentSauvage)
             {
                 TourUserComplété = true;
@@ -594,6 +573,12 @@ namespace AtelierXNA
             }
         }
 
+        /// <summary>
+        /// Fonction qui exécute l'attaque entre deux Pokémons.
+        /// </summary>
+        /// <param name="attaquant">Le Pokémon qui attaque</param>
+        /// <param name="opposant">Le Pokémon qui se fait attaquer</param>
+        /// <param name="attaqueChoisie">L'attaque qui a été choisie</param>
         void EffectuerAttaque(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)
         {
             int nombreAléatoire = Générateur.Next(0, 101);
@@ -614,35 +599,46 @@ namespace AtelierXNA
                 Game.Components.Add(message);
             }
         }
-        int CalculPointsDamagePhysique(Pokemon attaquant, Pokemon opposant, Attaque atk)// s'il y a un base power
+        /// <summary>
+        /// Calcul des points de damage si l'attaque utilise des facultés "Physiques".
+        /// </summary>
+        /// <param name="attaquant">Le Pokémon qui attaque</param>
+        /// <param name="opposant">Le Pokémon qui se fait attaquer</param>
+        /// <param name="attaqueChoisie">L'attaque qui a été choisie</param>
+        /// <returns>Les points de damage</returns>
+        int CalculPointsDamagePhysique(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)// s'il y a un base power
         {
             float damage;
 
-            float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            float multiplicateurType = attaqueChoisie.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             AfficherMessageMultiplicateur(multiplicateurType);
 
-            damage = ((2 * attaquant.Level / 5f + 2) * atk.Power * (attaquant.Attack / (float)opposant.Defense) / 50f) * multiplicateurType;
+            damage = ((2 * attaquant.Level / 5f + 2) * attaqueChoisie.Power * (attaquant.Attack / (float)opposant.Defense) / 50f) * multiplicateurType;
 
-            int damageInt = (int)(damage * 100);
-            if (damageInt < 100 && damageInt != 0)
-                damage = 1;
-            return (int)damage;
+            return CalculerDamageMinimal(damage);
         }
-
-        int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque atk)
+        /// <summary>
+        /// Calcul des points de damage si l'attaque utilise des facultés "Spéciales".
+        /// </summary>
+        /// <param name="attaquant">Le Pokémon qui attaque</param>
+        /// <param name="opposant">Le Pokémon qui se fait attaquer</param>
+        /// <param name="attaqueChoisie">L'attaque qui a été choisie</param>
+        /// <returns>Les points de damage</returns>
+        int CalculPointsDamageSpécial(Pokemon attaquant, Pokemon opposant, Attaque attaqueChoisie)
         {
             float damage;
 
-            float multiplicateurType = atk.GetTypeMultiplier(opposant.Type1, opposant.Type2);
+            float multiplicateurType = attaqueChoisie.GetTypeMultiplier(opposant.Type1, opposant.Type2);
             AfficherMessageMultiplicateur(multiplicateurType);
 
-            damage = ((2 * attaquant.Level / 5 + 2) * atk.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
-
-            int damageInt = (int)(damage * 100);
-            if (damageInt < 100 && damageInt != 0)
-                damage = 1;
-            return (int)damage;
+            damage = ((2 * attaquant.Level / 5 + 2) * attaqueChoisie.Power * (attaquant.SpecialAttack / (float)opposant.SpecialDefense) / 50) * multiplicateurType;
+   
+            return CalculerDamageMinimal(damage);
         }
+        /// <summary>
+        /// Fonction qui affiche un message d'effet si le multiplicateur de type est différent de 100%.
+        /// </summary>
+        /// <param name="multiplicateurType">Le multiplicateur par rapport au type, 1.00 étant 100%</param>
         private void AfficherMessageMultiplicateur(float multiplicateurType)
         {
             int pourcentageMultiplicatif = (int)(multiplicateurType * 100);
@@ -662,6 +658,19 @@ namespace AtelierXNA
                 AfficheurTexte messageC = new AfficheurTexte(Game, PositionBox, Jeu.LargeurBoxMessage, Jeu.HauteurBoxMessage, "It's super effective!", IntervalMAJ);
                 Game.Components.Add(messageC);
             }
+        }
+
+        /// <summary>
+        /// Fonction pour que le damage soit égal à 1 s'il est plus petit que 1 mais non égal à 0.
+        /// </summary>
+        /// <param name="damage">Les points de damage à arrondir</param>
+        /// <returns></returns>
+        private int CalculerDamageMinimal(float damage)
+        {
+            int damageInt = (int)(damage * 100);
+            if (damageInt < 100 && damageInt != 0)
+                damage = 1;
+            return (int)damage;
         }
     }
 }

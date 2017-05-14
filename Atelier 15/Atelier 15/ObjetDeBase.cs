@@ -90,6 +90,7 @@ namespace AtelierXNA
             TransformationsModèle = new Matrix[Modèle.Bones.Count];
             Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
         }
+
         public void ChangerModèle(string dossier)
         {
             Modèle = GestionnaireDeModèles.Find(dossier);
@@ -139,8 +140,8 @@ namespace AtelierXNA
                 Tps = 0;
             }
 
-            //Position = CalculerBézier(Tps * (1f / 60f), ptsSaut);
-            Position = PosTmpPok;
+            Position = CalculerBézier(Tps * (1f / 60f), ptsSaut);
+            // Position = PosTmpPok;
             ++Tps;
 
             NettoyerListePositions();
@@ -220,8 +221,7 @@ namespace AtelierXNA
             //Vector3 direc = Position + new Vector3(direction.X, 0, direction.Y);
 
             PosTmpPok = new Vector3(direc.X, posY, direc.Z);
-             
-             
+                       
              */
         }
 
@@ -232,8 +232,8 @@ namespace AtelierXNA
             tabPts[0] = Position;
             tabPts[3] = PosTmpPok;
 
-            tabPts[1] = new Vector3((tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].Z - tabPts[0].Z) / 3) + PositionPokemon;
-            tabPts[2] = new Vector3((2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].Z - tabPts[0].Z)) / 3) + PositionPokemon;
+            tabPts[1] = new Vector3((tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].X - tabPts[0].X) / 3, (tabPts[3].Z - tabPts[0].Z) / 3) + Position;
+            tabPts[2] = new Vector3((2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].X - tabPts[0].X)) / 3, (2 * (tabPts[3].Z - tabPts[0].Z)) / 3) + Position;
 
             return tabPts;
         }
@@ -252,10 +252,10 @@ namespace AtelierXNA
         {
             float moinsUn = (1 - t);
 
-            return -(pts[0] * (float)Math.Pow(moinsUn, 3) +
+            return pts[0] * (float)Math.Pow(moinsUn, 3) +
                 3 * pts[1] * t * (float)Math.Pow(moinsUn, 2) +
                 3 * pts[2] * t * t * moinsUn +
-                pts[3] * t * t * t);
+                pts[3] * t * t * t;
         }
 
         public override void Draw(GameTime gameTime)

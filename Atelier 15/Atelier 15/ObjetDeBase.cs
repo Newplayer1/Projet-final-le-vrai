@@ -107,7 +107,6 @@ namespace AtelierXNA
             if (Temps…coulÈDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
             {
                 EffectuerMise¿Jour();
-                //Temps…coulÈDepuisMAJ -= IntervalleMAJ;
                 Temps…coulÈDepuisMAJ = 0;
             }
 

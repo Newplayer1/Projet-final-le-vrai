@@ -81,7 +81,6 @@ namespace AtelierXNA
                     isclicked = false;
                     }
 
-
                 ActualiserÉtatSouris();
 
             }
@@ -90,34 +89,27 @@ namespace AtelierXNA
         private void GérerSouris(MouseState mouse, Rectangle mouserectangle, Rectangle rectangle)
         {
 
-            if (mouserectangle.Intersects(rectangle))
+   
+                if (GestionsTouches.EstNouveauClicGauche())
+                {  
+                    if (mouserectangle.Intersects(rectangle))
             {
-                if (EstNouveauClicGauche())
-                {
-                    isclicked = true;
-                    if (EstAncienClicGauche())
-                    {
-                        isclicked = false;
-                    }
-                }
+                    isclicked = true; 
+                    //if(GestionsTouches.EstNouveauClicDroit()) { isclicked = false; }
+                    //if (GestionsTouches.EstAncienClicGauche() || mouserectangle.Intersects(rectangle))
+                    //{
+                    //    isclicked = false;
+                    //} 
+                    //omg wtf
+           }
+           
             }
-
         }
         void ActualiserÉtatSouris()
         {
             AncienÉtatSouris = NouvelÉtatSouris;
             NouvelÉtatSouris = Mouse.GetState();
             tempsÉcouléDepuisMAJ = 0;
-        }
-        private bool EstNouveauClicGauche()
-        {
-            return NouvelÉtatSouris.LeftButton == ButtonState.Pressed &&
-                   AncienÉtatSouris.LeftButton == ButtonState.Released;
-        }
-        public bool EstAncienClicGauche()
-        {
-            return NouvelÉtatSouris.LeftButton == ButtonState.Pressed &&
-            AncienÉtatSouris.LeftButton == ButtonState.Pressed;
         }
         public void ResetPosition(Vector2 newPosition)
         {

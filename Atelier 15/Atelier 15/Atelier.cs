@@ -41,7 +41,7 @@ namespace AtelierXNA
             IsMouseVisible = true;
             PériphériqueGraphique.PreferredBackBufferWidth = 800;
             PériphériqueGraphique.PreferredBackBufferHeight = 480;
-            PériphériqueGraphique.IsFullScreen = false;
+            //PériphériqueGraphique.IsFullScreen = false;
         }
 
         protected override void Initialize()
@@ -121,7 +121,7 @@ namespace AtelierXNA
         private void InitializePlaying()
         {
             ÉtatDépart = ÉtatsDépart.JEU3D;
-            PériphériqueGraphique.IsFullScreen = true;
+            PériphériqueGraphique.IsFullScreen = PageTitre.IsFullScreen;
             PériphériqueGraphique.ApplyChanges();
             CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 
@@ -159,8 +159,6 @@ namespace AtelierXNA
             //    }
             //}
             //GraphicsDevice.Clear(Color.Black);
-            Window.Title = Components.Count.ToString();
-
             base.Draw(gameTime);
         }
     }

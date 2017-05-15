@@ -121,7 +121,7 @@ namespace AtelierXNA
         private void InitializePlaying()
         {
             ÉtatDépart = ÉtatsDépart.JEU3D;
-            PériphériqueGraphique.IsFullScreen = false;
+            PériphériqueGraphique.IsFullScreen = true;
             PériphériqueGraphique.ApplyChanges();
             CaméraJeu = new CaméraSubjective(this, new Vector3(96, 16, -96), Vector3.Zero, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 

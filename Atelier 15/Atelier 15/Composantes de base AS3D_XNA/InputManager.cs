@@ -82,7 +82,7 @@ namespace AtelierXNA
             AncienÉtatGamepad = NouvelÉtatGamepad;
             NouvelÉtatGamepad = GamePad.GetState(PlayerIndex.One);
       }
-      void ActualiserÉtatSouris()
+      public void ActualiserÉtatSouris()
       {
          AncienÉtatSouris = NouvelÉtatSouris;
          NouvelÉtatSouris = Mouse.GetState();
